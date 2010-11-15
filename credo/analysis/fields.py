@@ -472,8 +472,8 @@ def calcFieldCvgWithScale(fieldName, lenScales, dofErrors):
     ''' 
 
     print "Testing convergence for field '%s'" % fieldName
-    #print "Length scales are %s" % lenScales
-    #print "Dof errors for %d dofs are %s" % (len(dofErrors), dofErrors)
+    print "Length scales are %s" % lenScales
+    print "Dof errors for %d dofs are %s" % (len(dofErrors), dofErrors)
     scaleLogs = map(math.log10, lenScales)
     convResults = []
     for errorArray in dofErrors:
