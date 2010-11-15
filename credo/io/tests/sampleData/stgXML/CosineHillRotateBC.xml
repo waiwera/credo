@@ -68,8 +68,8 @@
 	  </struct>
 	</list>
 	<struct name="pluginData">
-		<list name="NumericFields">
-			<param>TemperatureField</param> <param>0</param>
+		<list name="FieldMappings">
+			<param>TemperatureField</param> <param>CosineHillRotate_TemperatureFunction</param>
 		</list> 
 		<param name="IntegrationSwarm">gaussSwarm</param>
 		<param name="ConstantMesh">constantMesh</param>

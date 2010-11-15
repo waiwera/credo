@@ -278,7 +278,7 @@ class FieldComparisonList(AnalysisOperation):
     # This component is unusual in that it needs a "pluginData" struct
     # separate to the actual component definition.
     stgXMLSpecName = 'pluginData'
-    stgXMLSpecFList = 'NumericFields'
+    stgXMLSpecFList = 'FieldMappings'
     stgXMLSpecRList = 'ReferenceFields'
 
     def __init__(self, fieldsList=None):

@@ -265,9 +265,9 @@
     <element type="param">TemperatureField-phiDotField</element>
   </element>
   <element type="struct" name="pluginData">
-    <element type="list" name="NumericFields">
+    <element type="list" name="FieldMappings">
       <element type="param">TemperatureField</element>
-      <element type="param">0</element>
+      <element type="param">CosineHillRotate_TemperatureFunction</element>
     </element>
     <element type="param" name="IntegrationSwarm">gaussSwarm</element>
     <element type="param" name="ConstantMesh">constantMesh</element>
