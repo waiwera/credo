@@ -102,7 +102,10 @@ class ReferenceTest(SingleModelSysTest):
             testTimestep=self.runSteps)
 
     def regenerateFixture(self, jobRunner):
-        '''Do a run to create the reference solution to use.'''
+        '''Do a run to create the reference solution to use.
+        
+        .. note:: by default, this will save checkpoint for the entire step,
+           not just fields to be checkpointed against.'''
 
         print "Running the model to create a reference solution after %d"\
             " steps, and saving in dir '%s'" % \
