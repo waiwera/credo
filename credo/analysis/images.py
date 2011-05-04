@@ -102,11 +102,11 @@ def colourDiff(img1, img2):
     #two images with large areas of similar colour differ over a bin boundary
     rsum = gsum = bsum = 0
     count = 0
-    for b in range(2,12):
+    for bins in range(8,16):
         #Get diff for each RGB channel
-        rsum += channelDiff(0, hist1, hist2, pixels, b)
-        gsum += channelDiff(1, hist1, hist2, pixels, b)
-        bsum += channelDiff(2, hist1, hist2, pixels, b)
+        rsum += channelDiff(0, hist1, hist2, pixels, bins)
+        gsum += channelDiff(1, hist1, hist2, pixels, bins)
+        bsum += channelDiff(2, hist1, hist2, pixels, bins)
         count += 3
 
     #Average and return
