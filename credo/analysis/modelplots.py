@@ -56,7 +56,7 @@ def plotOverAllRuns(mResults, outputName, depName='Timestep', show=False,
         plt.plot(depVals[ii], resVals[ii], label=lab)
     plt.xlabel(depName)
     plt.ylabel(outputName)
-    plt.legend(loc='best', prop={'size':'small'})
+    plt.legend(loc='best')#, prop={'size':'small'})
     plt.title("Output parameter '%s' over %s"\
         % (outputName, depName))
     if save:
@@ -103,7 +103,7 @@ def plotSpeedups(mRuns, mResults, profilerName=None, show=False,
         plt.plot(idealProcs, idealSpeedup, "g-", label="ideal")
     plt.ylim(ymin=0)
     plt.title("Parallel Speedup for given runs.")
-    plt.legend(loc='best', prop={'size':'small'})
+    plt.legend(loc='best')#, prop={'size':'small'})
     if save:
         if not os.path.exists(path):
             os.makedirs(path)
@@ -163,7 +163,7 @@ def plotTimePerEls(mRuns, mResults, profilerName=None, show=False,
     plt.plot(nEls, timePerEls, "o:", label="actual")
     plt.ylim(ymin=0)
     plt.title("Solver time/model element, given runs.")
-    plt.legend(loc='best', prop={'size':'small'})
+    plt.legend(loc='best')#, prop={'size':'small'})
     if save:
         if not os.path.exists(path):
             os.makedirs(path)
@@ -189,7 +189,7 @@ def plotWalltimesByRuns(mRuns, mResults, profilerName=None, show=False,
     plt.plot(nEls, walltimes, "o:", label="actual")
     plt.ylim(ymin=0)
     plt.title("Walltime against # elements - given runs.")
-    plt.legend(loc='best', prop={'size':'small'})
+    plt.legend(loc='best')#, prop={'size':'small'})
     if save:
         if not os.path.exists(path):
             os.makedirs(path)
