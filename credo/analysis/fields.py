@@ -274,7 +274,7 @@ class FieldComparisonList(AnalysisOperation):
     # These attributes are all needed as to read/write the XML description
     # of this Op in StGermain (FieldTest).
     stgXMLCompType = 'FieldTest'
-    stgXMLCompName = 'credoFieldTester'
+    stgXMLCompName = 'FieldTest'
     # This component is unusual in that it needs a "pluginData" struct
     # separate to the actual component definition.
     stgXMLSpecName = 'pluginData'
@@ -335,41 +335,39 @@ class FieldComparisonList(AnalysisOperation):
         if len(self.fields) == 0: return
 
         if self.fromXML:
-            # In this case, just make sure the printing of comparison info
-            #  enabled.
-            pluginDataElt = etree.SubElement(rootNode, stgxml.STG_STRUCT_TAG,
-                name=self.stgXMLSpecName, mergeType="merge")
             stgxml.writeParam(pluginDataElt, 'appendToAnalysisFile', 'True',
                 mt="replace")
         else:
+            # Include corresponding xml files for each analytic field
+            for field in self.fields:
+                stgxml.writeIncludeLine(rootNode, 
+                    'Underworld/AnalyticFields/Analytic'+field+'.xml')
             # Append the component to component list
             compElt = stgxml.writeMergeComponent(rootNode, self.stgXMLCompName,
                 self.stgXMLCompType)
-            # Create the plugin data
-            pluginDataElt = etree.SubElement(rootNode, stgxml.STG_STRUCT_TAG,
-                name=self.stgXMLSpecName, mergeType="replace")
-            xmlFieldTestsList = self.fields.keys()
-            # This is necessary due to format of this list in FieldTest plugin:
-            # <FieldName> <# of analytic func> - both as straight params
-            ii=0
-            for index in range(1,len(self.fields)*2,2):
-                xmlFieldTestsList.insert(index, str(ii))
-                ii+=1
 
             if self.useReference or self.useHighResReference:
-                stgxml.writeParamSet(pluginDataElt, {
+                stgxml.writeParamSet(compElt, {
                     'referenceSolutionFilePath':self.referencePath,
                     'useReferenceSolutionFromFile':self.useReference,
                     'useHighResReferenceSolutionFromFile':self.useHighResReference })
-                stgxml.writeParamList(pluginDataElt, self.stgXMLSpecRList,
+                stgxml.writeParamList(compElt, self.stgXMLSpecRList,
                     self.fields.keys())
             
-            # Current plugin seems to require using a numeric fields list
-            # For both analytic and ref solns.
-            stgxml.writeParamList(pluginDataElt, self.stgXMLSpecFList,
-                xmlFieldTestsList)
+            # Create main struct list for the "FieldMappings
+            fieldMappingElt = stgxml.writeStructList(compElt, self.stgXMLSpecFList)
 
-            stgxml.writeParamSet(pluginDataElt, {
+            # For each field, create the actual field mapping
+            for field in self.fields:
+                childStructElt = stgxml.writeStruct(fieldMappingElt)
+                stgxml.writeParamSet(childStructElt, {
+                    'NumericField':field,
+                    'AnalyticField':'Analytic'+field,
+                    'AnalyticMagnitudeField':'Analytic'+field+'-Mag',
+                    'ErrorField':'Error'+field,
+                    'ErrorMagnitudeField':'Error'+field+'-Mag'})
+
+            stgxml.writeParamSet(compElt, {
                 'IntegrationSwarm':'gaussSwarm',
                 'ConstantMesh':'constantMesh',
                 'testTimestep':self.testTimestep,

@@ -40,6 +40,7 @@ STG_ROOT_TAG = 'StGermainData'
 STG_NS = 'http://www.vpac.org/StGermain/XML_IO_Handler/Jun2003'
 _STG_NS_LXML = '{%s}' % STG_NS
 
+STG_INCLUDE_TAG = "include"
 STG_STRUCT_TAG = "struct"
 STG_LIST_TAG = "list"
 STG_PARAM_TAG = "param"
@@ -494,6 +495,25 @@ def writeParamList(parentNode, listName, paramVals, mt=None):
         pElt = etree.SubElement(listElt, STG_PARAM_TAG)
         pElt.text = str(paramVal) 
     return listElt
+
+def writeStruct(parentNode, mt=None):
+    '''Write a Stg XML List structure, made up purely of (unnamed) parameters'''
+    structElt = etree.SubElement(parentNode, STG_STRUCT_TAG) 
+    setMergeType(structElt, mt)
+    return structElt
+
+def writeStructList(parentNode, listName, mt=None):
+    '''Write a Stg XML List structure, made up purely of (unnamed) parameters'''
+    listElt = etree.SubElement(parentNode, STG_LIST_TAG, name=listName) 
+    setMergeType(listElt, mt)
+    return listElt
+
+def writeIncludeLine(parantNode, includeValue, mt=None):
+    '''Write a Stg XML include line for referencing other input xml files'''
+    includeElt = etree.SubElement(parantNode, STG_INCLUDE_TAG)
+    setMergeType(includeElt, mt)
+    includeElt.text = str(includeValue)
+    return includeElt
 
 def writeMergeComponent(rootNode, compName, compType):
     '''Write XML to merge a given component to the components list - and
