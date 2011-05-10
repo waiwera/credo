@@ -515,6 +515,21 @@ def writeIncludeLine(parantNode, includeValue, mt=None):
     includeElt.text = str(includeValue)
     return includeElt
 
+def writeMergeComponentStruct(rootNode):
+    '''Write XML to merge a given component to the components list - and
+     return new comp elt'''
+    assert rootNode.tag == STG_ROOT_TAG
+    compList = etree.SubElement(rootNode, STG_STRUCT_TAG, name="components",\
+        mergeType="merge") 
+    return compList
+
+def writeComponent(parentNode, compName, compType):
+    '''Write XML to merge a given component to the components list - and
+     return new comp elt'''
+    compElt = etree.SubElement(parentNode, STG_STRUCT_TAG, name=compName)
+    writeParam(compElt, "Type", compType)
+    return compElt
+
 def writeMergeComponent(rootNode, compName, compType):
     '''Write XML to merge a given component to the components list - and
      return new comp elt'''

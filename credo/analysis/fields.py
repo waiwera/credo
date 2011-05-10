@@ -275,11 +275,79 @@ class FieldComparisonList(AnalysisOperation):
     # of this Op in StGermain (FieldTest).
     stgXMLCompType = 'FieldTest'
     stgXMLCompName = 'FieldTest'
-    # This component is unusual in that it needs a "pluginData" struct
-    # separate to the actual component definition.
-    stgXMLSpecName = 'pluginData'
+    stgXMLCompListName = 'components'
     stgXMLSpecFList = 'FieldMappings'
     stgXMLSpecRList = 'ReferenceFields'
+
+    stgXMLAnalyticFieldParams = {
+        'VelocityField':['FEMesh','DofLayout','outputUnits'],
+        'PressureField':['FEMesh','DofLayout','outputUnits'],
+        'StrainRateField':['Operator','Operand','outputUnits'] }
+    stgXMLAnalyticFieldMagParams = {
+        'VelocityField':['Operator','Operand'],
+        'PressureField':['Operator','Operand'],
+        'StrainRateField':['Operator','Operand'] }
+    stgXMLErrorFieldParams = {
+        'VelocityField':['FEMesh','DofLayout','outputUnits'],
+        'PressureField':['FEMesh','DofLayout','outputUnits'],
+        'StrainRateField':['Operator','Operand'] }
+    stgXMLErrorFieldMagParams = {
+        'VelocityField':['Operator','Operand'],
+        'PressureField':['Operator','Operand'],
+        'StrainRateField':['Operator','Operand'] }
+    stgXMLAnalyticFieldType = {
+        'VelocityField':'AnalyticFeVariable',
+        'PressureField':'AnalyticFeVariable',
+        'StrainrateField':'AnalyticFeOperator' }
+    stgXMLErrorFieldType = {
+        'VelocityField':'FeVariable',
+        'PressureField':'FeVariable',
+        'StrainrateField':'FeOperator' }
+    stgXMLAnalyticFieldMappings = {
+        'VelocityField': {
+            'FEMesh':'velocityMesh',
+            'DofLayout':'AnalyticVelocityDofLayout',
+            'outputUnits':'cm/yr' },
+        'PressureField': {
+            'FEMesh':'pressureMesh',
+            'DofLayout':'AnalyticPressureDofLayout',
+            'outputUnits':'GPa' },
+        'StrainRateField': {
+            'Operator':'Analytic',
+            'Operand':'StrainRateField',
+            'outputUnits':'yr^-1' } }
+    stgXMLAnalyticFieldMagMappings = {
+        'VelocityField': {
+            'Operator':'Magnitude',
+            'Operand':'AnalyticVelocityField' },
+        'PressureField': {
+            'Operator':'Magnitude',
+            'Operand':'AnalyticPressureField' },
+        'StrainRateField': {
+            'Operator':'SymmetricTensor_Invariant',
+            'Operand':'AnalyticStrainRateField' } }
+    stgXMLErrorFieldMappings = {
+        'VelocityField': {
+            'FEMesh':'constantMesh',
+            'DofLayout':'ErrorVelocityDofLayout',
+            'outputUnits':'cm/yr' },
+        'PressureField': {
+            'FEMesh':'constantMesh',
+            'DofLayout':'ErrorPressureDofLayout',
+            'outputUnits':'GPa' },
+        'StrainRateField': {
+            'Operator':'Analytic',
+            'Operand':'yr^-1' } }
+    stgXMLErrorFieldMagMappings = {
+        'VelocityField': {
+            'Operator':'Magnitude',
+            'Operand':'ErrorVelocityField' },
+        'PressureField': {
+            'Operator':'Magnitude',
+            'Operand':'ErrorPressureField' },
+        'StrainRateField': {
+            'Operator':'SymmetricTensor_Invariant',
+            'Operand':'ErrorStrainRateField' } }
 
     def __init__(self, fieldsList=None):
         self.fromXML = False
@@ -342,32 +410,51 @@ class FieldComparisonList(AnalysisOperation):
             for field in self.fields:
                 stgxml.writeIncludeLine(rootNode, 
                     'Underworld/AnalyticFields/Analytic'+field+'.xml')
+            compElt = stgxml.writeMergeComponentStruct(rootNode)
+            for field in self.fields:
+                analyticFieldElt = stgxml.writeComponent(compElt, 'Analytic'+field,
+                    self.stgXMLAnalyticFieldType[field])
+                for param in self.stgXMLAnalyticFieldParams[field]:
+                    stgxml.writeParam(analyticFieldElt, param, self.stgXMLAnalyticFieldMappings[field][param]) 
+                analyticFieldMagElt = stgxml.writeComponent(compElt, 'Analytic'+field+'-Mag',
+                    'FeOperator')
+                for param in self.stgXMLAnalyticFieldMagParams[field]:
+                    stgxml.writeParam(analyticFieldMagElt, param, self.stgXMLAnalyticFieldMagMappings[field][param])
+                errorFieldElt = stgxml.writeComponent(compElt, 'Error'+field,
+                    self.stgXMLErrorFieldType[field])
+                for param in self.stgXMLErrorFieldParams[field]:
+                    stgxml.writeParam(errorFieldElt, param, self.stgXMLErrorFieldMappings[field][param])
+                errorFieldMagElt = stgxml.writeComponent(compElt, 'Error'+field+'-Mag',
+                    'FeOperator')
+                for param in self.stgXMLErrorFieldMagMappings[field]:
+                    stgxml.writeParam(errorFieldMagElt, param, self.stgXMLErrorFieldMagMappings[field][param])
+                    
             # Append the component to component list
-            compElt = stgxml.writeMergeComponent(rootNode, self.stgXMLCompName,
+            fieldTestElt = stgxml.writeComponent(compElt, self.stgXMLCompName,
                 self.stgXMLCompType)
 
             if self.useReference or self.useHighResReference:
-                stgxml.writeParamSet(compElt, {
+                stgxml.writeParamSet(fieldTestElt, {
                     'referenceSolutionFilePath':self.referencePath,
                     'useReferenceSolutionFromFile':self.useReference,
                     'useHighResReferenceSolutionFromFile':self.useHighResReference })
-                stgxml.writeParamList(compElt, self.stgXMLSpecRList,
+                stgxml.writeParamList(fieldTestElt, self.stgXMLSpecRList,
                     self.fields.keys())
             
             # Create main struct list for the "FieldMappings
-            fieldMappingElt = stgxml.writeStructList(compElt, self.stgXMLSpecFList)
+            fieldMappingElt = stgxml.writeStructList(fieldTestElt, self.stgXMLSpecFList)
 
             # For each field, create the actual field mapping
             for field in self.fields:
-                childStructElt = stgxml.writeStruct(fieldMappingElt)
-                stgxml.writeParamSet(childStructElt, {
+                fieldMappingChildElt = stgxml.writeStruct(fieldMappingElt)
+                stgxml.writeParamSet(fieldMappingChildElt, {
                     'NumericField':field,
                     'AnalyticField':'Analytic'+field,
                     'AnalyticMagnitudeField':'Analytic'+field+'-Mag',
                     'ErrorField':'Error'+field,
                     'ErrorMagnitudeField':'Error'+field+'-Mag'})
 
-            stgxml.writeParamSet(compElt, {
+            stgxml.writeParamSet(fieldTestElt, {
                 'IntegrationSwarm':'gaussSwarm',
                 'ConstantMesh':'constantMesh',
                 'testTimestep':self.testTimestep,
@@ -389,7 +476,8 @@ class FieldComparisonList(AnalysisOperation):
         xmlDoc = etree.parse(ffile)
         stgRoot = xmlDoc.getroot()
         # Go and grab necessary info from XML file
-        fieldTestDataEl = stgxml.getStructNode(stgRoot, self.stgXMLSpecName)
+        componentEl = stgxml.getStructNode(stgRoot, self.stgXMLCompListName)
+        fieldTestDataEl = stgxml.getStructNode(componentEl, self.stgXMLCompName)
         fieldTestListEl = stgxml.getListNode(fieldTestDataEl,
             self.stgXMLSpecFList)
 
