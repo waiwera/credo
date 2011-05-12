@@ -298,11 +298,11 @@ class FieldComparisonList(AnalysisOperation):
     stgXMLAnalyticFieldType = {
         'VelocityField':'AnalyticFeVariable',
         'PressureField':'AnalyticFeVariable',
-        'StrainrateField':'AnalyticFeOperator' }
+        'StrainRateField':'AnalyticFeOperator' }
     stgXMLErrorFieldType = {
         'VelocityField':'FeVariable',
         'PressureField':'FeVariable',
-        'StrainrateField':'FeOperator' }
+        'StrainRateField':'FeOperator' }
     stgXMLAnalyticFieldMappings = {
         'VelocityField': {
             'FEMesh':'velocityMesh',
@@ -402,14 +402,11 @@ class FieldComparisonList(AnalysisOperation):
         # If there are no fields to test, no need to write StGermain XML
         if len(self.fields) == 0: return
 
-        if self.fromXML:
-            stgxml.writeParam(pluginDataElt, 'appendToAnalysisFile', 'True',
-                mt="replace")
-        else:
+        if not self.fromXML:
             # Include corresponding xml files for each analytic field
             for field in self.fields:
                 stgxml.writeIncludeLine(rootNode, 
-                    'Underworld/AnalyticFields/Analytic'+field+'.xml')
+                'Underworld/AnalyticFields/Analytic'+field+'.xml')
             compElt = stgxml.writeMergeComponentStruct(rootNode)
             for field in self.fields:
                 analyticFieldElt = stgxml.writeComponent(compElt, 'Analytic'+field,
@@ -428,7 +425,7 @@ class FieldComparisonList(AnalysisOperation):
                     'FeOperator')
                 for param in self.stgXMLErrorFieldMagMappings[field]:
                     stgxml.writeParam(errorFieldMagElt, param, self.stgXMLErrorFieldMagMappings[field][param])
-                    
+                
             # Append the component to component list
             fieldTestElt = stgxml.writeComponent(compElt, self.stgXMLCompName,
                 self.stgXMLCompType)
@@ -440,7 +437,7 @@ class FieldComparisonList(AnalysisOperation):
                     'useHighResReferenceSolutionFromFile':self.useHighResReference })
                 stgxml.writeParamList(fieldTestElt, self.stgXMLSpecRList,
                     self.fields.keys())
-            
+        
             # Create main struct list for the "FieldMappings
             fieldMappingElt = stgxml.writeStructList(fieldTestElt, self.stgXMLSpecFList)
 
@@ -475,22 +472,16 @@ class FieldComparisonList(AnalysisOperation):
         ffile=stgxml.createFlattenedXML(absInputFiles)
         xmlDoc = etree.parse(ffile)
         stgRoot = xmlDoc.getroot()
+
         # Go and grab necessary info from XML file
         componentEl = stgxml.getStructNode(stgRoot, self.stgXMLCompListName)
         fieldTestDataEl = stgxml.getStructNode(componentEl, self.stgXMLCompName)
-        fieldTestListEl = stgxml.getListNode(fieldTestDataEl,
-            self.stgXMLSpecFList)
+        fieldTestListEl = stgxml.getListNode(fieldTestDataEl, self.stgXMLSpecFList)
+        fieldTestStructEls = fieldTestListEl.getchildren()
+        for fieldStruct in fieldTestStructEls:
+            numericField=stgxml.getParamValue(fieldStruct,'NumericField',str)
+            self.fields[numericField]=FieldComparisonOp(numericField)
 
-        fieldTestEls = fieldTestListEl.getchildren()
-        # As per the current spec, the field names are followed by an index 
-        # of analytic solution
-        ii = 0
-        while ii < len(fieldTestEls):
-            fieldName = fieldTestEls[ii].text
-            self.fields[fieldName] = FieldComparisonOp(fieldName)
-            # Skip the index
-            ii+=1
-            ii+=1
         # NB: not reading in all the other specifying stuff currently. Possibly
         # would be useful to do this in future.
         os.remove(ffile)
