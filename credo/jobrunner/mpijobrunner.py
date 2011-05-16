@@ -92,8 +92,8 @@ class MPIJobRunner(JobRunner):
             extraCmdLineOpts)
 
         # Run the run command, sending stdout and stderr to defined log paths
-        print "Running model '%s' via MPI with command '%s' ..."\
-            % (modelRun.name, runCommand)
+        print "Model: \"%s\"" % (modelRun.name)
+        print "Command: \"%s\"" % (runCommand)
 
         # If we're only doing a dry run, return here.
         if dryRun == True:
