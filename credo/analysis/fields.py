@@ -279,74 +279,37 @@ class FieldComparisonList(AnalysisOperation):
     stgXMLSpecFList = 'FieldMappings'
     stgXMLSpecRList = 'ReferenceFields'
 
-    stgXMLAnalyticFieldParams = {
-        'VelocityField':['FEMesh','DofLayout','outputUnits'],
-        'PressureField':['FEMesh','DofLayout','outputUnits'],
-        'StrainRateField':['Operator','Operand','outputUnits'] }
-    stgXMLAnalyticFieldMagParams = {
-        'VelocityField':['Operator','Operand'],
-        'PressureField':['Operator','Operand'],
-        'StrainRateField':['Operator','Operand'] }
-    stgXMLErrorFieldParams = {
-        'VelocityField':['FEMesh','DofLayout','outputUnits'],
-        'PressureField':['FEMesh','DofLayout','outputUnits'],
-        'StrainRateField':['Operator','Operand'] }
-    stgXMLErrorFieldMagParams = {
-        'VelocityField':['Operator','Operand'],
-        'PressureField':['Operator','Operand'],
-        'StrainRateField':['Operator','Operand'] }
-    stgXMLAnalyticFieldType = {
-        'VelocityField':'AnalyticFeVariable',
-        'PressureField':'AnalyticFeVariable',
-        'StrainRateField':'AnalyticFeOperator' }
-    stgXMLErrorFieldType = {
-        'VelocityField':'FeVariable',
-        'PressureField':'FeVariable',
-        'StrainRateField':'FeOperator' }
+    stgXMLAnalyticFieldParams = ['NumericField'] 
+    stgXMLAnalyticFieldMagParams = ['Operator','Operand']
+    stgXMLErrorFieldParams = ['NumericField','ConstantMesh']
+    stgXMLErrorFieldMagParams = ['Operator','Operand']
+    stgXMLAnalyticFieldType = 'AnalyticFeVariable'
+    stgXMLErrorFieldType = 'ErrorFeVariable'
     stgXMLAnalyticFieldMappings = {
-        'VelocityField': {
-            'FEMesh':'velocityMesh',
-            'DofLayout':'AnalyticVelocityDofLayout',
-            'outputUnits':'cm/yr' },
-        'PressureField': {
-            'FEMesh':'pressureMesh',
-            'DofLayout':'AnalyticPressureDofLayout',
-            'outputUnits':'GPa' },
-        'StrainRateField': {
-            'Operator':'Analytic',
-            'Operand':'StrainRateField',
-            'outputUnits':'yr^-1' } }
+        'VelocityField': { 'NumericField':'VelocityField' },
+        'PressureField': { 'NumericField':'PressureField' },
+        'StrainRateField': { 'NumericField':'StrainRateField' }, 
+        'ViscosityField': { 'NumericField':'ViscosityField' }, 
+        'TemperatureField': { 'NumericField':'TemperatureField' } }
     stgXMLAnalyticFieldMagMappings = {
-        'VelocityField': {
-            'Operator':'Magnitude',
-            'Operand':'AnalyticVelocityField' },
-        'PressureField': {
-            'Operator':'Magnitude',
-            'Operand':'AnalyticPressureField' },
-        'StrainRateField': {
-            'Operator':'SymmetricTensor_Invariant',
+        'VelocityField': { 'Operator':'Magnitude', 'Operand':'AnalyticVelocityField' },
+        'PressureField': { 'Operator':'Magnitude', 'Operand':'AnalyticPressureField' },
+        'StrainRateField': { 'Operator':'SymmetricTensor_Invariant',
             'Operand':'AnalyticStrainRateField' } }
     stgXMLErrorFieldMappings = {
         'VelocityField': {
-            'FEMesh':'constantMesh',
-            'DofLayout':'ErrorVelocityDofLayout',
-            'outputUnits':'cm/yr' },
+             'NumericField':'VelocityField',
+             'ConstantMesh':'constantMesh' },
         'PressureField': {
-            'FEMesh':'constantMesh',
-            'DofLayout':'ErrorPressureDofLayout',
-            'outputUnits':'GPa' },
+             'NumericField':'PressureField',
+             'ConstantMesh':'constantMesh' },
         'StrainRateField': {
-            'Operator':'Analytic',
-            'Operand':'yr^-1' } }
+             'NumericField':'StrainRateField',
+             'ConstantMesh':'constantMesh' } }
     stgXMLErrorFieldMagMappings = {
-        'VelocityField': {
-            'Operator':'Magnitude',
-            'Operand':'ErrorVelocityField' },
-        'PressureField': {
-            'Operator':'Magnitude',
-            'Operand':'ErrorPressureField' },
-        'StrainRateField': {
-            'Operator':'SymmetricTensor_Invariant',
+        'VelocityField': { 'Operator':'Magnitude', 'Operand':'ErrorVelocityField' },
+        'PressureField': { 'Operator':'Magnitude', 'Operand':'ErrorPressureField' },
+        'StrainRateField': { 'Operator':'SymmetricTensor_Invariant',
             'Operand':'ErrorStrainRateField' } }
 
     def __init__(self, fieldsList=None):
@@ -401,34 +364,41 @@ class FieldComparisonList(AnalysisOperation):
 
         # If there are no fields to test, no need to write StGermain XML
         if len(self.fields) == 0: return
+        compElt = stgxml.writeMergeComponentStruct(rootNode)
 
-        if not self.fromXML:
-            # Include corresponding xml files for each analytic field
-            for field in self.fields:
-                stgxml.writeIncludeLine(rootNode, 
-                'Underworld/AnalyticFields/Analytic'+field+'.xml')
-            compElt = stgxml.writeMergeComponentStruct(rootNode)
-            for field in self.fields:
-                analyticFieldElt = stgxml.writeComponent(compElt, 'Analytic'+field,
-                    self.stgXMLAnalyticFieldType[field])
-                for param in self.stgXMLAnalyticFieldParams[field]:
-                    stgxml.writeParam(analyticFieldElt, param, self.stgXMLAnalyticFieldMappings[field][param]) 
-                analyticFieldMagElt = stgxml.writeComponent(compElt, 'Analytic'+field+'-Mag',
-                    'FeOperator')
-                for param in self.stgXMLAnalyticFieldMagParams[field]:
-                    stgxml.writeParam(analyticFieldMagElt, param, self.stgXMLAnalyticFieldMagMappings[field][param])
-                errorFieldElt = stgxml.writeComponent(compElt, 'Error'+field,
-                    self.stgXMLErrorFieldType[field])
-                for param in self.stgXMLErrorFieldParams[field]:
-                    stgxml.writeParam(errorFieldElt, param, self.stgXMLErrorFieldMappings[field][param])
-                errorFieldMagElt = stgxml.writeComponent(compElt, 'Error'+field+'-Mag',
-                    'FeOperator')
-                for param in self.stgXMLErrorFieldMagMappings[field]:
-                    stgxml.writeParam(errorFieldMagElt, param, self.stgXMLErrorFieldMagMappings[field][param])
-                
-            # Append the component to component list
+        if self.fromXML:
+            fieldTestElt = stgxml.writeComponent(compElt, self.stgXMLCompName,
+                self.stgXMLCompType, mt="merge")
+            stgxml.writeParam(fieldTestElt, 'appendToAnalysisFile', 'True',
+                mt="replace")
+        else:
             fieldTestElt = stgxml.writeComponent(compElt, self.stgXMLCompName,
                 self.stgXMLCompType)
+            for field in self.fields:
+
+                analyticFieldElt = stgxml.writeComponent(compElt, 'Analytic'+field,
+                    self.stgXMLAnalyticFieldType)
+
+                for param in self.stgXMLAnalyticFieldParams:
+                    stgxml.writeParam(analyticFieldElt, param, self.stgXMLAnalyticFieldMappings[field][param]) 
+
+                analyticFieldMagElt = stgxml.writeComponent(compElt, 'Analytic'+field+'-Mag',
+                    'FeOperator')
+
+                for param in self.stgXMLAnalyticFieldMagParams:
+                    stgxml.writeParam(analyticFieldMagElt, param, self.stgXMLAnalyticFieldMagMappings[field][param])
+
+                errorFieldElt = stgxml.writeComponent(compElt, 'Error'+field,
+                    self.stgXMLErrorFieldType)
+
+                for param in self.stgXMLErrorFieldParams:
+                    stgxml.writeParam(errorFieldElt, param, self.stgXMLErrorFieldMappings[field][param])
+
+                errorFieldMagElt = stgxml.writeComponent(compElt, 'Error'+field+'-Mag',
+                    'FeOperator')
+
+                for param in self.stgXMLErrorFieldMagMappings[field]:
+                    stgxml.writeParam(errorFieldMagElt, param, self.stgXMLErrorFieldMagMappings[field][param])
 
             if self.useReference or self.useHighResReference:
                 stgxml.writeParamSet(fieldTestElt, {

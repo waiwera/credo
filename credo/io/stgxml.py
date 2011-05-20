@@ -523,10 +523,11 @@ def writeMergeComponentStruct(rootNode):
         mergeType="merge") 
     return compList
 
-def writeComponent(parentNode, compName, compType):
+def writeComponent(parentNode, compName, compType, mt=None):
     '''Write XML to merge a given component to the components list - and
      return new comp elt'''
     compElt = etree.SubElement(parentNode, STG_STRUCT_TAG, name=compName)
+    setMergeType(compElt, mt)
     writeParam(compElt, "Type", compType)
     return compElt
 
