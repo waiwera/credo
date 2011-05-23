@@ -295,7 +295,8 @@ class FieldComparisonList(AnalysisOperation):
         'VelocityField': { 'Operator':'Magnitude', 'Operand':'AnalyticVelocityField' },
         'PressureField': { 'Operator':'Magnitude', 'Operand':'AnalyticPressureField' },
         'StrainRateField': { 'Operator':'SymmetricTensor_Invariant',
-            'Operand':'AnalyticStrainRateField' } }
+            'Operand':'AnalyticStrainRateField' }, 
+        'TemperatureField': { 'Operator':'Magnitude', 'Operand':'AnalyticTemperatureField' } }
     stgXMLErrorFieldMappings = {
         'VelocityField': {
              'NumericField':'VelocityField',
@@ -305,12 +306,16 @@ class FieldComparisonList(AnalysisOperation):
              'ConstantMesh':'constantMesh' },
         'StrainRateField': {
              'NumericField':'StrainRateField',
+             'ConstantMesh':'constantMesh' } ,
+        'TemperatureField': {
+             'NumericField':'TemperatureField',
              'ConstantMesh':'constantMesh' } }
     stgXMLErrorFieldMagMappings = {
         'VelocityField': { 'Operator':'Magnitude', 'Operand':'ErrorVelocityField' },
         'PressureField': { 'Operator':'Magnitude', 'Operand':'ErrorPressureField' },
         'StrainRateField': { 'Operator':'SymmetricTensor_Invariant',
-            'Operand':'ErrorStrainRateField' } }
+            'Operand':'ErrorStrainRateField' }, 
+        'TemperatureField': { 'Operator':'Magnitude', 'Operand':'ErrorTemperatureField' } }
 
     def __init__(self, fieldsList=None):
         self.fromXML = False
@@ -395,6 +400,7 @@ class FieldComparisonList(AnalysisOperation):
 
             fieldTestElt = stgxml.writeComponent(compElt, self.stgXMLCompName,
                 self.stgXMLCompType)
+
             if self.useReference or self.useHighResReference:
                 stgxml.writeParamSet(fieldTestElt, {
                     'referenceSolutionFilePath':self.referencePath,
