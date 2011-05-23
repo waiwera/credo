@@ -372,34 +372,29 @@ class FieldComparisonList(AnalysisOperation):
             stgxml.writeParam(fieldTestElt, 'appendToAnalysisFile', 'True',
                 mt="replace")
         else:
-            fieldTestElt = stgxml.writeComponent(compElt, self.stgXMLCompName,
-                self.stgXMLCompType)
             for field in self.fields:
-
                 analyticFieldElt = stgxml.writeComponent(compElt, 'Analytic'+field,
                     self.stgXMLAnalyticFieldType)
-
                 for param in self.stgXMLAnalyticFieldParams:
                     stgxml.writeParam(analyticFieldElt, param, self.stgXMLAnalyticFieldMappings[field][param]) 
 
                 analyticFieldMagElt = stgxml.writeComponent(compElt, 'Analytic'+field+'-Mag',
                     'FeOperator')
-
                 for param in self.stgXMLAnalyticFieldMagParams:
                     stgxml.writeParam(analyticFieldMagElt, param, self.stgXMLAnalyticFieldMagMappings[field][param])
 
                 errorFieldElt = stgxml.writeComponent(compElt, 'Error'+field,
                     self.stgXMLErrorFieldType)
-
                 for param in self.stgXMLErrorFieldParams:
                     stgxml.writeParam(errorFieldElt, param, self.stgXMLErrorFieldMappings[field][param])
 
                 errorFieldMagElt = stgxml.writeComponent(compElt, 'Error'+field+'-Mag',
                     'FeOperator')
-
                 for param in self.stgXMLErrorFieldMagMappings[field]:
                     stgxml.writeParam(errorFieldMagElt, param, self.stgXMLErrorFieldMagMappings[field][param])
 
+            fieldTestElt = stgxml.writeComponent(compElt, self.stgXMLCompName,
+                self.stgXMLCompType)
             if self.useReference or self.useHighResReference:
                 stgxml.writeParamSet(fieldTestElt, {
                     'referenceSolutionFilePath':self.referencePath,
