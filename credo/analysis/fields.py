@@ -384,7 +384,7 @@ class FieldComparisonList(AnalysisOperation):
                     stgxml.writeParam(analyticFieldElt, param, self.stgXMLAnalyticFieldMappings[field][param]) 
 
                 analyticFieldMagElt = stgxml.writeComponent(compElt, 'Analytic'+field+'-Mag',
-                    'FeOperator')
+                    'OperatorFeVariable')
                 for param in self.stgXMLAnalyticFieldMagParams:
                     stgxml.writeParam(analyticFieldMagElt, param, self.stgXMLAnalyticFieldMagMappings[field][param])
 
@@ -394,7 +394,7 @@ class FieldComparisonList(AnalysisOperation):
                     stgxml.writeParam(errorFieldElt, param, self.stgXMLErrorFieldMappings[field][param])
 
                 errorFieldMagElt = stgxml.writeComponent(compElt, 'Error'+field+'-Mag',
-                    'FeOperator')
+                    'OperatorFeVariable')
                 for param in self.stgXMLErrorFieldMagMappings[field]:
                     stgxml.writeParam(errorFieldMagElt, param, self.stgXMLErrorFieldMagMappings[field][param])
 
