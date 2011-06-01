@@ -229,7 +229,7 @@ class SysTestRunner:
         sysTestNode = etree.SubElement(parentNode, XML_RESULT_TAG_TESTCASE)
         sysTestNode.attrib[XML_TESTCASE_ATTR_NAME] = sysTest.testName
         sysTestNode.attrib[XML_TESTCASE_ATTR_TYPE] = sysTest.testType
-        sysTestNode.attrib[XML_TESTCASE_ATTR_STATUS] = sysTestResult.statusStr
+        sysTestNode.attrib[XML_TESTCASE_ATTR_STATUS] = sysTestResult.statusStr or "Error"
         sysTestNode.attrib[XML_TESTCASE_ATTR_RECORDFILE] = sysTestResult.getRecordFile()
 
     def printSuiteResultsByProject(self, testSuites, resultsLists):
