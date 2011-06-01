@@ -293,7 +293,7 @@ class SysTest:
             try:
                 suiteResults = jobRunner.runSuite(self.mSuite, 
                     maxRunTime=self.timeout, writeRecords=True)
-            except credo.jobrunner.ModelRunError, mre:
+            except Exception, mre:
                 suiteResults = None
                 sysTestResult = self.setErrorStatus(str(mre))
             else:
