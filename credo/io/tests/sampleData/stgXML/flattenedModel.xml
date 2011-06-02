@@ -96,52 +96,52 @@
     <element type="struct" name="VelocityMagnitudeField">
       <element type="param" name="Type">OperatorFeVariable</element>
       <element type="param" name="Operator">Magnitude</element>
-      <element type="param" name="FeVariable">VelocityField</element>
+      <element type="param" name="Operand">VelocityField</element>
     </element>
     <element type="struct" name="VelocityGradientsField">
       <element type="param" name="Type">OperatorFeVariable</element>
       <element type="param" name="Operator">Gradient</element>
-      <element type="param" name="FeVariable">VelocityField</element>
+      <element type="param" name="Operand">VelocityField</element>
     </element>
     <element type="struct" name="VelocityGradientsInvariantField">
       <element type="param" name="Type">OperatorFeVariable</element>
       <element type="param" name="Operator">TensorInvariant</element>
-      <element type="param" name="FeVariable">VelocityGradientsField</element>
+      <element type="param" name="Operand">VelocityGradientsField</element>
     </element>
     <element type="struct" name="VelocityXXField">
       <element type="param" name="Type">OperatorFeVariable</element>
       <element type="param" name="Operator">TakeFirstComponent</element>
-      <element type="param" name="FeVariable">VelocityField</element>
+      <element type="param" name="Operand">VelocityField</element>
     </element>
     <element type="struct" name="VelocityYYField">
       <element type="param" name="Type">OperatorFeVariable</element>
       <element type="param" name="Operator">TakeSecondComponent</element>
-      <element type="param" name="FeVariable">VelocityField</element>
+      <element type="param" name="Operand">VelocityField</element>
     </element>
     <element type="struct" name="StrainRateField">
       <element type="param" name="Type">OperatorFeVariable</element>
       <element type="param" name="Operator">TensorSymmetricPart</element>
-      <element type="param" name="FeVariable">VelocityGradientsField</element>
+      <element type="param" name="Operand">VelocityGradientsField</element>
     </element>
     <element type="struct" name="VorticityField">
       <element type="param" name="Type">OperatorFeVariable</element>
       <element type="param" name="Operator">TensorAntisymmetricPart</element>
-      <element type="param" name="FeVariable">VelocityGradientsField</element>
+      <element type="param" name="Operand">VelocityGradientsField</element>
     </element>
     <element type="struct" name="StrainRateInvariantField">
       <element type="param" name="Type">OperatorFeVariable</element>
       <element type="param" name="Operator">SymmetricTensor_Invariant</element>
-      <element type="param" name="FeVariable">StrainRateField</element>
+      <element type="param" name="Operand">StrainRateField</element>
     </element>
     <element type="struct" name="StrainRateXXField">
       <element type="param" name="Type">OperatorFeVariable</element>
       <element type="param" name="Operator">TakeFirstComponent</element>
-      <element type="param" name="FeVariable">StrainRateField</element>
+      <element type="param" name="Operand">StrainRateField</element>
     </element>
     <element type="struct" name="StrainRateYYField">
       <element type="param" name="Type">OperatorFeVariable</element>
       <element type="param" name="Operator">TakeSecondComponent</element>
-      <element type="param" name="FeVariable">StrainRateField</element>
+      <element type="param" name="Operand">StrainRateField</element>
     </element>
     <element type="struct" name="temperature">
       <element type="param" name="Type">MeshVariable</element>
@@ -175,7 +175,7 @@
     <element type="struct" name="TemperatureGradientsField">
       <element type="param" name="Type">OperatorFeVariable</element>
       <element type="param" name="Operator">Gradient</element>
-      <element type="param" name="FeVariable">TemperatureField</element>
+      <element type="param" name="Operand">TemperatureField</element>
     </element>
     <element type="struct" name="cellLayout">
       <element type="param" name="Type">SingleCellLayout</element>
