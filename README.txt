@@ -1,4 +1,4 @@
-CREDO Readme  
+CREDO Readme   
 ============ 
 
 CREDO is a toolkit for running, analysing and benchmarking computational models:
