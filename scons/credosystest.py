@@ -48,7 +48,8 @@ def generate(env, **kw):
     env.PrependENVPath('PYTHONPATH', "%s" % credoPath)
 
     testOutput = "./testLogs"
-    Execute(Mkdir(testOutput))
+    if not os.path.exists(testOutput):
+    	os.makedirs(testOutput)
     env['TEST_OUTPUT_PATH'] = os.path.abspath(testOutput)
 
     env.SetDefault(CHECK_INTEGRATION_TARGET="check-integration")
