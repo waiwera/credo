@@ -373,5 +373,4 @@
   <element type="param" name="experimentName">experiment</element>
   <element type="param" name="checkpointAppendStep">false</element>
   <element type="param" name="interpolateRestart">false</element>
-  <element type="param" name="outputFlattenedXML">true</element>
 </StGermainData>
