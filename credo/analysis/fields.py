@@ -290,13 +290,15 @@ class FieldComparisonList(AnalysisOperation):
         'PressureField': { 'NumericField':'PressureField' },
         'StrainRateField': { 'NumericField':'StrainRateField' }, 
         'ViscosityField': { 'NumericField':'ViscosityField' }, 
-        'TemperatureField': { 'NumericField':'TemperatureField' } }
+        'TemperatureField': { 'NumericField':'TemperatureField' },
+        'MaterialIndexField': { 'NumericField':'MaterialIndexField' } }
     stgXMLAnalyticFieldMagMappings = {
         'VelocityField': { 'Operator':'Magnitude', 'Operand':'AnalyticVelocityField' },
         'PressureField': { 'Operator':'Magnitude', 'Operand':'AnalyticPressureField' },
         'StrainRateField': { 'Operator':'SymmetricTensor_Invariant',
             'Operand':'AnalyticStrainRateField' }, 
-        'TemperatureField': { 'Operator':'Magnitude', 'Operand':'AnalyticTemperatureField' } }
+        'TemperatureField': { 'Operator':'Magnitude', 'Operand':'AnalyticTemperatureField' },
+        'MaterialIndexField': { 'Operator':'Magnitude', 'Operand':'AnalyticMaterialIndexField' } }
     stgXMLErrorFieldMappings = {
         'VelocityField': {
              'NumericField':'VelocityField',
@@ -309,13 +311,17 @@ class FieldComparisonList(AnalysisOperation):
              'ConstantMesh':'constantMesh' } ,
         'TemperatureField': {
              'NumericField':'TemperatureField',
+             'ConstantMesh':'constantMesh' },
+        'MaterialIndexField': {
+             'NumericField':'MaterialIndexField',
              'ConstantMesh':'constantMesh' } }
     stgXMLErrorFieldMagMappings = {
         'VelocityField': { 'Operator':'Magnitude', 'Operand':'ErrorVelocityField' },
         'PressureField': { 'Operator':'Magnitude', 'Operand':'ErrorPressureField' },
         'StrainRateField': { 'Operator':'SymmetricTensor_Invariant',
             'Operand':'ErrorStrainRateField' }, 
-        'TemperatureField': { 'Operator':'Magnitude', 'Operand':'ErrorTemperatureField' } }
+        'TemperatureField': { 'Operator':'Magnitude', 'Operand':'ErrorTemperatureField' },
+        'MaterialIndexField': { 'Operator':'Magnitude', 'Operand':'ErrorMaterialIndexField' } }
 
     def __init__(self, fieldsList=None):
         self.fromXML = False
