@@ -287,6 +287,7 @@ class FieldComparisonList(AnalysisOperation):
     stgXMLErrorFieldType = 'ErrorFeVariable'
     stgXMLAnalyticFieldMappings = {
         'VelocityField': { 'NumericField':'VelocityField' },
+        'VelocityMagnitudeField': { 'NumericField':'VelocityMagnitudeField' },
         'PressureField': { 'NumericField':'PressureField' },
         'StrainRateField': { 'NumericField':'StrainRateField' }, 
         'ViscosityField': { 'NumericField':'ViscosityField' }, 
@@ -294,6 +295,7 @@ class FieldComparisonList(AnalysisOperation):
         'MaterialIndexField': { 'NumericField':'MaterialIndexField' } }
     stgXMLAnalyticFieldMagMappings = {
         'VelocityField': { 'Operator':'Magnitude', 'Operand':'AnalyticVelocityField' },
+        'VelocityMagnitudeField': { 'Operator':'Magnitude', 'Operand':'AnalyticVelocityMagnitudeField' },
         'PressureField': { 'Operator':'Magnitude', 'Operand':'AnalyticPressureField' },
         'StrainRateField': { 'Operator':'SymmetricTensor_Invariant',
             'Operand':'AnalyticStrainRateField' }, 
@@ -302,6 +304,9 @@ class FieldComparisonList(AnalysisOperation):
     stgXMLErrorFieldMappings = {
         'VelocityField': {
              'NumericField':'VelocityField',
+             'ConstantMesh':'constantMesh' },
+        'VelocityMagnitudeField': {
+             'NumericField':'VelocityMagnitudeField',
              'ConstantMesh':'constantMesh' },
         'PressureField': {
              'NumericField':'PressureField',
@@ -317,6 +322,7 @@ class FieldComparisonList(AnalysisOperation):
              'ConstantMesh':'constantMesh' } }
     stgXMLErrorFieldMagMappings = {
         'VelocityField': { 'Operator':'Magnitude', 'Operand':'ErrorVelocityField' },
+        'VelocityMagnitudeField': { 'Operator':'Magnitude', 'Operand':'ErrorVelocityMagnitudeField' },
         'PressureField': { 'Operator':'Magnitude', 'Operand':'ErrorPressureField' },
         'StrainRateField': { 'Operator':'SymmetricTensor_Invariant',
             'Operand':'ErrorStrainRateField' }, 
