@@ -103,15 +103,23 @@ class ImageCompTC(SingleRunTestComponent):
         statusMsg = ""
         overallResult = True
         refImageFname = os.path.join(self.refPath, self.imageFilename)
-        #print refImageFname
-        assert os.path.exists(refImageFname)
+        if not os.path.exists(refImageFname):
+            statusMsg += "Reference image '%s' not found!\n" % refImageFname
+            print statusMsg
+            self._setStatus(False, statusMsg)
+            return False
+
         if self.genPath is not None:
             genPath = self.genPath
         else:
             genPath = mResult.outputPath
         genImageFname = os.path.join(genPath, self.imageFilename)
-        #print genImageFname
-        assert os.path.exists(genImageFname)
+        if not os.path.exists(genImageFname):
+            statusMsg += "Generated image '%s' not found!\n" % genImageFname
+            print statusMsg
+            self._setStatus(False, statusMsg)
+            return False
+
         self.imageErrors = imageAnalysis.compare(refImageFname, genImageFname)
         self.imageResults = []
         for diff, tol in zip(self.imageErrors, self.tol):
