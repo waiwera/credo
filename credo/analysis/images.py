@@ -28,8 +28,12 @@ You will need the Python Imaging Library (PIL) installed to use."""
 import sys
 from math import sqrt
 from math import fabs
-import Image
-import ImageChops
+try:
+    import Image
+    import ImageChops
+except ImportError:
+    from PIL import Image
+    from PIL import ImageChops
 
 def normalise(array, maxval):
    norm = [float(x) / maxval for x in array]
