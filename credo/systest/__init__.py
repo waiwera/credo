@@ -1,8 +1,8 @@
 ##  Copyright (C), 2010, Monash University
 ##  Copyright (C), 2010, Victorian Partnership for Advanced Computing (VPAC)
-##  
+##
 ##  This file is part of the CREDO library.
-##  Developed as part of the Simulation, Analysis, Modelling program of 
+##  Developed as part of the Simulation, Analysis, Modelling program of
 ##  AuScope Limited, and funded by the Australian Federal Government's
 ##  National Collaborative Research Infrastructure Strategy (NCRIS) program.
 ##
@@ -22,7 +22,7 @@
 ##  MA  02110-1301  USA
 
 """
-This module contains the System Testing functionality of CREDO. 
+This module contains the System Testing functionality of CREDO.
 
 Working at a higher-level than the :mod:`credo.modelrun` and
 :mod:`credo.analysis` modules, it is able to use their
@@ -33,7 +33,7 @@ From a user perspective, doing an::
 
   from credo.systest import *
 
-Should allow key functionality to be accessed: e.g. the 
+Should allow key functionality to be accessed: e.g. the
 :class:`credo.systest.systestrunner.SysTestRunner` class, and standard system
 tests such as Analytic, Restart and Reference.
 
@@ -47,8 +47,8 @@ see :ref:`credo-examples-systesting`.
    into credo.systest was removed, and we only import the 'public interface'
    of implementations designed to be used from the API in testing.
 
-   As a result, if you want to define new :class:`.api.SysTest` or 
-   :class:`.api.TestComponent` implementations, you should `import 
+   As a result, if you want to define new :class:`.api.SysTest` or
+   :class:`.api.TestComponent` implementations, you should `import
    credo.systest.api` to access the base classes of these.
 """
 

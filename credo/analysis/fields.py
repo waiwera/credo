@@ -1,8 +1,8 @@
 ##  Copyright (C), 2010, Monash University
 ##  Copyright (C), 2010, Victorian Partnership for Advanced Computing (VPAC)
-##  
+##
 ##  This file is part of the CREDO library.
-##  Developed as part of the Simulation, Analysis, Modelling program of 
+##  Developed as part of the Simulation, Analysis, Modelling program of
 ##  AuScope Limited, and funded by the Australian Federal Government's
 ##  National Collaborative Research Infrastructure Strategy (NCRIS) program.
 ##
@@ -53,9 +53,9 @@ class FieldComparisonOp:
     and requires using a :class:`FieldComparisonList` to run a group of
     FieldComparisons at once (this is as a result of the structure of the
     FieldTest component).
-    
+
     .. attribute:: name
-    
+
        name of the field that is being compared (to an analytic or ref soln).
     '''
 
@@ -69,7 +69,7 @@ class FieldComparisonOp:
 
     def getResult(self, modelResult):
         '''Gets the result of the operator on the given fields (as a
-        :class:`.FieldComparisonResult`), given a 
+        :class:`.FieldComparisonResult`), given a
         modelResult (:class:`~credo.modelresult.ModelResult`) which
         refers to a directory containing field comparisons
         (i.e. cvg files, see :mod:`credo.io.stgcvg`).
@@ -77,7 +77,7 @@ class FieldComparisonOp:
         cvgIndex = stgcvg.genConvergenceFileIndex(modelResult.outputPath)
         try:
             cvgFileInfo = cvgIndex[self.name]
-        except KeyError:     
+        except KeyError:
             # TODO: create a new exception type here?
             raise KeyError("Field '%s' not found in the known list of"\
                 " convergence results (%s) for model run '%s'"\
@@ -91,12 +91,12 @@ class FieldComparisonOp:
 class FieldComparisonResult:
     '''Simple class for storing CREDO FieldComparisonOp Results, so they can be
     analysed and saved.
-    
+
     By default only contains the difference between the field DOFs at the final
     timestep - but recording a reference to the
     :class:`credo.io.stgcvg.CvgFileInfo` for this field allows more complex
     analysis.
-    
+
     .. attribute:: fieldName
 
        Name of the field that has been compared.
@@ -111,7 +111,7 @@ class FieldComparisonResult:
        A :class:`credo.io.stgcvg.CvgFileInfo` allowing detailed access to the CVG
        result for this field. Required for plotting etc. Is optional, needs
        to be recorded after the class has been constructed.
-    
+
     .. attribute:: plottedCvgFilename
 
        If the :meth:`.plotOverTime` method has been called, this attribute
@@ -132,10 +132,10 @@ class FieldComparisonResult:
 
         for errorStr in dofErrors:
             self.dofErrors.append(float(errorStr))
-        
+
         self.cvgFileInfo = None
         self.plottedCvgFilename = None
-    
+
     def writeInfoXML(self, fieldResultsNode):
         '''Writes information about a FieldComparisonResult into an existing,
          open XML doc node'''
@@ -147,7 +147,7 @@ class FieldComparisonResult:
             dr = etree.SubElement(fr, 'dofResult')
             dr.attrib['dof'] = str(dofIndex)
             dr.attrib['error'] = str(self.dofErrors[dofIndex])
-    
+
     def plotOverTime(self, save=True, show=False, dofIndex=None, path="."):
         """Plot the result of a FieldComparison over all timesteps of a model.
         Requires the cvgFileInfo paramater to have been set to give access to
@@ -156,7 +156,7 @@ class FieldComparisonResult:
         .. Note::
            Requires you to have the
            `Matplotlib <http://matplotlib.sourceforge.net/>`_ library installed.
-        
+
         'show', 'save' and 'path' parameters are the same as for
         :meth:`credo.io.stgfreq.FreqOutput.plotOverTime`. The optional 'dofIndex'
         parameter allows you to only plot a particular DOF of the field,
@@ -168,8 +168,8 @@ class FieldComparisonResult:
         except ImportError:
             print "Error, to use CREDO built-in plot functions, please "\
                 " install the matplotlib python library."
-            return    
-        
+            return
+
         assert self.cvgFileInfo
 
         dofErrorsArray = stgcvg.getDofErrors_ByDof(self.cvgFileInfo)
@@ -180,9 +180,9 @@ class FieldComparisonResult:
             dofRange = [0]
             dofIndices = [dofIndex]
         else:
-            dofRange = range(numDofs)    
+            dofRange = range(numDofs)
             dofIndices = range(numDofs)
-            
+
         plt.subplots_adjust(wspace=0.4)
 
         for dofI in dofRange:
@@ -215,14 +215,14 @@ class FieldComparisonResult:
         tolerance, at the final timestep."""
         for dofError in self.dofErrors:
             if dofError > tol: return False
-        return True    
+        return True
 
 
 class FieldComparisonList(AnalysisOperation):
     '''Class for maintaining and managing a list of field comparisons
     (managed as a list of :class:`FieldComparisonOp` objects),
     including IO from StGermain XML files.
-    
+
     Currently maps to the "FieldTest" component's functionality in StgFEM.
 
     .. Note:: Currently the whole _list_ of Field comparisons is a single
@@ -230,12 +230,12 @@ class FieldComparisonList(AnalysisOperation):
        because this is the design of the FieldTest component
        in StgFEM. In future we may look at modularising this functionality
        further so that single comparisons can be managed as operators.
-    
+
     .. attribute:: fields
 
        A dictionary mapping field names that need to be compared, to
        :class:`.FieldComparisonOp` to perform the comparison.
-       
+
     .. attribute:: fromXML
 
        If True, means the list of fields to compare (ie :attr:`.fields`)
@@ -261,13 +261,13 @@ class FieldComparisonList(AnalysisOperation):
 
     .. attribute:: referencePath
 
-       (Relative or absolute) path to the reference solutions for the 
+       (Relative or absolute) path to the reference solutions for the
        specified fields.
 
     .. attribute:: testTimestep
 
        Integer, the timestep of the model that the comparison will occur at.
-       If 0, means the final timestep. Based on the capability of the 
+       If 0, means the final timestep. Based on the capability of the
        StGermain FieldTest component.
     '''
 
@@ -279,7 +279,7 @@ class FieldComparisonList(AnalysisOperation):
     stgXMLSpecFList = 'FieldMappings'
     stgXMLSpecRList = 'ReferenceFields'
 
-    stgXMLAnalyticFieldParams = ['NumericField'] 
+    stgXMLAnalyticFieldParams = ['NumericField']
     stgXMLAnalyticFieldMagParams = ['Operator','Operand']
     stgXMLErrorFieldParams = ['NumericField','ConstantMesh']
     stgXMLErrorFieldMagParams = ['Operator','Operand']
@@ -289,8 +289,8 @@ class FieldComparisonList(AnalysisOperation):
         'VelocityField': { 'NumericField':'VelocityField' },
         'VelocityMagnitudeField': { 'NumericField':'VelocityMagnitudeField' },
         'PressureField': { 'NumericField':'PressureField' },
-        'StrainRateField': { 'NumericField':'StrainRateField' }, 
-        'ViscosityField': { 'NumericField':'ViscosityField' }, 
+        'StrainRateField': { 'NumericField':'StrainRateField' },
+        'ViscosityField': { 'NumericField':'ViscosityField' },
         'TemperatureField': { 'NumericField':'TemperatureField' },
         'MaterialIndexField': { 'NumericField':'MaterialIndexField' } }
     stgXMLAnalyticFieldMagMappings = {
@@ -298,7 +298,7 @@ class FieldComparisonList(AnalysisOperation):
         'VelocityMagnitudeField': { 'Operator':'Magnitude', 'Operand':'AnalyticVelocityMagnitudeField' },
         'PressureField': { 'Operator':'Magnitude', 'Operand':'AnalyticPressureField' },
         'StrainRateField': { 'Operator':'SymmetricTensor_Invariant',
-            'Operand':'AnalyticStrainRateField' }, 
+            'Operand':'AnalyticStrainRateField' },
         'TemperatureField': { 'Operator':'Magnitude', 'Operand':'AnalyticTemperatureField' },
         'MaterialIndexField': { 'Operator':'Magnitude', 'Operand':'AnalyticMaterialIndexField' } }
     stgXMLErrorFieldMappings = {
@@ -325,7 +325,7 @@ class FieldComparisonList(AnalysisOperation):
         'VelocityMagnitudeField': { 'Operator':'Magnitude', 'Operand':'ErrorVelocityMagnitudeField' },
         'PressureField': { 'Operator':'Magnitude', 'Operand':'ErrorPressureField' },
         'StrainRateField': { 'Operator':'SymmetricTensor_Invariant',
-            'Operand':'ErrorStrainRateField' }, 
+            'Operand':'ErrorStrainRateField' },
         'TemperatureField': { 'Operator':'Magnitude', 'Operand':'ErrorTemperatureField' },
         'MaterialIndexField': { 'Operator':'Magnitude', 'Operand':'ErrorMaterialIndexField' } }
 
@@ -339,7 +339,7 @@ class FieldComparisonList(AnalysisOperation):
         self.testTimestep = 0
 
     def getCmpSrcString(self):
-        """Returns an appropriate string to document the comparison source 
+        """Returns an appropriate string to document the comparison source
         of the fields being compared - i.e. either reference or analytic."""
         if self.useReference == True:
             return "reference"
@@ -350,15 +350,15 @@ class FieldComparisonList(AnalysisOperation):
 
     def add(self, fieldComparisonOp):
         """Add another :class:`FieldComparisonOp` to the list to compare."""
-        self.fields[fieldComparisonOp.name] = fieldComparisonOp    
+        self.fields[fieldComparisonOp.name] = fieldComparisonOp
 
     def postRun(self, modelRun, runPath):
         """Implements :meth:`AnalysisOperation.postRun`. In this case, moves
         all CVG files created to output path."""
-        stgpath.moveAllToTargetPath(runPath, 
+        stgpath.moveAllToTargetPath(runPath,
             os.path.join(modelRun.basePath, modelRun.outputPath),
             stgcvg.CVG_EXT)
-    
+
     def writeInfoXML(self, parentNode):
         '''Writes information about this class into an existing, open XML
          doc node, in a child element.'''
@@ -393,7 +393,7 @@ class FieldComparisonList(AnalysisOperation):
                 analyticFieldElt = stgxml.writeComponent(compElt, 'Analytic'+field,
                     self.stgXMLAnalyticFieldType)
                 for param in self.stgXMLAnalyticFieldParams:
-                    stgxml.writeParam(analyticFieldElt, param, self.stgXMLAnalyticFieldMappings[field][param]) 
+                    stgxml.writeParam(analyticFieldElt, param, self.stgXMLAnalyticFieldMappings[field][param])
 
                 analyticFieldMagElt = stgxml.writeComponent(compElt, 'Analytic'+field+'-Mag',
                     'OperatorFeVariable')
@@ -420,7 +420,7 @@ class FieldComparisonList(AnalysisOperation):
                     'useHighResReferenceSolutionFromFile':self.useHighResReference })
                 stgxml.writeParamList(fieldTestElt, self.stgXMLSpecRList,
                     self.fields.keys())
-        
+
             # Create main struct list for the "FieldMappings
             fieldMappingElt = stgxml.writeStructList(fieldTestElt, self.stgXMLSpecFList)
 
@@ -442,10 +442,10 @@ class FieldComparisonList(AnalysisOperation):
                 'normaliseByAnalyticSolution':'True',
                 'context':'context',
                 'appendToAnalysisFile':'True'})
-    
+
     def readFromStgXML(self, inputFilesList, basePath):
-        '''Read in the list of fields that have already been specified to 
-         be tested from a set of StGermain input files. Useful when e.g. 
+        '''Read in the list of fields that have already been specified to
+         be tested from a set of StGermain input files. Useful when e.g.
          working with an Analytic Solution plugin.'''
         self.fromXML = True
 
@@ -502,10 +502,10 @@ def getFieldScaleCvgData_SingleCvgFile(cvgFilePath):
     info in the given path.
     Thus is a utility function for generating necessary fieldErrorData for a
     multi-res convergence analysis.
-    
+
     .. Note::
 
-       This assumes all cvg info is stored in the same 
+       This assumes all cvg info is stored in the same
        convergence file (the default approach of the legacy SYS tests)
     '''
     cvgIndex = stgcvg.genConvergenceFileIndex(cvgFilePath)
@@ -521,7 +521,7 @@ def getFieldScaleCvgData_SingleCvgFile(cvgFilePath):
 def calcFieldCvgWithScale(fieldName, lenScales, dofErrors):
     '''Gets the convergence and correlation of a field with resolution
     (taking the log10 of both).
-    
+
     lenScales argument should simply be an array of length scales for the
     different runs.
     dofErrors must be a list, for each dof of the field, of the error
@@ -529,7 +529,7 @@ def calcFieldCvgWithScale(fieldName, lenScales, dofErrors):
 
     returns a list of tuples, one per dof, where each tuple contains:
     (convergence rate, pearson correlation) over the set of scales.
-    ''' 
+    '''
 
     #print "Testing convergence for field '%s'" % fieldName
     #print "Length scales are %s" % lenScales
@@ -541,5 +541,5 @@ def calcFieldCvgWithScale(fieldName, lenScales, dofErrors):
         cvgRate, intercept, rSq = stats.linreg(scaleLogs, errLogs)
         pearsonCorr = math.sqrt(rSq)
         convResults.append((cvgRate, pearsonCorr))
-    return convResults        
+    return convResults
 

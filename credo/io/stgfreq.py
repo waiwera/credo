@@ -1,8 +1,8 @@
 ##  Copyright (C), 2010, Monash University
 ##  Copyright (C), 2010, Victorian Partnership for Advanced Computing (VPAC)
-##  
+##
 ##  This file is part of the CREDO library.
-##  Developed as part of the Simulation, Analysis, Modelling program of 
+##  Developed as part of the Simulation, Analysis, Modelling program of
 ##  AuScope Limited, and funded by the Australian Federal Government's
 ##  National Collaborative Research Infrastructure Strategy (NCRIS) program.
 ##
@@ -36,16 +36,16 @@ FREQ_HEADER_LINESTART='#'
 class FreqOutput:
     '''A simple class to store information about a frequent output file,
     and make it accessible. Once passed a filename of a FrequentOutput file
-    in it's constructor, has methods to get information and values from 
+    in it's constructor, has methods to get information and values from
     that named file.
-    
-    The FrequentOutput file can be either "cached" into memory using 
+
+    The FrequentOutput file can be either "cached" into memory using
     the :meth:`populateFromFile()` function so subsequent access
     is quick, or else
     calling an access function directly such as
     :meth:`getRecordDictAtStep()` will
     automatically populate the data cache for you behind the scenes.
-    
+
     Key attributes:
 
     .. attribute:: populated
@@ -91,7 +91,7 @@ class FreqOutput:
         self.getAllRecords()
         self.getTimestepMap()
         self.populated = True
-    
+
     def getHeaders(self):
         """Read the headers from the associated FrequentOutput file, populate
         attr:`headerColMap`, and return the names of the headers
@@ -104,7 +104,7 @@ class FreqOutput:
             headers = firstLine.split()
             self.headers = headers
             for hI, header in enumerate(headers):
-                self.headerColMap[header] = hI    
+                self.headerColMap[header] = hI
         return self.headers
 
     def getTimestepMap(self):
@@ -129,7 +129,7 @@ class FreqOutput:
                 tstep = int(line.split()[0])
                 self.tStepMap[tstep] = recordNum
                 recordNum+=1
-        return self.tStepMap    
+        return self.tStepMap
 
     def getAllRecords(self):
         """Get all records of timestep information from the associated
@@ -139,9 +139,9 @@ class FreqOutput:
         of a list of floats of the records at that timestep. Thus likely
         needs to be used in conjunction with other functions to access the
         data itself by header name, ie the self.headerColMap.
-        
+
         Saves this as self.records, and returns a reference to it.
-        (Also populates the self._finalTimeStep attribute.)""" 
+        (Also populates the self._finalTimeStep attribute.)"""
         if not self.populated:
             self.file.seek(0)
             self.headers = self.getHeaders()
@@ -174,8 +174,8 @@ class FreqOutput:
         recordDict = {}
         for header, col in self.headerColMap.iteritems():
             recordDict[header] = record[col]
-        return recordDict    
-    
+        return recordDict
+
     def getRecordDictAtFinalStep(self):
         """Utility wrapper function to get a dictionary of records in
         the FreqOutput at the final timestep - see :attr:`.getRecordDictAtStep`
@@ -194,9 +194,9 @@ class FreqOutput:
         timestep 'tstep'."""
 
         if not self.populated:
-            # We will take the approach that you should always populate the 
+            # We will take the approach that you should always populate the
             # info for fast access. If memory were really a concern, could use
-            # algorithms and/or read file line-by-line until (if) correct 
+            # algorithms and/or read file line-by-line until (if) correct
             # timestep's data found.
             self.populateFromFile()
         colNum = self.getColNum(headerName)
@@ -216,7 +216,7 @@ class FreqOutput:
             raise ValueError("Error, timestep at which to get value, %d,"
                 " doesn't exist in this Frequent output file (valid range is"
                 " (%d-%d)." % (tstep, min(tSteps), max(tSteps)))
-        return recordNum        
+        return recordNum
 
     def getRecordAtStep(self, tstep):
         """Gets the record (in raw form, see getAllRecords) at a given
@@ -236,7 +236,7 @@ class FreqOutput:
             raise ValueError("Error, header to get value of, '%s', doesn't"
                 " exist in this Frequent output file. Valid headers are"
                 " %s" % (headerName, self.headerColMap.keys()))
-        return colNum        
+        return colNum
 
     def getValuesArray(self, headerName, range="all"):
         """Returns an array of all values over time for the property defined by
@@ -249,15 +249,15 @@ class FreqOutput:
         """
         if not self.populated: self.populateFromFile()
         # TODO: Check range input is ok. I need to find out the right way to
-        # handling unusual values for these 
+        # handling unusual values for these
         recordsSet = self.records
         colNum = self.getColNum(headerName)
         valArray = []
         for record in recordsSet:
             valArray.append(record[colNum])
-        return valArray    
+        return valArray
 
-    def getTimeStepsArray(self, range="all"):    
+    def getTimeStepsArray(self, range="all"):
         """Returns an array of all timestep numbers
         that have records saved in the associated FrequentOutput file.
 
@@ -265,10 +265,10 @@ class FreqOutput:
 
            the "range" parameter is not yet operational and should be
            ignored for now.
-        """   
+        """
         if not self.populated: self.populateFromFile()
         # TODO: Check range input is ok. I need to find out the right way to
-        # handling unusual values for these 
+        # handling unusual values for these
         colNum = self.getColNum('Timestep')
         tSteps = [record[colNum] for record in self.records]
         return tSteps
@@ -277,7 +277,7 @@ class FreqOutput:
         '''get the Minimum of the records for a given header, including
         the timestep at which that minimum occured.'''
         return self.getReductionOp(headerName, minOp)
-        
+
     def getMax(self, headerName):
         '''get the Maximum of the records for a given header, including
         the timestep at which that minimum occured.'''
@@ -285,9 +285,9 @@ class FreqOutput:
 
     def getMean(self, headerName):
         '''gets the Mean of the records for a given header.
-        
+
         .. note::
-        
+
            this is provided for convenience. If user wants to do more complex
            statistical operations, use the getValuesArray, then process this
            directly using stats functions/libraries.'''
@@ -310,13 +310,13 @@ class FreqOutput:
             max, maxStep = self.getMax(header)
             print "\t%s: min %f (at step %d), max %f (at step %d)"\
                 % (header, min, minStep, max, maxStep)
-    
+
     def getReductionOp(self, headerName, reduceFunc, **kwargs):
         '''Utility function for doing comparison operations on the records
         list, e.g. the max or minimum - where reduceFunc can operate on the
         whole records list at once, and support the "key" syntax to pick
         correct field out of tuples for comparison.
-        
+
         .. note:: This has been written to allow both standard Python
            'reduction ops' like `max()` and `min()`, and also more complex
            operators defined in this module, or by the user.
@@ -347,7 +347,7 @@ class FreqOutput:
     def plotOverTime(self, headerName, depName='Timestep', show=False, save=True, path="."):
         """Plot the value of property given by 'headerName', against parameter
         'depName', which defaults to 'Timestep'.
-        
+
         .. note::
 
             Use of this function requires the Python library matplotlib to be
@@ -365,8 +365,8 @@ class FreqOutput:
         except ImportError:
             print "Error, to use CREDO built-in plot functions, please "\
                 " install the matplotlib python library."
-            return    
-        
+            return
+
         if not self.populated: self.populateFromFile()
         valuesArray = self.getValuesArray(headerName)
         depArray = self.getValuesArray(depName)
@@ -393,13 +393,13 @@ def minOp(inList, key, stgFreq):
     return min(inList, key=key)
 
 def firstOp(inList, key, stgFreq):
-    """A utility function designed to pass to 
+    """A utility function designed to pass to
     attr:`~.FreqOutput.getReductionOp` for getting the first value from a
     frequent output list."""
     return inList[0]
 
 def lastOp(inList, key, stgFreq):
-    """A utility function designed to pass to 
+    """A utility function designed to pass to
     attr:`~.FreqOutput.getReductionOp` for getting the last value from a
     frequent output list."""
     return inList[-1]
@@ -412,7 +412,7 @@ def closestToStep(inList, key, stgFreq, targStep):
     assert stgFreq != None
     return closestToVal(inList, key, stgFreq, targVal=targStep,
         targObsName='Timestep')
-    
+
 def closestToSimTime(inList, key, stgFreq, targTime):
     """Utilitiy function for use with attr:`~.FreqOutput.getReductionOp`:
     Gets the value at a given timestep.

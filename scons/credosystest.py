@@ -1,8 +1,8 @@
 ##  Copyright (C), 2010, Monash University
 ##  Copyright (C), 2010, Victorian Partnership for Advanced Computing (VPAC)
-##  
+##
 ##  This file is part of the CREDO library.
-##  Developed as part of the Simulation, Analysis, Modelling program of 
+##  Developed as part of the Simulation, Analysis, Modelling program of
 ##  AuScope Limited, and funded by the Australian Federal Government's
 ##  National Collaborative Research Infrastructure Strategy (NCRIS) program.
 ##
@@ -92,11 +92,11 @@ SCons-Check Options:
         newPath = relPath.rstrip(".py")
         modName = newPath.replace(os.sep, '.')
         return modName
-    
+
     def addStGermainTarget(env, target, source):
         """Adds StGermain executable as a dependency - useful for an
-        emitter for test run suites.""" 
-        env.Depends(target[0], 
+        emitter for test run suites."""
+        env.Depends(target[0],
             File(os.path.join(env['build_dir'], 'bin/StGermain')))
         # TODO: would be kind of good to allow dependency to be specified
         #  on all other libraries and plugins:- that probably involves
@@ -109,10 +109,10 @@ SCons-Check Options:
         """SCons builder function for running suites. The `source`
         argument must be a list of test scripts relative to
         the base of a project.
-        
+
         .. note:: currently `source` argument is a list of suite file names,
            as SCons File objects. Ideally would like some smarter target
-           checking, perhaps if these were .pyc files that depended on 
+           checking, perhaps if these were .pyc files that depended on
            both the .py file, and the relevant project executable."""
         # On some Python/Scons implementations, need to re-add these things to the path.
         stgBaseDir = os.path.abspath('.')
@@ -151,12 +151,12 @@ SCons-Check Options:
         suiteList.append(os.path.join(projectName, suiteFilename))
         # Or append the target? suiteList.append(cvgTest)
         # Alias for running just this particular test
-        testResultDir = os.path.join(env['TEST_OUTPUT_PATH'], 
+        testResultDir = os.path.join(env['TEST_OUTPUT_PATH'],
             testImportName)
         # TODO: perhaps here is where to update the CURR_PROJECT as a
         # Dependency of the suite, so it builds Underworld first
         singleTestRunner = env.RunSuites(Dir(testResultDir), suiteFilename)
-        env.Alias(testImportName, singleTestRunner) 
+        env.Alias(testImportName, singleTestRunner)
         env.AlwaysBuild(singleTestRunner)
         # TODO: It would also be cool to update a list of suites based
         #  on the project, e.g. build a "check-Underworld" target to
@@ -216,4 +216,4 @@ SCons-Check Options:
 def exists(env):
     # Should probably have this search for the credo
     # libraries/source or something.
-    return True        
+    return True

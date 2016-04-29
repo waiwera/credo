@@ -1,8 +1,8 @@
 ##  Copyright (C), 2010, Monash University
 ##  Copyright (C), 2010, Victorian Partnership for Advanced Computing (VPAC)
-##  
+##
 ##  This file is part of the CREDO library.
-##  Developed as part of the Simulation, Analysis, Modelling program of 
+##  Developed as part of the Simulation, Analysis, Modelling program of
 ##  AuScope Limited, and funded by the Australian Federal Government's
 ##  National Collaborative Research Infrastructure Strategy (NCRIS) program.
 ##
@@ -41,23 +41,23 @@ class FieldWithinTolTC(SingleRunTestComponent):
     the constructor arguments of interest are:
 
     * useReference: determines whether the fields are compared against
-      a reference, or analytic solution. See 
+      a reference, or analytic solution. See
       :meth:`credo.analysis.fields.FieldComparisonList.useReference`
     * useHighResReference: determines whether the fields are compared against
-      a high resolution reference field, or analytic solution. See 
+      a high resolution reference field, or analytic solution. See
       :meth:`credo.analysis.fields.FieldComparisonList.useHighResReference`
-    * referencePath: See   
+    * referencePath: See
       :meth:`credo.analysis.fields.FieldComparisonList.referencePath`
-    * testTimestep: See   
+    * testTimestep: See
       :meth:`credo.analysis.fields.FieldComparisonList.testTimestep`
 
-    .. attribute:: fieldsToTest 
+    .. attribute:: fieldsToTest
 
        A list of strings containing the names of fields that should be tested-
        i.e. those that will be compared with an expected solution. If left
-       as `None` in constructor, this means the fieldsToTest list will be 
+       as `None` in constructor, this means the fieldsToTest list will be
        expected to be defined in the StGermain model XML files themselves.
-    
+
     .. attribute:: defFieldTol
 
        The default allowed tolerance for global normalised error when comparing
@@ -86,7 +86,7 @@ class FieldWithinTolTC(SingleRunTestComponent):
        Initially {}, after the test is completed will store a dictionary
        mapping each field name to a float representing the global normalised
        error in the comparison.
-    """  
+    """
 
     def __init__(self, fieldsToTest=None,
             defFieldTol=0.01,
@@ -194,4 +194,4 @@ class FieldWithinTolTC(SingleRunTestComponent):
                 deNode = etree.SubElement(desNode, "dofError")
                 deNode.attrib["num"] = str(dofI)
                 deNode.attrib["error"] = "%6e" % dofError
-                deNode.attrib["withinTol"] = str(dofError <= fieldTol) 
+                deNode.attrib["withinTol"] = str(dofError <= fieldTol)

@@ -1,8 +1,8 @@
 ##  Copyright (C), 2010, Monash University
 ##  Copyright (C), 2010, Victorian Partnership for Advanced Computing (VPAC)
-##  
+##
 ##  This file is part of the CREDO library.
-##  Developed as part of the Simulation, Analysis, Modelling program of 
+##  Developed as part of the Simulation, Analysis, Modelling program of
 ##  AuScope Limited, and funded by the Australian Federal Government's
 ##  National Collaborative Research Infrastructure Strategy (NCRIS) program.
 ##
@@ -56,27 +56,27 @@ class SysTestNamesHandling(unittest.TestCase):
         testNameSingle = getStdTestName("AnalyticTest", ["Multigrid.xml"],
             nproc=1, paramOverrides=None, solverOpts=None, nameSuffix=None)
         self.assertEqual(testNameSingle,
-            "Multigrid-analyticTest-np1")    
+            "Multigrid-analyticTest-np1")
         testNameSubdir = getStdTestName("AnalyticTest", ["input/Multigrid.xml"],
             nproc=1, paramOverrides=None, solverOpts=None, nameSuffix=None)
         self.assertEqual(testNameSubdir,
-            "Multigrid-analyticTest-np1")    
-        testNameMulti = getStdTestName("AnalyticTest", 
+            "Multigrid-analyticTest-np1")
+        testNameMulti = getStdTestName("AnalyticTest",
             ["Multigrid.xml", "Blah.xml"],
             nproc=1, paramOverrides=None, solverOpts=None, nameSuffix=None)
         self.assertEqual(testNameMulti, testNameSingle)
-        testNameOvers = getStdTestName("AnalyticTest", 
+        testNameOvers = getStdTestName("AnalyticTest",
             ["Multigrid.xml"],
             nproc=1, paramOverrides={"dim":3,"components.rheo.pert":45.6},
             solverOpts=None, nameSuffix=None)
         self.assertEqual(testNameOvers,
-            "Multigrid-analyticTest-np1-pert-45_6-dim-3")    
-        testNameSuffix = getStdTestName("AnalyticTest", 
+            "Multigrid-analyticTest-np1-pert-45_6-dim-3")
+        testNameSuffix = getStdTestName("AnalyticTest",
             ["Multigrid.xml"],
             nproc=1, paramOverrides={"dim":3,"components.rheo.pert":45.6},
             solverOpts=None, nameSuffix="hipert")
         self.assertEqual(testNameSuffix,
-            "Multigrid-analyticTest-np1-hipert")    
+            "Multigrid-analyticTest-np1-hipert")
 
 def suite():
     testResultSuite = unittest.TestSuite()

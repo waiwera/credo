@@ -16,7 +16,7 @@ v1 = msuite.StgXMLVariant("components.surfShape.minX", l1)
 v2 = msuite.StgXMLVariant("gravity", l2)
 varDict = {"surfShape":v1, "gravity":v2}
 
-def testVarGenFuncs(iterGen):    
+def testVarGenFuncs(iterGen):
     valuesIter = msuite.getParamValuesIter(varDict, iterGen)
     print "Value tuples:\n%s" % list(valuesIter)
     indicesIter = msuite.getVariantIndicesIter(varDict, iterGen)

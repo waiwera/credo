@@ -1,8 +1,8 @@
 ##  Copyright (C), 2010, Monash University
 ##  Copyright (C), 2010, Victorian Partnership for Advanced Computing (VPAC)
-##  
+##
 ##  This file is part of the CREDO library.
-##  Developed as part of the Simulation, Analysis, Modelling program of 
+##  Developed as part of the Simulation, Analysis, Modelling program of
 ##  AuScope Limited, and funded by the Australian Federal Government's
 ##  National Collaborative Research Infrastructure Strategy (NCRIS) program.
 ##
@@ -74,7 +74,7 @@ def luminanceDiff(img1, img2):
     im1 = img1.convert('L')
     im2 = img2.convert('L')
 
-    #Calculate image difference by colour histogram 
+    #Calculate image difference by colour histogram
     width, height = im1.size
     pixels = width * height
     hist1 = im1.histogram()
@@ -95,7 +95,7 @@ def colourDiff(img1, img2):
     im1 = img1.convert('RGB')
     im2 = img2.convert('RGB')
 
-    #Calculate image difference by colour histogram 
+    #Calculate image difference by colour histogram
     width, height = im1.size
     pixels = width * height
     hist1 = im1.histogram()
@@ -140,7 +140,7 @@ def pixelDiff(img1, img2):
             for z in pix[x,y]:
                 components.append(z)
 
-    #Calculate euclidean distance 
+    #Calculate euclidean distance
     dist = sqrt(sum([x*x for x in (components)]))
 
     #Scale to [0,1] by dividing by maximum possible difference
@@ -161,7 +161,7 @@ def compare(imgFilename1, imgFilename2, verbose=False):
     #Colour comparison
     dist1 = colourDiff(img1, img2)
     if verbose: print "Colour space difference: %f" % dist1
-    #Colour compare is not sensitive to flip/rotate so do 
+    #Colour compare is not sensitive to flip/rotate so do
     #a simple pixel by pixel compare as well
     dist2 = pixelDiff20x20(img1, img2)
     if verbose: print "Difference on 400 pixel subsample: %f" % dist2

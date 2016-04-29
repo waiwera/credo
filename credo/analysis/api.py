@@ -1,8 +1,8 @@
 ##  Copyright (C), 2010, Monash University
 ##  Copyright (C), 2010, Victorian Partnership for Advanced Computing (VPAC)
-##  
+##
 ##  This file is part of the CREDO library.
-##  Developed as part of the Simulation, Analysis, Modelling program of 
+##  Developed as part of the Simulation, Analysis, Modelling program of
 ##  AuScope Limited, and funded by the Australian Federal Government's
 ##  National Collaborative Research Infrastructure Strategy (NCRIS) program.
 ##
@@ -28,16 +28,16 @@
 
 class AnalysisOperation:
     '''Abstract base class for Analysis Operations in CREDO: i.e. that require
-    some analysis to be done during a 
+    some analysis to be done during a
     :class:`~credo.modelrun.ModelRun`. All instances should provide at least
     this standard interface so that records of analysis can be stored.'''
-    
+
     def writeInfoXML(self, parentNode):
         '''Virtual method for writing Information XML about an analysis op,
         that will be saved as a record of the analysis applied.'''
 
         raise NotImplementedError("This is a virtual method and must be"\
-            " overwritten")       
+            " overwritten")
 
     def writeStgDataXML(self, rootNode):
         '''Writes the necessary StGermain XML to require the analysis to take
@@ -46,7 +46,7 @@ class AnalysisOperation:
         :mod:`credo.io.stgxml` for the interface for setting these up.'''
 
         raise NotImplementedError("This is a virtual method and must be"\
-            " overwritten")       
+            " overwritten")
 
     def postRun(self, modelRun, runPath):
         '''Does any required post-run actions for this analysis op, e.g. moving
@@ -55,4 +55,4 @@ class AnalysisOperation:
         attributes such as :attr:`~credo.modelrun.ModelRun.outputPath`.'''
 
         raise NotImplementedError("This is a virtual method and must be"\
-            " overwritten")       
+            " overwritten")

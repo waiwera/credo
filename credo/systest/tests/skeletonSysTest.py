@@ -1,8 +1,8 @@
 ##  Copyright (C), 2010, Monash University
 ##  Copyright (C), 2010, Victorian Partnership for Advanced Computing (VPAC)
-##  
+##
 ##  This file is part of the CREDO library.
-##  Developed as part of the Simulation, Analysis, Modelling program of 
+##  Developed as part of the Simulation, Analysis, Modelling program of
 ##  AuScope Limited, and funded by the Australian Federal Government's
 ##  National Collaborative Research Infrastructure Strategy (NCRIS) program.
 ##
@@ -32,7 +32,7 @@ class SkeletonSysTest(SysTest):
 
     description = "Skeleton system test."
 
-    def __init__(self, testName, outputPathBase, statusToReturn, 
+    def __init__(self, testName, outputPathBase, statusToReturn,
             basePath=None, nproc=1, timeout=None):
         if basePath is None:
             # Since expect this class to be used directly,
@@ -40,12 +40,12 @@ class SkeletonSysTest(SysTest):
             basePath = credo.utils.getCallingPath(1)
         SysTest.__init__(self, "SkeletonSysTest", testName,
             basePath, outputPathBase, nproc, timeout)
-        self.statusToReturn = statusToReturn    
-    
+        self.statusToReturn = statusToReturn
+
     def genSuite(self):
         # an empty suite
         pass
-    
+
     def setupEmptyTestCompsList(self):
         # have to over-ride this to prevent errors with our empty suite
         pass
@@ -67,7 +67,7 @@ class SkeletonSysTest(SysTest):
     def getStatus(self, resultsSet):
         self.testStatus = self.statusToReturn
         return self.testStatus
-    
+
     def _writeXMLCustomSpec(self, specNode):
         pass
 
@@ -77,7 +77,7 @@ class SkeletonSingleModelSysTest(SingleModelSysTest):
 
     description = "Skeleton system test."
 
-    def __init__(self, inputFiles, outputPathBase, statusToReturn, 
+    def __init__(self, inputFiles, outputPathBase, statusToReturn,
             basePath=None, nproc=1, timeout=None,
             paramOverrides=None, solverOpts=None, nameSuffix=None):
         SingleModelSysTest.__init__(self, "SkeletonSingleModelSysTest",
@@ -85,19 +85,19 @@ class SkeletonSingleModelSysTest(SingleModelSysTest):
             basePath, nproc, timeout,
             paramOverrides, solverOpts, nameSuffix)
 
-        self.statusToReturn = statusToReturn    
-    
+        self.statusToReturn = statusToReturn
+
     def genSuite(self):
         # an empty suite
         self.mSuite = ModelSuite(outputPathBase=self.outputPathBase)
         return self.mSuite
-    
+
     def checkModelResultsValid(self, resultsSet):
         pass
 
     def getStatus(self, resultsSet):
         self.testStatus = self.statusToReturn
         return self.testStatus
-    
+
     def _writeXMLCustomSpec(self, specNode):
         pass

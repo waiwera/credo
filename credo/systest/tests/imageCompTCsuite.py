@@ -1,8 +1,8 @@
 ##  Copyright (C), 2010, Monash University
 ##  Copyright (C), 2010, Victorian Partnership for Advanced Computing (VPAC)
-##  
+##
 ##  This file is part of the CREDO library.
-##  Developed as part of the Simulation, Analysis, Modelling program of 
+##  Developed as part of the Simulation, Analysis, Modelling program of
 ##  AuScope Limited, and funded by the Australian Federal Government's
 ##  National Collaborative Research Infrastructure Strategy (NCRIS) program.
 ##
@@ -65,7 +65,7 @@ class ImageCompTCTestCase(unittest.TestCase):
         self.assertTrue(tolNode != None)
         for ii, tolCompNode in enumerate(tolNode.getchildren()):
             self.assertEqual(int(tolCompNode.attrib['comp']), ii)
-            self.assertAlmostEqual(float(tolCompNode.attrib['value']), 
+            self.assertAlmostEqual(float(tolCompNode.attrib['value']),
                 self.imageCompTest.tol[ii])
         self.assertEqual(testNode.find('refPath').text,
             str(self.imageCompTest.refPath))

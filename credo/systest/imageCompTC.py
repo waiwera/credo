@@ -1,8 +1,8 @@
 ##  Copyright (C), 2010, Monash University
 ##  Copyright (C), 2010, Victorian Partnership for Advanced Computing (VPAC)
-##  
+##
 ##  This file is part of the CREDO library.
-##  Developed as part of the Simulation, Analysis, Modelling program of 
+##  Developed as part of the Simulation, Analysis, Modelling program of
 ##  AuScope Limited, and funded by the Australian Federal Government's
 ##  National Collaborative Research Infrastructure Strategy (NCRIS) program.
 ##
@@ -45,7 +45,7 @@ class ImageCompTC(SingleRunTestComponent):
        Tolerance tuple that the resultant image compared to the reference
        image must be within. In form required by
        :func:`credo.analysis.images.compare` .
-    
+
     .. attribute:: refPath
 
        Path to look for reference images.

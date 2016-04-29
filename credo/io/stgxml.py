@@ -1,8 +1,8 @@
 ##  Copyright (C), 2010, Monash University
 ##  Copyright (C), 2010, Victorian Partnership for Advanced Computing (VPAC)
-##  
+##
 ##  This file is part of the CREDO library.
-##  Developed as part of the Simulation, Analysis, Modelling program of 
+##  Developed as part of the Simulation, Analysis, Modelling program of
 ##  AuScope Limited, and funded by the Australian Federal Government's
 ##  National Collaborative Research Infrastructure Strategy (NCRIS) program.
 ##
@@ -124,7 +124,7 @@ def navigateStrSpecHierarchy(currNode, strSpec, insertMode=False):
             raise ValueError("Navigating section \"%s\" specified: badly"\
                 " formed list found, not closed correctly with '%s'."
                 % (strSpec, "]") )
-    
+
         listNode = _getListNodeAtCurrent(currNode, listStartName, strSpec)
         if listNode == None:
             # TODO - insert mode
@@ -182,7 +182,7 @@ def getItemFromStrSpec_CurrentCtx(currCtxNode, nodeSpecStr):
     else:
         raise ValueError("Context node with tag %s is of incorrect type %s"\
             % (currCtxNode.tag, currCtxNodeType))
-    return eltNode        
+    return eltNode
 
 def _getListItemFromStrSpec(currListNode, listItemStr):
     """ Where listItemStr is in the form [4], or []"""
@@ -207,7 +207,7 @@ def _getListItemFromStrSpec(currListNode, listItemStr):
         raise ValueError("Parsing listItemStr '%s', asked for list index %d,"\
             " but list has only %d items"\
             % (listItemStr, listIndex, len(currListNode)))
-        
+
     # (Using the etree concise format here)
     listItemNode = currListNode[listIndex]
     return listItemNode
@@ -215,7 +215,7 @@ def _getListItemFromStrSpec(currListNode, listItemStr):
 def _getListIndex(listIndexStr):
     if listIndexStr == "":
         listIndex = None
-    else:        
+    else:
         if not listIndexStr.isdigit():
             raise ValueError("list index '%s' isn't a set of digits"\
                 % (listIndexStr))
@@ -243,17 +243,17 @@ def getNodeFromStrSpec(parentNode, strSpec):
         raise ValueError("Navigating str spec \"%s\": last element"\
             " \"%s\" doesn't exist at correct level of XML file."\
             % (strSpec, lastSpecStr) )
-    return elementNode 
+    return elementNode
 
 def getElementType(elementNode):
-    """Checks the "type" of a StGermain data node element. 
+    """Checks the "type" of a StGermain data node element.
     Here, we deal with 3 possibilities:
 
     * The <param>, <list>, <struct> node tag format.
     * The <elmement> tag format, where type is an attribute.
     * The special elements <import>, <plugins> -> list, <components> -> dict.
     """
-    
+
     # The _STG_NS_LXML prefixes included below since ETree prefixes these to
     # tag names to represent the namespace used when parsing in files.
 
@@ -320,7 +320,7 @@ def getParamValue(elNode, paramName, castFunc):
 def strToBool(boolStr):
     """Converts a string (eg from a param in XML) to a Python Bool and
     returns this, using same idiom as in StGermain.
-    
+
     (See Dictionary_Entry_Value_AsBool() in Dictionary_Entry_Value.c in
     StGermain/Base/IO)."""
     if boolStr.lower() in ['1','true','t','yes','y','on']:
@@ -341,7 +341,7 @@ def _getSpecialTagNode(elNode, eltName, eltType):
         raise ValueError("The eltType argument must be one of %s" \
             % _stgSpecialLists.keys())
 
-    for specialTag in specialTagsList: 
+    for specialTag in specialTagsList:
         if eltName == specialTag:
             for childNode in elNode.getchildren():
                 if childNode.tag == addNsPrefix(specialTag):
@@ -425,7 +425,7 @@ def _getNamedElementNode(ctxNode, elName, elType=None):
         if eltNode.tag in map(addNsPrefix, _stgElementBaseTags):
             if elName == eltNode.attrib['name']:
                 return eltNode
-    return None        
+    return None
 
 def _getNamedElementNode_elTag(elNode, elName, elType=None):
     """Returns the element node (in etree form) of a particular element
@@ -434,7 +434,7 @@ def _getNamedElementNode_elTag(elNode, elName, elType=None):
     If elType is specified, will only return nodes of the given type.
     (Not designed to be used directly, but by getList etc.)
     Searches in the element tag format."""
-    
+
     for eltNode in elNode.getchildren():
         if eltNode.tag != addNsPrefix('element'): continue
         if eltNode.attrib['name'] == elName:
@@ -448,7 +448,7 @@ def _getNamedElementNode_elTag(elNode, elName, elType=None):
 def createNewStgDataDoc():
     """Create a new empty StGermain model XML file (can be merged with other
     model files).
-    
+
     :returns: a tuple of the new xml doc (Element Tree), and the root node
       of the new doc."""
     nsMap = {None: STG_NS}
@@ -489,22 +489,22 @@ def writeParamSet(parentNode, paramsDict, mt=None):
 
 def writeParamList(parentNode, listName, paramVals, mt=None):
     '''Write a Stg XML List structure, made up purely of (unnamed) parameters'''
-    listElt = etree.SubElement(parentNode, STG_LIST_TAG, name=listName) 
+    listElt = etree.SubElement(parentNode, STG_LIST_TAG, name=listName)
     setMergeType(listElt, mt)
     for paramVal in paramVals:
         pElt = etree.SubElement(listElt, STG_PARAM_TAG)
-        pElt.text = str(paramVal) 
+        pElt.text = str(paramVal)
     return listElt
 
 def writeStruct(parentNode, mt=None):
     '''Write a Stg XML List structure, made up purely of (unnamed) parameters'''
-    structElt = etree.SubElement(parentNode, STG_STRUCT_TAG) 
+    structElt = etree.SubElement(parentNode, STG_STRUCT_TAG)
     setMergeType(structElt, mt)
     return structElt
 
 def writeStructList(parentNode, listName, mt=None):
     '''Write a Stg XML List structure, made up purely of (unnamed) parameters'''
-    listElt = etree.SubElement(parentNode, STG_LIST_TAG, name=listName) 
+    listElt = etree.SubElement(parentNode, STG_LIST_TAG, name=listName)
     setMergeType(listElt, mt)
     return listElt
 
@@ -520,7 +520,7 @@ def writeMergeComponentStruct(rootNode):
      return new comp elt'''
     assert rootNode.tag == STG_ROOT_TAG
     compList = etree.SubElement(rootNode, STG_STRUCT_TAG, name="components",\
-        mergeType="merge") 
+        mergeType="merge")
     return compList
 
 def writeComponent(parentNode, compName, compType, mt=None):
@@ -536,7 +536,7 @@ def writeMergeComponent(rootNode, compName, compType):
      return new comp elt'''
     assert rootNode.tag == STG_ROOT_TAG
     compList = etree.SubElement(rootNode, STG_STRUCT_TAG, name="components",\
-        mergeType="merge") 
+        mergeType="merge")
     compElt = etree.SubElement(compList, STG_STRUCT_TAG, name=compName)
     writeParam(compElt, "Type", compType)
     return compElt
@@ -551,7 +551,7 @@ def writeValueUsingStrSpec(rootNode, strSpec, value):
     # Set the value
     # This will be smart enough to know the type of variable used, and set
     #  appropriately.
-    #   
+    #
 
 #def insertNodeAt
     # navigate hierarchy - replace mode
@@ -581,7 +581,7 @@ def createFlattenedXML(inputFiles, cmdLineOverrides="",
         flatFilename="output.xml"):
     '''Flatten a list of provided XML files and optionally also
     cmdLineOverrides (string), using the StGermain FlattenXML tool.
-    
+
     :returns: the file name of the newly created flattened file.'''
 
     flattenExe = credo.io.stgpath.getVerifyStgExePath('FlattenXML')
@@ -592,7 +592,7 @@ def createFlattenedXML(inputFiles, cmdLineOverrides="",
             + shlex.split(cmdLineOverrides)
         p = subp.Popen(argsList, stdout=subp.PIPE, stderr=subp.PIPE)
         (stdout, stderr) = p.communicate()
-        # The 2nd clause necessary because FlattenXML doesn't return 
+        # The 2nd clause necessary because FlattenXML doesn't return
         # proper error codes (ie always returns 0) up to 1.4.2 release
         if p.returncode != 0 or stderr != "":
             raise OSError("Error: Command to create flattened file, '%s' on"

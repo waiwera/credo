@@ -1,8 +1,8 @@
 ##  Copyright (C), 2010, Monash University
 ##  Copyright (C), 2010, Victorian Partnership for Advanced Computing (VPAC)
-##  
+##
 ##  This file is part of the CREDO library.
-##  Developed as part of the Simulation, Analysis, Modelling program of 
+##  Developed as part of the Simulation, Analysis, Modelling program of
 ##  AuScope Limited, and funded by the Australian Federal Government's
 ##  National Collaborative Research Infrastructure Strategy (NCRIS) program.
 ##
@@ -45,7 +45,7 @@ class MPIJobMetaInfo(JobMetaInfo):
         self.runType = "MPI"
         self.runCommand = None
         self.procHandle = None
-    
+
     def writeInfoXML(self, xmlNode):
         JobMetaInfo.writeInfoXML(self, xmlNode)
         jmNode = xmlNode.find(self.XML_INFO_TAG)
@@ -60,7 +60,7 @@ class MPIJobRunner(JobRunner):
         else:
             self.mpiRunCommand = DEFAULT_MPI_RUN_COMMAND
         defProfiler = None
-        # TODO: perhaps a more declarative approach to choosing profiler 
+        # TODO: perhaps a more declarative approach to choosing profiler
         #  to use better in future than what's below ... e.g. have a profiler
         #  factory that chooses based on platform info, job runner type,
         #  and installed software.
@@ -76,7 +76,7 @@ class MPIJobRunner(JobRunner):
 
     def submitRun(self, modelRun, prefixStr=None, extraCmdLineOpts=None,
             dryRun=False, maxRunTime=None):
-        """See :meth:`credo.jobrunner.api.JobRunner.submit`."""     
+        """See :meth:`credo.jobrunner.api.JobRunner.submit`."""
         jobMI = MPIJobMetaInfo()
 
         # Navigate to the model's base directory
@@ -148,7 +148,7 @@ class MPIJobRunner(JobRunner):
             runCommand = " ".join([prefixStr, runCommand])
         return runCommand
 
-    def blockResult(self, modelRun, jobMI):        
+    def blockResult(self, modelRun, jobMI):
         # CHeck jobMI is of type MPI ...
         maxRunTime = modelRun.jobParams['maxRunTime']
         pollInterval = modelRun.jobParams['pollInterval']
@@ -161,7 +161,7 @@ class MPIJobRunner(JobRunner):
                 (modelRun.basePath)
             os.chdir(modelRun.basePath)
 
-        if maxRunTime == None or maxRunTime <= 0:    
+        if maxRunTime == None or maxRunTime <= 0:
             timeOut = False
             retCode = procHandle.wait()
         else:
@@ -170,7 +170,7 @@ class MPIJobRunner(JobRunner):
             timeOut = True
             while totalTime <= maxRunTime:
                 # Note: current strategy in this loop means 'totalTime'
-                #  recorded here will only be as accurate as size of 
+                #  recorded here will only be as accurate as size of
                 #  pollInterval.
                 #  Thus this is a fall-back for recording time taken.
                 time.sleep(pollInterval)

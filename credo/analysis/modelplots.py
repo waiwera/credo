@@ -1,8 +1,8 @@
 ##  Copyright (C), 2010, Monash University
 ##  Copyright (C), 2010, Victorian Partnership for Advanced Computing (VPAC)
-##  
+##
 ##  This file is part of the CREDO library.
-##  Developed as part of the Simulation, Analysis, Modelling program of 
+##  Developed as part of the Simulation, Analysis, Modelling program of
 ##  AuScope Limited, and funded by the Australian Federal Government's
 ##  National Collaborative Research Infrastructure Strategy (NCRIS) program.
 ##
@@ -46,7 +46,7 @@ def getValsFromAllRuns(mResults, outputName):
 
 def plotOverAllRuns(mResults, outputName, depName='Timestep', show=False,
         save=True, path=".", labelNames=True):
-    """Create a plot of values over multiple runs."""    
+    """Create a plot of values over multiple runs."""
     resVals = getValsFromAllRuns(mResults, outputName)
     depVals = getValsFromAllRuns(mResults, depName)
     plot = plt.clf()   # Start by clearing any pre-existing figure
@@ -122,7 +122,7 @@ def getNumEls(mRun):
     from credo.io import stgpath
     import credo.modelrun as mrun
     from xml.etree import ElementTree as etree
-    paramOverridesStr = mrun.getParamOverridesAsStr(mRun.paramOverrides)    
+    paramOverridesStr = mrun.getParamOverridesAsStr(mRun.paramOverrides)
     iFiles = mRun.modelInputFiles
     if mRun.analysisXML is not None: iFiles += [mRun.analysisXML]
     absInputFiles = stgpath.convertLocalXMLFilesToAbsPaths(
@@ -198,4 +198,4 @@ def plotWalltimesByRuns(mRuns, mResults, profilerName=None, show=False,
                 "walltimeVsNumEls.%s" % fmt)
             plt.savefig(filename, format=fmt, dpi=120)
     if show: plt.show()
-    return plt        
+    return plt

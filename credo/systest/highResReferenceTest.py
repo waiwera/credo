@@ -1,8 +1,8 @@
 ##  Copyright (C), 2010, Monash University
 ##  Copyright (C), 2010, Victorian Partnership for Advanced Computing (VPAC)
-##  
+##
 ##  This file is part of the CREDO library.
-##  Developed as part of the Simulation, Analysis, Modelling program of 
+##  Developed as part of the Simulation, Analysis, Modelling program of
 ##  AuScope Limited, and funded by the Australian Federal Government's
 ##  National Collaborative Research Infrastructure Strategy (NCRIS) program.
 ##
@@ -52,18 +52,18 @@ class HighResReferenceTest(SingleModelSysTest):
        * fieldTols: a dictionary of tolerances to use when testing particular
          fields, rather than the default tolerance as set in the defFieldTol
          argument.
-          
+
        .. attribute:: fTestName
 
           Standard name to use for this test's field comparison TestComponent
           in the :attr:`~credo.systest.api.SysTest.testComponents` list.
-       
+
        .. attribute:: highResRatio
 
           Determines the ratio to use when setting up a high-res reference
           solution to compare against the existing XML.
        '''
-    
+
     fTestName = 'High Res Reference Solution compare'
     description = '''Runs a Model for a set number of timesteps,
         then checks the specified fields match a previously-generated
@@ -105,8 +105,8 @@ class HighResReferenceTest(SingleModelSysTest):
         stgRoot = xmlDoc.getroot()
         origRes = [0]*3
         for ii, resParam in enumerate(resParams):
-            origRes[ii] = stgxml.getParamValue(stgRoot, resParam, int)    
-        os.remove(ffile)    
+            origRes[ii] = stgxml.getParamValue(stgRoot, resParam, int)
+        os.remove(ffile)
         highRes = [int(self.highResRatio * res) for res in origRes]
 
         print "Running the model to create a high-res reference solution "\
@@ -141,7 +141,7 @@ class HighResReferenceTest(SingleModelSysTest):
             cpevery=0, dumpevery=0)
         self.mSuite.addRun(mRun, "Run the model, and check results against "\
             "previously generated reference solution.")
-    
+
     def configureTestComps(self):
         assert len(self.mSuite.runs) == 1
         self.setupEmptyTestCompsList()
@@ -162,4 +162,4 @@ class HighResReferenceTest(SingleModelSysTest):
         fieldsToTestNode = etree.SubElement(specNode, 'fieldsToTest')
         for fieldName in self.fieldsToTest:
             fieldsNode = etree.SubElement(fieldsToTestNode, 'field',
-                name=fieldName)    
+                name=fieldName)

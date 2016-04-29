@@ -1,8 +1,8 @@
 ##  Copyright (C), 2010, Monash University
 ##  Copyright (C), 2010, Victorian Partnership for Advanced Computing (VPAC)
-##  
+##
 ##  This file is part of the CREDO library.
-##  Developed as part of the Simulation, Analysis, Modelling program of 
+##  Developed as part of the Simulation, Analysis, Modelling program of
 ##  AuScope Limited, and funded by the Australian Federal Government's
 ##  National Collaborative Research Infrastructure Strategy (NCRIS) program.
 ##
@@ -21,7 +21,7 @@
 ##  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 ##  MA  02110-1301  USA
 
-"""This module allows the running of a whole suite of related 
+"""This module allows the running of a whole suite of related
 :class:`~credo.modelrun.ModelRun` s, and managing and analysing their results
 as a consistent set.
 
@@ -59,23 +59,23 @@ class ModelResultNotExistError(Exception):
 
 
 class ModelVariant:
-    """ A class that can be added to a :class:`.ModelSuite` to help 
+    """ A class that can be added to a :class:`.ModelSuite` to help
     auto-generate a suite of ModelRuns to perform, where a particular
     parameter is being varied over a certain range.
 
     This is an abstract base class, you should select an actual ModelVariant.
 
     .. attribute:: paramRange
-    
+
        A list, containing the values that the parameter should be varied
        over. E.g. [0,1,2], or [5.6, 7.8, 9.9]. Needs to be of the correct
-       type for the particular parameter. The Python 
+       type for the particular parameter. The Python
        `range() <http://docs.python.org/library/functions.html#range>`_
        function can be useful in generating such a list."""
 
     def __init__(self, paramRange):
         self.paramRange = paramRange
-    
+
     def applyToModel(self, modelRun, ii):
         """Function to apply the ii-th value of paramRange to a model."""
         raise NotImplementedError("Abstract base method, please over-ride"\
@@ -85,7 +85,7 @@ class ModelVariant:
         """Returns the length of the list of parameter values to vary
         specified in :attr:`.paramRange`."""
         return len(self.paramRange)
-    
+
     def valStr(self, ii):
         """Return a string version of the ii-th parameter value."""
         paramVal = self.paramRange[ii]
@@ -100,26 +100,26 @@ class StgXMLVariant(ModelVariant):
     """
     A :class:`.ModelVariant` designed to modify StGermain XML model input
     parameters.
-    
+
     .. attribute:: paramPath
-    
+
        The value to use when over-riding the parameter in a StGermain
        dictionary, using the StGermain command line format.
-       
+
        E.g. Setting "gravity" would override the gravity parameter in
-       the dictionary, whereas setting to 
+       the dictionary, whereas setting to
        "components.initialConditionsShape.startX" would override the
        startX parameter, within the initialConditionsShape component.
-    """   
+    """
     def __init__(self, paramPath, paramRange):
         ModelVariant.__init__(self, paramRange)
         self.paramPath = paramPath
-    
+
     def applyToModel(self, modelRun, ii):
         """Apply the ii-th value in the attr:`.paramRange` to a particular
         :class:`~credo.modelrun.ModelRun`."""
         modelRun.paramOverrides[self.paramPath] = self.paramRange[ii]
-    
+
     def cmdLineStr(self, ii):
         """Return the command-line string to apply this value."""
         return credo.io.stgcmdline.paramStr(self.paramPath, self.paramRange[ii])
@@ -129,18 +129,18 @@ class JobParamVariant(ModelVariant):
     """A :class:`.ModelVariant` designed to modify job parameters.
 
     .. attribute: jobParam:
-    
+
        string name of parameter you wish to vary (eg "nproc").
-    """   
+    """
     def __init__(self, jobParam, paramRange):
         ModelVariant.__init__(self, paramRange)
         self.jobParam = jobParam
-    
+
     def applyToModel(self, modelRun, ii):
         """Apply the ii-th value in the attr:`.paramRange` to a particular
         :class:`~credo.modelrun.ModelRun`."""
         modelRun.jobParams[self.jobParam] = self.paramRange[ii]
-    
+
     def cmdLineStr(self, ii):
         """Return the command-line string to apply this value."""
         return credo.io.stgcmdline.paramStr(self.jobParam, self.paramRange[ii])
@@ -182,7 +182,7 @@ def getVariantNameDicts(modelVariants, indicesIt):
             paramVal = modelVar.paramRange[indexSet[mvI]]
             newDict[mvName] = paramVal
         paramDicts.append(newDict)
-    return paramDicts    
+    return paramDicts
 
 def getVariantParamPathDicts(modelVariants, indicesIt):
     """Generates a list of dictionaries of parameters to be modified for each
@@ -207,7 +207,7 @@ def getVariantCmdLineOverrides(modelVariants, indicesIt):
     """
     overrideCmdLines = []
     for indexSet in indicesIt:
-        overStrs = [] 
+        overStrs = []
         for mvI, modelVar in enumerate(modelVariants.itervalues()):
             overStrs.append(modelVar.cmdLineStr(indexSet[mvI]))
         overrideCmdLines.append(" ".join(overStrs))
@@ -266,7 +266,7 @@ def getOtherParamValsByVarRunIs(varRunIsMap, varDicts, otherParam):
 
 def getSubdir_TextParamVals(modelRun, modelVariants, paramIndices, runIndex):
     """Generate an output sub-directory name for a run with
-    a printed version of :attr:`ModelSuite.modelVariants` names, 
+    a printed version of :attr:`ModelSuite.modelVariants` names,
     and vales for this run.
     (Good in the sense of being fairly self-describing, but can
     be long if you have many model variants)."""
@@ -285,14 +285,14 @@ def getSubdir_RunIndexAndText(modelRun, modelVariants, paramIndices, runIndex):
 class ModelSuite:
     '''A class for running a suite of Models (e.g. a group for profiling,
     or a System Test that requires multiple runs).
-    
+
     The two main ways of using this class are:
 
-    * Creating a :class:`.ModelSuite`, and then adding 
+    * Creating a :class:`.ModelSuite`, and then adding
       :class:`~credo.modelrun.ModelRun` s to the suite using
       the :meth:`.addRun` method.
     * Creating a :class:`.ModelSuite`, and providing a
-      :class:`~credo.modelrun.ModelRun` as a template, then adding 
+      :class:`~credo.modelrun.ModelRun` as a template, then adding
       :class:`.StgXMLVariant` s to define what sort of parameter
       sweep should be performed. In this case, :meth:`.generateRuns()`
       needs to be called after all variants have been added.
@@ -313,9 +313,9 @@ class ModelSuite:
 
     .. attribute:: runCustomOptSets
 
-       Custom sets of options (to be used at the command line) associated 
+       Custom sets of options (to be used at the command line) associated
        with each run in :attr:`.runs` (strings).
-       
+
     .. attribute:: resultsList
 
        Initially `None`, after the suite has been run (using :meth:`.runAll`),
@@ -323,19 +323,19 @@ class ModelSuite:
        generated.
 
     .. attribute:: subOutputPathGenFunc
-       
+
        This function will can be used to customise the model sub-path based
        on each modelRun. Override it if you wish to use other than the default.
 
     .. attribute:: templateMRun
 
        (Optional) setting this to an :class:`~credo.modelresult.ModelRun`
-       means this run can be used as a "template" to add variants to, 
+       means this run can be used as a "template" to add variants to,
        and create a parameter sweep over this run.
 
        .. seealso: :meth:`.addVariant`, :meth:`generateRuns`, and
           :class:`.StgXMLVariant`.
-    
+
     .. attribute:: iterGen
 
        (Related to auto-generation): A generator function to create an
@@ -438,11 +438,11 @@ class ModelSuite:
         template run. See :attr:`.modelVariants`."""
         self.modelVariants[name] = modelVariant
 
-    def generateRuns(self, iterGen=product):        
+    def generateRuns(self, iterGen=product):
         """When using a template modelRun, will generate runs for the suite
-        based on it. The generated runs are saved to 
+        based on it. The generated runs are saved to
         the :attr:`.runs` attribute ready to be run using :meth:`.runAll`.
-        
+
         This requires that there are one or more :class:`.StgXMLVariant`
         recorded on the class already.
 
@@ -460,7 +460,7 @@ class ModelSuite:
         # Empty the "runs", in case it has values in there already
         self.runs = []
 
-        # Strategy used below is instead of iterating directly over the 
+        # Strategy used below is instead of iterating directly over the
         # parameters we are applying to each run, create indices into the
         # modelVariants lists to work out which to apply for each run.
         indexIterator = getVariantIndicesIter(self.modelVariants, self.iterGen)
@@ -491,7 +491,7 @@ class ModelSuite:
         :attr:`.resultsList`."""
         for runI, mResult in enumerate(self.resultsList):
             mResult.writeRecordXML()
-    
+
     def getCustomOpts(self, runI, extraCmdLineOpts):
         """Get the custom opts (as a string) to apply for modelRun runI."""
         customOpts = None
@@ -500,11 +500,11 @@ class ModelSuite:
         if extraCmdLineOpts:
             if customOpts == None: customOpts = ""
             customOpts += extraCmdLineOpts
-        return customOpts    
+        return customOpts
 
     def readResultsFromPath(self, basePath, overrideOutputPath=None,
             checkAllPresent=True):
-        """Read the results generated for a given ModelSuite located off the 
+        """Read the results generated for a given ModelSuite located off the
         given basePath where the suite was run, and return the list of results.
 
         This will ignore results in the directory not related to this suite.
@@ -520,13 +520,13 @@ class ModelSuite:
            Currently this just relies on model result names for the suite
            matching up correctly. In future, should really scan the ModelResult
            XMLs and check they match correctly.
-        """ 
+        """
         if overrideOutputPath is not None:
             outputPathBase = overrideOutputPath
         else:
             outputPathBase = self.outputPathBase
         # First read all results
-        # TODO: passing in the 'name' below is hacky:- really should be 
+        # TODO: passing in the 'name' below is hacky:- really should be
         #  reading this in from model result XMLs
         if self.templateMRun:
             baseName = self.templateMRun.name
@@ -557,24 +557,24 @@ class ModelSuite:
                         "\n(names read are %s)." %\
                         (basePath, outputPathBase, mRun.name, runI,
                          resultNames))
-        return mResults  
-            
+        return mResults
+
 # TODO: here perhaps would be where we have tools to generate stats/plots
 # of various properties of the suite, e.g. memory usage? Or should
 # this be a capability of some sort of uber-results list? Or profiling
 # tools?
 
 def writeInputsOutputsToCSV(mSuite, observablesDict, fname):
-    """Write a CSV file, containing all the ModelVariants defined for a 
+    """Write a CSV file, containing all the ModelVariants defined for a
     ModelSuite, and also all the observables in the observablesDict.
 
     :param observablesDict: a dictionary of 'observables', each entry in
       the form 'obsName':[obsVals for each run], e.g. "vrms":[0.6, 0.8, 0.9].
     :param fname: file name of the CSV file to create, inside the model
       suite's base output path.
-    
+
     .. note:: Could be a function on the ModelSuite?
-    """  
+    """
     target = open(os.path.join(mSuite.runs[0].basePath, mSuite.outputPathBase, fname), "w" )
     wtr = csv.writer(target)
     # Need to do sorting to make sure keys here match those below.
@@ -591,7 +591,7 @@ def writeInputsOutputsToCSV(mSuite, observablesDict, fname):
 def getModelResultsArray(baseName, baseDir):
     """Post-processing: given a base model name and base output directory,
     search this directory for model results, and read into a list of
-    :class:`~credo.modelresult.ModelResult` . 
+    :class:`~credo.modelresult.ModelResult` .
 
     .. note:: Needs more checking added, and ability to recover metadata
        about the ModelRuns.
@@ -603,7 +603,7 @@ def getModelResultsArray(baseName, baseDir):
             dirName = fName
             if baseName == None:
                 modelName = dirName
-            else:    
+            else:
                 modelName = "%s-%s" % (baseName, dirName)
             mResult = mres.readModelResultFromPath(fullPath)
             #ModelResult(modelName, fullPath)

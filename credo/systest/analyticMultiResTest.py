@@ -1,8 +1,8 @@
 ##  Copyright (C), 2010, Monash University
 ##  Copyright (C), 2010, Victorian Partnership for Advanced Computing (VPAC)
-##  
+##
 ##  This file is part of the CREDO library.
-##  Developed as part of the Simulation, Analysis, Modelling program of 
+##  Developed as part of the Simulation, Analysis, Modelling program of
 ##  AuScope Limited, and funded by the Australian Federal Government's
 ##  National Collaborative Research Infrastructure Strategy (NCRIS) program.
 ##
@@ -43,7 +43,7 @@ class AnalyticMultiResTest(SingleModelSysTest):
        * resSet: a list of resolutions to use for the test, as tuples.
          E.g. to specify testing at 10x10 res then 20x20, resSet would
          be [(10,10), (20,20)]
-       
+
        .. attribute:: resSet
 
           Set of resolutions to use, as described for the resSet keyword
@@ -55,7 +55,7 @@ class AnalyticMultiResTest(SingleModelSysTest):
 	    " converged as expected with increasing resolution for all fields."
     failMsg = "One of the fields failed to converge as expected."
 
-    def __init__(self, inputFiles, outputPathBase, resSet, 
+    def __init__(self, inputFiles, outputPathBase, resSet,
             basePath=None, nproc=1, timeout=None,
             paramOverrides=None, solverOpts=None, nameSuffix=None):
         SingleModelSysTest.__init__(self, "AnalyticMultiResConvergence",
@@ -69,7 +69,7 @@ class AnalyticMultiResTest(SingleModelSysTest):
         """See base class :meth:`~credo.systest.api.SysTest.genSuite`.
 
         The generated suite will contain model runs all with the same model
-        XML files, but with increasing resolution as specified by the 
+        XML files, but with increasing resolution as specified by the
         :attr:`.resSet` attribute.
         """
         for res in self.resSet:
@@ -79,7 +79,7 @@ class AnalyticMultiResTest(SingleModelSysTest):
                 os.path.join(self.outputPathBase, resStr))
             customOpts = mrun.generateResOpts(res)
             self.mSuite.addRun(mRun, "Run the model at res %s" % (resStr), customOpts)
-    
+
     def configureTestComps(self):
         self.setupEmptyTestCompsList()
         self.multiRunTestComps['fieldConvChecker'] = self.cvgChecker
@@ -107,4 +107,4 @@ class AnalyticMultiResTest(SingleModelSysTest):
         #cvgFuncNode.attrib['name']
         #cvgFuncNode.attrib['module'] = inspect.getmodule(cvgFunc)
 
-        
+

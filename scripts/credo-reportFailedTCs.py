@@ -12,7 +12,7 @@ def getFailedTCsInNode(xmlNode):
     for srTCNode in runTCs:
         if srTCNode.attrib['status'] != 'Pass':
             failedTCs.append(srTCNode)
-    return failedTCs        
+    return failedTCs
 
 def printFailedTCs(sysTestFile, printMsgs=False):
     parser = etree.XMLParser()
@@ -30,16 +30,16 @@ def printFailedTCs(sysTestFile, printMsgs=False):
         for failedTC in failedTCs:
             print "%s" % failedTC.attrib['name']
         if printMsgs == True:
-            print "Messages were:"    
+            print "Messages were:"
             for failedTC in failedTCs:
                 msgText = failedTC.find('result').find('statusMsg').text
                 print "'%s':%s\n[[%s]]" % (failedTC.attrib['name'],
-                    failedTC.attrib['status'], 
+                    failedTC.attrib['status'],
                     textwrap.fill(msgText))
 
     mrTCsNode = tcsNode.find('multiRunTestComponents')
     mrFailedTCs = getFailedTCsInNode(mrTCsNode)
-    if len(mrFailedTCs) > 0:    
+    if len(mrFailedTCs) > 0:
         print "Multi-run failed components (%d):" % len(mrFailedTCs)
         for failedTC in mrFailedTCs:
             print "%s" % failedTC.attrib['name']

@@ -1,8 +1,8 @@
 ##  Copyright (C), 2010, Monash University
 ##  Copyright (C), 2010, Victorian Partnership for Advanced Computing (VPAC)
-##  
+##
 ##  This file is part of the CREDO library.
-##  Developed as part of the Simulation, Analysis, Modelling program of 
+##  Developed as part of the Simulation, Analysis, Modelling program of
 ##  AuScope Limited, and funded by the Australian Federal Government's
 ##  National Collaborative Research Infrastructure Strategy (NCRIS) program.
 ##
@@ -44,11 +44,11 @@ class PBSJobMetaInfo(JobMetaInfo):
         JobMetaInfo.__init__(self)
         self.runType = "PBS"
         self.jobId = None
-    
+
     def writeInfoXML(self, xmlNode):
         JobMetaInfo.writeInfoXML(self, xmlNode)
         jmNode = xmlNode.find(self.XML_INFO_TAG)
-        etree.SubElement(jmNode, 'jobId').text = str(self.jobId) 
+        etree.SubElement(jmNode, 'jobId').text = str(self.jobId)
 
 class PBSJobRunner(JobRunner):
     """A JobRunner to submit CREDO jobs via creating PBS script files,
@@ -71,7 +71,7 @@ class PBSJobRunner(JobRunner):
 
     def submitRun(self, modelRun, prefixStr=None, extraCmdLineOpts=None,
             dryRun=False, maxRunTime=None):
-        """See :meth:`credo.jobrunner.api.JobRunner.submit`."""     
+        """See :meth:`credo.jobrunner.api.JobRunner.submit`."""
 
         # Navigate to the model's base directory
         startDir = os.getcwd()
@@ -96,8 +96,8 @@ class PBSJobRunner(JobRunner):
             # NB: in the case of MPI runs, we prefix the prefixStr before MPI
             # command and args ... appropriate for things like timing stuff.
             runCommand = " ".join([prefixStr, runCommand])
-        
-        pbsFilename = self._writePBSFile(modelRun, runCommand)        
+
+        pbsFilename = self._writePBSFile(modelRun, runCommand)
         try:
             pbsQueueStr = "-q %s" % (modelRun.jobParams['PBS']['queue'])
         except KeyError:
@@ -126,7 +126,7 @@ class PBSJobRunner(JobRunner):
         except OSError, ose:
             raise ModelRunLaunchError(modelRun.name, pbsSubCmd,
                 "Check qsub working properly, OSError was %s" % (ose))
-        
+
         # Parse the result, get the job number
         qsubStdOut.seek(0)
         qsubStdErr.seek(0)
@@ -155,7 +155,7 @@ class PBSJobRunner(JobRunner):
         pbsFileName = "%s_proc_%d.pbs" % (modelRun.name, jobParams['nproc'])
         #add all necessary lines for a basic pbs- might need to modify
         # this slightly depending on what needs to go in
-        f = open(pbsFileName, 'w') 
+        f = open(pbsFileName, 'w')
         f.write(PBS_FIRSTLINE+"\n")
         #name line:
         try:
@@ -184,7 +184,7 @@ class PBSJobRunner(JobRunner):
             else:
                 wTimeFormatted = str(timedelta(seconds=jobParams['maxRunTime']))
                 wallTimeLine = "%s -l walltime=%s" % \
-                    (PBS_PREFIX, wTimeFormatted) 
+                    (PBS_PREFIX, wTimeFormatted)
         f.write(wallTimeLine+"\n")
         #export bash script vars:
         f.write("%s -V\n" % PBS_PREFIX)
@@ -204,9 +204,9 @@ class PBSJobRunner(JobRunner):
         f.close()
         return pbsFileName
 
-    def blockResult(self, modelRun, jobMetaInfo):        
+    def blockResult(self, modelRun, jobMetaInfo):
         # Check jobMetaInfo is of type PBS
-        # via self.runType = "PBS" 
+        # via self.runType = "PBS"
         startDir = os.getcwd()
         if modelRun.basePath != startDir:
             print "Changing to ModelRun's specified base path '%s'" % \
@@ -216,7 +216,7 @@ class PBSJobRunner(JobRunner):
         pollInterval = modelRun.jobParams['pollInterval']
         checkOutput = 0
         # NB: unlike with the MPI Job Runner, we don't check the "maxJobTime" here:- since that was encoded
-        #  in the PBS Walltime used. Wait as long as necessary for job to be queued, run, and completed 
+        #  in the PBS Walltime used. Wait as long as necessary for job to be queued, run, and completed
         #  in PBS system.
         pbsWaitTime = 0
         gotResult = False
@@ -240,7 +240,7 @@ class PBSJobRunner(JobRunner):
             #3505.tweedle              cratonic30t2c3d2 WendySharples   00:15:16 C batch
             # So if we break the command line up into an array of words separated by spaces:
             qstatus = qstatus.split(" ")
-            #jobName and modelName MUST be THE SAME 
+            #jobName and modelName MUST be THE SAME
             for ii in range(len(qstatus)):
                 if qstatus[ii] == "Unknown":
                     print "job has already run\n"
@@ -262,7 +262,7 @@ class PBSJobRunner(JobRunner):
         # TODO: connect/copy PBS stdout/error files to standard expected names.
         stdOutFilename = modelRun.getStdOutFilename()
         stdErrFilename = modelRun.getStdErrFilename()
-            
+
         #qdel = os.popen("qdel "+jobID).readlines()
         if pbsError:
             raise ModelRunRegularError(modelRun.name, -1, stdOutFilename,
@@ -273,9 +273,9 @@ class PBSJobRunner(JobRunner):
             # TODO: Move and rename output and error files created by PBS,
             #  ... to stdOutFilename, stdErrFilename
             # check PBS output file and make sure there's something in it
-            jobName = "%s" % (modelRun.name)           
+            jobName = "%s" % (modelRun.name)
             jobid = jobID.split(".")
-            jobNo = jobid[0] 
+            jobNo = jobid[0]
             fileName = jobName+".o"+jobNo
             f = open(fileName, 'r')
             lines = f.read()
@@ -283,7 +283,7 @@ class PBSJobRunner(JobRunner):
                 print "error in file no output obtained\n"
                 raise ModelRunRegularError(modelRun.name, retCode,
                     stdOutFilename, stdErrFilename)
-            else:    
+            else:
                 print "Model ran successfully (output saved to %s, std out"\
                 " & std error to %s." % (absOutPath, absLogPath)
         print "Doing post-run tidyup:"

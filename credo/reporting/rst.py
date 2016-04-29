@@ -78,7 +78,7 @@ class RstGenerator(ReportGenerator):
         return self.getTableEl(newTableData)
 
     def getTableEl(self, tableData):
-        """Note: we chose the RST list-table syntax, since this allows 
+        """Note: we chose the RST list-table syntax, since this allows
         arbitrarily long/complex table entries."""
         resultStr = ".. list-table::\n\n"
         nEntriesMax = max(map(len, tableData))
@@ -96,7 +96,7 @@ class RstGenerator(ReportGenerator):
                     elementStr += '\n'
                 elementStr = reIndent(elementStr, len(prefix1stStr))
                 #Now correct for special precursors
-                elementStr = prefix1stStr + elementStr[len(prefix1stStr):]    
+                elementStr = prefix1stStr + elementStr[len(prefix1stStr):]
                 resultStr += elementStr
             # The list-table syntax requires equal-length rows - so buffer
             # out if needed.
@@ -116,11 +116,11 @@ class RstGenerator(ReportGenerator):
     def getImageEls(self, imgFile, hdrText=None, width=None, height=None,
             scale=None, tScale=None):
         """
-        .. note:: we ignore the `tScale` param for RST reports, since the 
+        .. note:: we ignore the `tScale` param for RST reports, since the
            images aren't embedded in the final report anyway."""
         resultEls = []
         if hdrText is not None:
-            resultEls.append("**%s**\n" % hdrText)    
+            resultEls.append("**%s**\n" % hdrText)
         relImgFile = os.path.relpath(imgFile, self.basePath)
         resStr = ".. image:: %s\n" % relImgFile
         if scale is not None:
@@ -140,10 +140,10 @@ class RstGenerator(ReportGenerator):
         for lineStr in docElements:
             outDoc.write(lineStr)
         outDoc.close()
-     
+
     def getColorTextStr(self, textStr, colorName):
         #Note: this relies on the roles function above.
-        return ':%s:`%s`' % (colorName, textStr)    
+        return ':%s:`%s`' % (colorName, textStr)
 
 def generator(basePath):
     """Factory method."""

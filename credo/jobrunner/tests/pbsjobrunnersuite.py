@@ -1,8 +1,8 @@
 ##  Copyright (C), 2010, Monash University
 ##  Copyright (C), 2010, Victorian Partnership for Advanced Computing (VPAC)
-##  
+##
 ##  This file is part of the CREDO library.
-##  Developed as part of the Simulation, Analysis, Modelling program of 
+##  Developed as part of the Simulation, Analysis, Modelling program of
 ##  AuScope Limited, and funded by the Australian Federal Government's
 ##  National Collaborative Research Infrastructure Strategy (NCRIS) program.
 ##
@@ -43,20 +43,20 @@ class PBSJobRunnerTestCase(unittest.TestCase):
         modelRun.jobParams = JobParams(nproc=2, maxRunTime=1000,
             pollInterval=10)
         runCommand = "mpiexec ./someApp Input.xml"
-        self.jobRunner._writePBSFile(modelRun, runCommand)       
-    
+        self.jobRunner._writePBSFile(modelRun, runCommand)
+
     def test_writePBSFile_opts(self):
         """This time test writing with several PBS-specific options."""
         modelRun = SkeletonModelRun("skelMRun2", "output/test1")
         modelRun.jobParams = JobParams(nproc=2, maxRunTime=1000,
-            pollInterval=10, 
-            PBS={'queue':"sque", 
+            pollInterval=10,
+            PBS={'queue':"sque",
                 'jobNameLine':"#PBS -N CoolJob",
                 'nodeLine':"#PBS -l nodes=4:3",
                 'sourcefiles':['/usr/srcfile.sh'],
                 'modules':['hdf5','underworld','petsc']})
         runCommand = "mpiexec ./someApp Input.xml"
-        self.jobRunner._writePBSFile(modelRun, runCommand)       
+        self.jobRunner._writePBSFile(modelRun, runCommand)
 
     def test_blockResult(self):
         self.fail()

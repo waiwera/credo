@@ -1,8 +1,8 @@
 ##  Copyright (C), 2010, Monash University
 ##  Copyright (C), 2010, Victorian Partnership for Advanced Computing (VPAC)
-##  
+##
 ##  This file is part of the CREDO library.
-##  Developed as part of the Simulation, Analysis, Modelling program of 
+##  Developed as part of the Simulation, Analysis, Modelling program of
 ##  AuScope Limited, and funded by the Australian Federal Government's
 ##  National Collaborative Research Infrastructure Strategy (NCRIS) program.
 ##
@@ -39,7 +39,7 @@ from credo.analysis import fields
 class ModelResult:
     """A class to keep records about the results of a StgDomain/Underworld
      model run. These are normally produced as a result of running a
-     :class:`~credo.modelrun.ModelRun`. 
+     :class:`~credo.modelrun.ModelRun`.
 
      .. note:: In future, we intend to add the ability to create a ModelResult
         class by reading in an XML file specifying output directory, etc.
@@ -55,7 +55,7 @@ class ModelResult:
      .. attribute:: jobMetaInfo
 
         A :class:`jobrunner.api.JobMetaInfo`, recording information about the
-        run such as time taken, Memory usage etc (generally attached by a 
+        run such as time taken, Memory usage etc (generally attached by a
         :class:`credo.jobrunner.api.JobRunner` soon after the
         ModelResult created).
 
@@ -90,7 +90,7 @@ class ModelResult:
 
         .. seealso: :class:`credo.io.stgfreq.FreqOutput` for info on how to
            use this attribute once created."""
-        self.freqOutput = stgfreq.FreqOutput(self.outputPath)    
+        self.freqOutput = stgfreq.FreqOutput(self.outputPath)
 
     # TODO: is this function still appropriate?
     def recordFieldResult(self, fieldName, tol, errors):
@@ -100,7 +100,7 @@ class ModelResult:
         fieldResult = fields.FieldComparisonResult(fieldName, errors)
         self.fieldResults.append(fieldResult)
         return fieldResult
-    
+
     def defaultRecordFilename(self):
         """Get the default filename to use, based on the model name of a
         particular model."""
@@ -164,7 +164,7 @@ def readModelResultFromPath(path):
 def getSimInfoFromFreqOutput(outputPath):
     """utility function to get basic information about the simulation
     from the FrequentOutput.dat, given a particular output Path.
-    
+
     .. seealso:: :mod:`credo.io.stgfreq`."""
 
     freqOut = stgfreq.FreqOutput(path=outputPath)
@@ -191,7 +191,7 @@ def updateModelResultsXMLFieldInfo(filename, newFieldResult, prettyPrint=True):
 
     xmlDoc = etree.parse(filename)
     root = xmlDoc.getroot()
-    
+
     # Because we just grabbed a reference to the root, the find will
     # look relative to the root
     fieldResultsNode = xmlDoc.find(fields.FieldComparisonResult.XML_INFO_LIST_TAG)

@@ -1,8 +1,8 @@
 ##  Copyright (C), 2010, Monash University
 ##  Copyright (C), 2010, Victorian Partnership for Advanced Computing (VPAC)
-##  
+##
 ##  This file is part of the CREDO library.
-##  Developed as part of the Simulation, Analysis, Modelling program of 
+##  Developed as part of the Simulation, Analysis, Modelling program of
 ##  AuScope Limited, and funded by the Australian Federal Government's
 ##  National Collaborative Research Infrastructure Strategy (NCRIS) program.
 ##
@@ -35,7 +35,7 @@ class SciBenchmarkTest(SysTest):
         which test the conditions of the benchmark.
         Contains extra capabilities to report more fully on the test result
         than a standard system test.
-        
+
         See the examples section of the CREDO documentation,
         :ref:`credo-examples-scibenchmarking`, for examples of sci benchmarking
         in practice.'''
@@ -52,17 +52,17 @@ class SciBenchmarkTest(SysTest):
             basePath = credo.utils.getCallingPath(1)
         if outputPathBase == None:
             outputPathBase = os.path.join("output", testName)
-        SysTest.__init__(self, "SciBenchmark", testName, basePath, 
+        SysTest.__init__(self, "SciBenchmark", testName, basePath,
             outputPathBase, nproc, timeout)
-        # In the case of SciBenchmarks, we will auto-create the 
-        # ModelSuite here, since it's up to the user to configure 
+        # In the case of SciBenchmarks, we will auto-create the
+        # ModelSuite here, since it's up to the user to configure
         # this rather than being done automatically in getSuite().
         self.mSuite = ModelSuite(outputPathBase=self.outputPathBase)
 
     def setupTest(self):
         """Overriding default SysTest.setupTest() method, as for
         SciBenchmarks we want to allow the user to manage test setup
-        explicitly in their benchmark script. Thus assume suite 
+        explicitly in their benchmark script. Thus assume suite
         runs and test components have been setup correctly already."""
         # Re-force this just in case
         self.mSuite.outputPathBase = self.outputPathBase

@@ -40,10 +40,10 @@ def modelVariantsTable(mSuite, rGen, level):
     for ii, values in enumerate(valIter):
         data[ii].append(ii)
         data[ii].extend(list(values))
-    table = rGen.getSimpleDataTableEl(headers, data)    
+    table = rGen.getSimpleDataTableEl(headers, data)
     elements.append(table)
     return elements
-    
+
 def modelImagesDisplay(mSuite, rGen, level, imgPerRow=1):
     imageInfos = mSuite.modelImagesToDisplay
     elements = []
@@ -91,12 +91,12 @@ def modelImagesDisplay(mSuite, rGen, level, imgPerRow=1):
 def defaultAnalysisImgEls(mSuite, rGen, level):
     elements = []
     elements.append(rGen.getHeaderEl("Analysis Images", level))
-    if mSuite.analysisImages is not None:    
+    if mSuite.analysisImages is not None:
         for imgFile in mSuite.analysisImages:
             elements.extend(rGen.getImageEls(os.path.join(
                 mSuite.runs[0].basePath, mSuite.outputPathBase, imgFile),
                 width=rGen.PAGE_WIDTH * .6))
-    return elements            
+    return elements
 
 def makeSuiteReport(mSuite, mResults, rGen, outName, imgPerRow=3):
     #content
@@ -116,7 +116,7 @@ def makeSuiteReport(mSuite, mResults, rGen, outName, imgPerRow=3):
     elements.extend(defaultAnalysisImgEls(mSuite, rGen, level))
     if mSuite.modelImagesToDisplay is not None:
         elements.append(rGen.getHeaderEl("Model Run Images", level))
-        elements.extend(modelImagesDisplay(mSuite, rGen, level+1, 
+        elements.extend(modelImagesDisplay(mSuite, rGen, level+1,
             imgPerRow=imgPerRow))
     rGen.makeDoc(elements, title, outName)
     print "Saved report at %s (%s type)." % (outName, rGen.rType)

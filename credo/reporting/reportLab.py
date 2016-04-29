@@ -5,13 +5,13 @@ from reportlab.lib.units import inch
 from reportlab.lib import colors
 import PIL
 from .reportGenerator import ReportGenerator
- 
+
 PAGE_WIDTH=defaultPageSize[0]
 PAGE_HEIGHT=defaultPageSize[1]
 # Save ReportLab header styles for convenience.
 styles = getSampleStyleSheet()
 ParaStyle = styles["Normal"]
-PreStyle = styles["Code"] 
+PreStyle = styles["Code"]
 BulletStyle = styles["Bullet"]
 HeaderStyleList = [
     styles["Heading1"],
@@ -40,17 +40,17 @@ class ReportLabGenerator(ReportGenerator):
 
     def getHeaderEl(self, txt, level):
         return header(txt, style=HeaderStyleList[level-1], sep=0.05)
-     
+
     def getParaEl(self, txt, level):
         return header(txt, style=ParaStyle, sep=0.1)
-     
+
     def getPreEl(self, txt):
         s = platypus.Spacer(0.1*inch, 0.1*inch)
         p = platypus.Preformatted(txt, PreStyle)
         precomps = [s,p]
         result = platypus.KeepTogether(precomps)
         return result
-     
+
     def getDefListEls(self, listDict):
         # The Table in ReportLab tends to look better than a list for defining
         #  this stuff.
@@ -115,7 +115,7 @@ class ReportLabGenerator(ReportGenerator):
             imgEl = platypus.Image(imgFilename + ".thumbnail")
         else:
             imgEl = platypus.Image(imgFilename)
-        resultEls.append(imgEl)    
+        resultEls.append(imgEl)
 
         if width is not None:
             imgEl.drawWidth = width

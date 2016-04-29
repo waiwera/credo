@@ -1,8 +1,8 @@
 ##  Copyright (C), 2010, Monash University
 ##  Copyright (C), 2010, Victorian Partnership for Advanced Computing (VPAC)
-##  
+##
 ##  This file is part of the CREDO library.
-##  Developed as part of the Simulation, Analysis, Modelling program of 
+##  Developed as part of the Simulation, Analysis, Modelling program of
 ##  AuScope Limited, and funded by the Australian Federal Government's
 ##  National Collaborative Research Infrastructure Strategy (NCRIS) program.
 ##
@@ -28,10 +28,10 @@ from .api import SingleRunTestComponent, CREDO_PASS, CREDO_FAIL
 from credo.utils import dictAsPrettyStr
 
 class OutputWithinRangeTC(SingleRunTestComponent):
-    '''Test component to check that a given output parameter 
+    '''Test component to check that a given output parameter
     (found in the frequent output) is within a given range, and
     optionally also that this occurs within a given set of model times.
-    
+
     .. seealso:: :mod:`credo.io.stgfreq`.
 
     .. attribute:: outputName
@@ -50,7 +50,7 @@ class OutputWithinRangeTC(SingleRunTestComponent):
        * `min() <http://docs.python.org/library/functions.html#min>`_
          - the Minimum value
 
-       .. seealso:: :func:`credo.io.stgfreq.FreqOutput.getReductionOp`  
+       .. seealso:: :func:`credo.io.stgfreq.FreqOutput.getReductionOp`
 
     .. attribute:: allowedRange
 
@@ -61,32 +61,32 @@ class OutputWithinRangeTC(SingleRunTestComponent):
 
        (Optional) determines if a secondary check should be performed, that
        the parameters value checked (eg max) also fell within a given range
-       of model simulation times as a (min,max) tuple. If `None`, this 
+       of model simulation times as a (min,max) tuple. If `None`, this
        secondary check won't be performed.
-       
+
     .. attribute:: actualVal
 
-       After the check is performed, the actual value of the parameter is 
+       After the check is performed, the actual value of the parameter is
        recorded here.
 
     .. attribute:: actualTime
 
-       After the check is performed, records the model sim time at which the 
+       After the check is performed, records the model sim time at which the
        parameters chosen property (eg max or min) occurred.
 
     .. attribute:: withinRange
 
        After the check is performed, records a Bool saying whether
        the test component passed.
-    
+
     .. attribute:: opDict
 
-       (Optional) - will be later passed as keyword arguments to the 
+       (Optional) - will be later passed as keyword arguments to the
        :attr:`.reductionOp` function - so use if the reduction op
        function requires these.
     '''
 
-    def __init__(self, outputName, reductionOp, allowedRange,  
+    def __init__(self, outputName, reductionOp, allowedRange,
             tRange=None, opDict=None):
         SingleRunTestComponent.__init__(self, "outputWithinRange")
         self.outputName = outputName
@@ -100,7 +100,7 @@ class OutputWithinRangeTC(SingleRunTestComponent):
 
     def _writeXMLCustomSpec(self, specNode):
         etree.SubElement(specNode, 'outputName', value=self.outputName)
-        etree.SubElement(specNode, 'reductionOp', 
+        etree.SubElement(specNode, 'reductionOp',
             funcName=str(self.reductionOp.func_name),
             modName=str(inspect.getmodule(self.reductionOp).__name__),
             module=str(inspect.getmodule(self.reductionOp)))
@@ -118,11 +118,11 @@ class OutputWithinRangeTC(SingleRunTestComponent):
             opItemNode = etree.SubElement(opDictNode, 'opItem')
             opItemNode.attrib['name'] = kw
             opItemNode.text = str(val)
-                
+
     def attachOps(self, modelRun):
         """Implements base class
         :meth:`credo.systest.api.SingleRunTestComponent.attachOps`.
-        
+
         .. note:: Currently does nothing. Intend to make it ensure the
            correct plugin is set to be loaded (to make sure observable
            is generated in FrequentOutput.dat)."""
@@ -156,14 +156,14 @@ class OutputWithinRangeTC(SingleRunTestComponent):
         if not self.withinRange:
             statusMsg += " not within required range (%g,%g)." % \
                 self.allowedRange
-            overallResult = False    
+            overallResult = False
         else:
             statusMsg += " within required range (%g,%g)" % \
                 self.allowedRange
             if self.tRange is None:
-                statusMsg += "."        
+                statusMsg += "."
                 overallResult = True
-            else:    
+            else:
                 tMin, tMax = self.tRange
                 withinTRange = (tMin <= self.actualTime <= tMax)
                 if not withinTRange:
@@ -171,7 +171,7 @@ class OutputWithinRangeTC(SingleRunTestComponent):
                         " occurred (%s) not within req'd range (%g,%g)."\
                         % ((self.actualTime,) + self.tRange)
                     overallResult = False
-                else:    
+                else:
                     statusMsg += ", and time at which this"\
                         " occurred (%s) within req'd range (%g,%g)."\
                         % ((self.actualTime,) + self.tRange)

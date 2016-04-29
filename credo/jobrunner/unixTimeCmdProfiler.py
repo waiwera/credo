@@ -57,30 +57,30 @@ class UnixTimeCmdProfiler(PerformanceProfiler):
         h = jobMetaInfo.profilerHandles[self.typeStr]
         newModelRunCmd = "%s %s" % (getRunPrefix(h.resFName, fmtStr),
             oldModelRunCommand)
-        return newModelRunCmd    
+        return newModelRunCmd
 
     def attachPerformanceInfo(self, jobMetaInfo, modelResult):
         h = jobMetaInfo.profilerHandles[self.typeStr]
         #TODO: either here, or in the subfunction:
         # we have h.fmtEls - need to extend that so we can be smarter in parsing
-        #  e.g. units of memory, or time units. 
+        #  e.g. units of memory, or time units.
         resDict = getResDict(h.resFName)
         jobMetaInfo.performance[self.typeStr] = dict(resDict)
 
 def getFmtString(fmtEls, fmtSpec=TIME_FMT_SPEC, fmtSep=TIME_FMT_SEP):
     """Return the format string to use, given a list of format elements,
     using standard separators, so it can be parsed later on.
-    
+
     :arg fmtEls: a list of Tuples, of form (nameStr, fmtItem) - where
        nameStr is the name of the entry to return, and fmtItem is the
        'resource specifier' character as specified in 'man time'.
-       
+
        e.g. [("runTime", "E")] - where "E" is the specifier for Elapsed time"""
     fmtEntries = []
     for fmtEl in fmtEls:
         fmtEntries.append("%s%s%%%s" % (fmtEl[0], fmtSpec, fmtEl[1]))
     fmtStr = fmtSep.join(fmtEntries)
-    return fmtStr    
+    return fmtStr
 
 def getResDict(resFName, fmtSpec=TIME_FMT_SPEC, fmtSep=TIME_FMT_SEP):
     """Get a dictionary of results, contained in the given resFName,
@@ -122,7 +122,7 @@ def parseUnixTimeElapsed(timeElapsedStr):
         raise ValueError("Error, time elapsed string given, '%s',"\
             "doesn't conform to Unix time command's elapsed string format."\
             % timeElapsedStr)
-    return hours * (60*60) + mins * 60 + secs   
+    return hours * (60*60) + mins * 60 + secs
 
 def getRunPrefix(resFName, fmtStr):
     """Get the prefix for a run that will apply the time command.
