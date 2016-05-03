@@ -877,6 +877,7 @@ class SingleRunTestComponent(TestComponent):
         TestComponent.__init__(self, tcType)
 
     def attachOps(self, modelRun):
+        # TODO: [Refactor] interface to remove or changed to pre-run blah.
         '''Provided a modelRun (:class:`credo.modelrun.ModelRun`)
         attaches any necessary analysis operations
         to that run in order to produce the results needed for the test.
@@ -913,6 +914,7 @@ class MultiRunTestComponent(TestComponent):
         TestComponent.__init__(self, tcType)
 
     def attachOps(self, modelRuns):
+        # TODO: [Refactor] interface to remove or changed to pre-run blah.
         '''Provided a list of modelRuns (:class:`credo.modelrun.ModelRun`)
         attaches any necessary analysis operations
         to each run needed for the test.

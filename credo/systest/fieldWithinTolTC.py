@@ -96,6 +96,7 @@ class FieldWithinTolTC(SingleRunTestComponent):
             referencePath=None,
             testTimestep=0
             ):
+        # TODO: [Refactor] simplify, combine Ref/HRRef/Analytic to one
         SingleRunTestComponent.__init__(self, "fieldWithinTol")
         self.fieldsToTest = fieldsToTest
         self.defFieldTol = defFieldTol
@@ -112,6 +113,7 @@ class FieldWithinTolTC(SingleRunTestComponent):
         self.fieldErrors = {}
 
     def attachOps(self, modelRun):
+        # TODO: [Refactor] interface to remove or changed to pre-run blah.
         """Implements base class
         :meth:`credo.systest.api.SingleRunTestComponent.attachOps`."""
         if self.fieldsToTest == None:
@@ -123,6 +125,7 @@ class FieldWithinTolTC(SingleRunTestComponent):
         modelRun.analysisOps['fieldComparisons'] = self.fComps
 
     def getTolForField(self, fieldName):
+        # TODO: [Refactor] remove
         """Utility func: given fieldName, returns the tolerance to use for
         testing that field (may be given by :attr:`.defFieldTol`, or
         been over-ridden in :attr:`.fieldTols`)."""
@@ -160,6 +163,7 @@ class FieldWithinTolTC(SingleRunTestComponent):
         return overallResult
 
     def _checkFieldWithinTol(self, fComp, mResult):
+        # TODO: [Refactor] remove, only used by .check()
         fieldTol = self.getTolForField(fComp.name)
         fCompRes = fComp.getResult(mResult)
         fieldResult = fCompRes.withinTol(fieldTol)

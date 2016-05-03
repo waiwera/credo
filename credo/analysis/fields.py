@@ -48,6 +48,7 @@ from credo.io import stgxml, stgcvg
 import credo.analysis.stats as stats
 
 class FieldComparisonOp:
+    # TODO: [Refactor] remove, not needed in new structure
     '''Class for setting up and performing a comparison between two Fields.
     Currently uses the functionality of the FieldTest component in StgFEM,
     and requires using a :class:`FieldComparisonList` to run a group of
@@ -89,6 +90,7 @@ class FieldComparisonOp:
 
 
 class FieldComparisonResult:
+    # TODO: [Refactor] remove, not needed in new structure
     '''Simple class for storing CREDO FieldComparisonOp Results, so they can be
     analysed and saved.
 
@@ -219,6 +221,7 @@ class FieldComparisonResult:
 
 
 class FieldComparisonList(AnalysisOperation):
+    # TODO: [Refactor] remove, not needed in new structure
     '''Class for maintaining and managing a list of field comparisons
     (managed as a list of :class:`FieldComparisonOp` objects),
     including IO from StGermain XML files.
