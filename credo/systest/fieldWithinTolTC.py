@@ -76,7 +76,6 @@ class FieldWithinTolTC(SingleRunTestComponent):
             expected=None,
             testTimestep=-1
             ):
-        # TODO: [Refactor] simplify, combine Ref/HRRef/Analytic to one
         SingleRunTestComponent.__init__(self, "fieldWithinTol")
         self.fieldsToTest = fieldsToTest
         self.defFieldTol = defFieldTol
@@ -87,6 +86,7 @@ class FieldWithinTolTC(SingleRunTestComponent):
         if callable(expected):
             self.compareSource = 'analytic'
         else:
+            # TODO: [Refactor] add support for HighResReferenceResult
             self.compareSource = 'reference'
         self.expected = expected
         self.testTimestep = testTimestep
@@ -136,8 +136,19 @@ class FieldWithinTolTC(SingleRunTestComponent):
         return overallResult
 
     def _checkFieldWithinTol(self, field, mResult):
-        """ checks a particular field against ModelResult, returns fieldResult
-        (True/False) and dofErrors (float).
+        """ This is the core of the TC, checks a field from ModelResult against
+        the expected.  Returns fieldResult (a True/False) and dofErrors (a list
+        of float).
+
+        If using reference model as comparison source, expected should be
+        ReferenceResult/HighResReferenceResult, which behaves like a normal
+        ModelResult, .getFieldAtStep() is used here.
+
+        If expected is an analytic function (callable), it will call
+        ModelResult.getPositions() and get expected values from func using the
+        positions (a list of tuples).  It is user's responsibility to ensure the
+        analytic function accepts the positions returned by
+        ModelResult.getPositions().
         """
         import numpy as np
         def withinTol(tol, dofErrors):
@@ -152,6 +163,7 @@ class FieldWithinTolTC(SingleRunTestComponent):
             # analytic, calls func with position
             expected = np.array([self.expected(pos) for pos in mResult.getPositions()])
         else:
+            # TODO: [Refactor] add support for HighResReferenceResult
             expected = self.expected.getFieldAtStep(field, self.testTimestep)
         dofErrors = self._getDifference(expected, result)
         fieldResult = withinTol(fieldTol, dofErrors)
