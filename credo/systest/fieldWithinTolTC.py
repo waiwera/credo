@@ -24,32 +24,20 @@
 from xml.etree import ElementTree as etree
 
 from .api import SingleRunTestComponent, CREDO_PASS, CREDO_FAIL
-import credo.analysis.fields as fields
 
 class FieldWithinTolTC(SingleRunTestComponent):
     """Checks whether, for a particular set of fields, the error
     between each field and an (analytic or reference) solution
     is below a specificed tolerance.
 
-    This relies largely on functionality of:
-
-    * :mod:`credo.analysis.fields` to specify the comparison operations
-    * :mod:`credo.io.stgcvg` to analyse the "convergence" files containing
-      comparison information produced by these operations.
-
     Other than those that are directly saved as attributes documented below,
     the constructor arguments of interest are:
 
-    * useReference: determines whether the fields are compared against
-      a reference, or analytic solution. See
-      :meth:`credo.analysis.fields.FieldComparisonList.useReference`
-    * useHighResReference: determines whether the fields are compared against
-      a high resolution reference field, or analytic solution. See
-      :meth:`credo.analysis.fields.FieldComparisonList.useHighResReference`
-    * referencePath: See
-      :meth:`credo.analysis.fields.FieldComparisonList.referencePath`
-    * testTimestep: See
-      :meth:`credo.analysis.fields.FieldComparisonList.testTimestep`
+    * expected: An expected solution in the form of a ModelResult
+      (ReferenceResult, HighResReferenceResult) or a function (analytic
+      solution).
+    * testTimestep: Integer, the timestep of the model that the comparison will
+      occur at.  If -1, means the final timestep.
 
     .. attribute:: fieldsToTest
 
@@ -69,12 +57,6 @@ class FieldWithinTolTC(SingleRunTestComponent):
        to use, overriding the default. E.g. {"VelocityField":1e-4} means
        the tolerance used for the VelocityField will be 1e-4.
 
-    .. attribute:: fComps
-
-        A :class:`credo.analysis.fields.FieldComparisonList` used as an
-        operator to attach to ModelRuns to be tested, and do the actual
-        comparison between fields.
-
     .. attribute:: fieldResults
 
        Initially {}, after the test is completed will store a dictionary
@@ -91,24 +73,23 @@ class FieldWithinTolTC(SingleRunTestComponent):
     def __init__(self, fieldsToTest=None,
             defFieldTol=0.01,
             fieldTols=None,
-            useReference=False,
-            useHighResReference= False,
-            referencePath=None,
-            testTimestep=0
+            expected=None,
+            testTimestep=-1
             ):
         # TODO: [Refactor] simplify, combine Ref/HRRef/Analytic to one
         SingleRunTestComponent.__init__(self, "fieldWithinTol")
         self.fieldsToTest = fieldsToTest
         self.defFieldTol = defFieldTol
         self.fieldTols = fieldTols
-        self.fComps = fields.FieldComparisonList()
-        self.fComps.useReference = useReference
-        self.fComps.useHighResReference = useHighResReference
-        if useReference and useHighResReference:
-            raise ValueError("Don't define both regular reference and high "\
-               "res reference solution mode - choose one or the other.")
-        self.fComps.referencePath = referencePath
-        self.fComps.testTimestep = testTimestep
+        # TODO: [Refactor] complete check with ModelResult and func
+        if expected is None:
+            raise ValueError("expected solution must be ModelResult or func.")
+        if callable(expected):
+            self.compareSource = 'analytic'
+        else:
+            self.compareSource = 'reference'
+        self.expected = expected
+        self.testTimestep = testTimestep
         self.fieldResults = {}
         self.fieldErrors = {}
 
@@ -116,16 +97,9 @@ class FieldWithinTolTC(SingleRunTestComponent):
         # TODO: [Refactor] interface to remove or changed to pre-run blah.
         """Implements base class
         :meth:`credo.systest.api.SingleRunTestComponent.attachOps`."""
-        if self.fieldsToTest == None:
-            self.fComps.readFromStgXML(modelRun.modelInputFiles,
-                modelRun.basePath)
-        else:
-            for fieldName in self.fieldsToTest:
-                self.fComps.add(fields.FieldComparisonOp(fieldName))
-        modelRun.analysisOps['fieldComparisons'] = self.fComps
+        pass
 
-    def getTolForField(self, fieldName):
-        # TODO: [Refactor] remove
+    def _getTolForField(self, fieldName):
         """Utility func: given fieldName, returns the tolerance to use for
         testing that field (may be given by :attr:`.defFieldTol`, or
         been over-ridden in :attr:`.fieldTols`)."""
@@ -142,54 +116,74 @@ class FieldWithinTolTC(SingleRunTestComponent):
         self.fieldErrors = {}
         statusMsg = ""
         overallResult = True
-        for fComp in self.fComps.fields.itervalues():
-            fieldTol = self.getTolForField(fComp.name)
-            fieldResult, dofErrors = self._checkFieldWithinTol(fComp, mResult)
-            self.fieldResults[fComp.name] = fieldResult
-            self.fieldErrors[fComp.name] = dofErrors
+        for field in self.fieldsToTest:
+            fieldResult, dofErrors = self._checkFieldWithinTol(field, mResult)
+            self.fieldResults[field] = fieldResult
+            self.fieldErrors[field] = dofErrors
+            fieldTol = self._getTolForField(field)
             if not fieldResult:
                 statusMsg += "Field comp '%s' error(s) of %s not within"\
                     " tol %g of %s solution\n"\
-                    % (fComp.name, dofErrors, fieldTol,
-                    self.fComps.getCmpSrcString())
+                    % (field, dofErrors, fieldTol, self.compareSource)
                 overallResult = False
             else:
                 statusMsg += "Field comp '%s' error within tol %g of %s"\
                     " solution.\n"\
-                    % (fComp.name, fieldTol, self.fComps.getCmpSrcString())
+                    % (field, fieldTol, self.compareSource)
 
         print statusMsg
         self._setStatus(overallResult, statusMsg)
         return overallResult
 
-    def _checkFieldWithinTol(self, fComp, mResult):
-        # TODO: [Refactor] remove, only used by .check()
-        fieldTol = self.getTolForField(fComp.name)
-        fCompRes = fComp.getResult(mResult)
-        fieldResult = fCompRes.withinTol(fieldTol)
-        dofErrors = fCompRes.dofErrors
+    def _checkFieldWithinTol(self, field, mResult):
+        """ checks a particular field against ModelResult, returns fieldResult
+        (True/False) and dofErrors (float).
+        """
+        import numpy as np
+        def withinTol(tol, dofErrors):
+            """Checks that the difference between the fields is within a given
+            tolerance, at the final timestep."""
+            for dofError in dofErrors:
+                if dofError > tol: return False
+            return True
+        fieldTol = self._getTolForField(field)
+        result = mResult.getFieldAtStep(field, self.testTimestep)
+        if callable(self.expected):
+            # analytic, calls func with position
+            expected = np.array([self.expected(pos) for pos in mResult.getPositions()])
+        else:
+            expected = self.expected.getFieldAtStep(field, self.testTimestep)
+        dofErrors = self._getDifference(expected, result)
+        fieldResult = withinTol(fieldTol, dofErrors)
         return fieldResult, dofErrors
 
+    def _getDifference(self, data1, data2, zero_tolerance=1.e-9):
+        """ Calculates difference array between two listing tables.  For values
+        of data1 with absolute value greater than zero_tolerance, this is the
+        relative difference for each element (|(t1-t2)/t1|). Otherwise, this is
+        the absolute difference (|t1-t2|).
+        """
+        import numpy as np
+        diff = data1 - data2
+        rdiff = np.abs(diff / data1)
+        iz = np.where(np.abs(data1) <= zero_tolerance)
+        rdiff[iz] = np.abs(diff[iz])
+        return rdiff
+
     def _writeXMLCustomSpec(self, specNode):
-        etree.SubElement(specNode, 'fromXML', value=str(self.fComps.fromXML))
         etree.SubElement(specNode, 'testTimestep',
-            value=str(self.fComps.testTimestep))
-        etree.SubElement(specNode, 'useReference',
-            value=str(self.fComps.useReference))
-        etree.SubElement(specNode, 'useHighResReference',
-            value=str(self.fComps.useHighResReference))
-        if self.fComps.useReference or self.fComps.useHighResReference:
-            etree.SubElement(specNode, 'referencePath',
-                value=self.fComps.referencePath)
+            value=str(self.testTimestep))
+        etree.SubElement(specNode, 'compareSource',
+            value=str(self.compareSource))
         fListNode = etree.SubElement(specNode, 'fields')
-        for fName in self.fComps.fields.keys():
+        for fName in self.fieldsToTest:
             fNode = etree.SubElement(fListNode, 'field', name=fName,
-                tol=str(self.getTolForField(fName)))
+                tol=str(self._getTolForField(fName)))
 
     def _writeXMLCustomResult(self, resNode, mResult):
         frNode = etree.SubElement(resNode, 'fieldResultDetails')
-        for fName, fComp in self.fComps.fields.iteritems():
-            fieldTol = self.getTolForField(fName)
+        for fName in self.fieldsToTest:
+            fieldTol = self._getTolForField(fName)
             fieldRes = self.fieldResults[fName]
             fieldNode = etree.SubElement(frNode, "field", name=fName)
             fieldNode.attrib['allDofsWithinTol'] = str(fieldRes)
