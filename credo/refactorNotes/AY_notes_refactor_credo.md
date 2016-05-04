@@ -18,6 +18,13 @@ I may need new classes to manage the expected values such as `ReferenceResult` a
 
 SingleRunTestComponent.attachOps() and MultiRunTestComponent.attachOps() are really just pre-run process applied to ModelRun(s)?  Most of these are not necessary for AUT2/supermodel.
 
+### ModelResult
+
+ModelResult should be responsible for extracting values for comparison.  Some standard ways of geting values should be designed as common interface, as TCs that uses ModelResult does not know/care what kind of Model it is using.
+
+I think I will start with a few methods:
+.getFieldAtStep(field, timeStep)
+.getPositions()
 
 Steps
 -----
