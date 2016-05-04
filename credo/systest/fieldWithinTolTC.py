@@ -165,22 +165,9 @@ class FieldWithinTolTC(SingleRunTestComponent):
         else:
             # TODO: [Refactor] add support for HighResReferenceResult
             expected = self.expected.getFieldAtStep(field, self.testTimestep)
-        dofErrors = self._getDifference(expected, result)
+        dofErrors = calc_errors(expected, result)
         fieldResult = withinTol(fieldTol, dofErrors)
         return fieldResult, dofErrors
-
-    def _getDifference(self, data1, data2, zero_tolerance=1.e-9):
-        """ Calculates difference array between two listing tables.  For values
-        of data1 with absolute value greater than zero_tolerance, this is the
-        relative difference for each element (|(t1-t2)/t1|). Otherwise, this is
-        the absolute difference (|t1-t2|).
-        """
-        import numpy as np
-        diff = data1 - data2
-        rdiff = np.abs(diff / data1)
-        iz = np.where(np.abs(data1) <= zero_tolerance)
-        rdiff[iz] = np.abs(diff[iz])
-        return rdiff
 
     def _writeXMLCustomSpec(self, specNode):
         etree.SubElement(specNode, 'testTimestep',
@@ -205,3 +192,21 @@ class FieldWithinTolTC(SingleRunTestComponent):
                 deNode.attrib["num"] = str(dofI)
                 deNode.attrib["error"] = "%6e" % dofError
                 deNode.attrib["withinTol"] = str(dofError <= fieldTol)
+
+# This is the same as used in AUT2's testing at the moment, but maybe there is a
+# better way.
+#
+# TODO: do a literature research how to compare two set of values scientificly
+def calc_errors(data1, data2, zero_tolerance=1.e-9):
+    """ Calculates difference array between two listing tables.  For values
+    of data1 with absolute value greater than zero_tolerance, this is the
+    relative difference for each element (|(t1-t2)/t1|). Otherwise, this is
+    the absolute difference (|t1-t2|).
+    """
+    import numpy as np
+    diff = data1 - data2
+    rdiff = np.abs(diff / data1)
+    iz = np.where(np.abs(data1) <= zero_tolerance)
+    rdiff[iz] = np.abs(diff[iz])
+    return rdiff
+
