@@ -96,6 +96,7 @@ class ModelRun:
        through to StGermain).
 
     .. attribute:: cpReadPath
+    # TODO:[ Refactor] remove, StGermain specific (maybe)
 
        Path that checkpoints are read from (is passed through to StGermain).
 
@@ -159,6 +160,7 @@ class ModelRun:
           list. In future this approach may be refactored.
 
     .. attribute:: analysisOps
+    # TODO:[ Refactor] remove, StGermain specific
 
        A list of :class:`credo.analysis.api.AnalysisOperation` that are
        associated with this ModelRun, and will be applied when the
@@ -166,12 +168,14 @@ class ModelRun:
        additional StGermain XML).
 
     .. attribute:: analysisXML
+    # TODO:[ Refactor] remove, StGermain specific
 
        Initally `None`, this will be populated with the filename of the
        additional XML document written containing parameter overrides,
        and requested analysis operations.
 
     .. attribute:: cpFields
+    # TODO:[ Refactor] remove, StGermain specific
 
        A list of fields that the user wishes to checkpoint in the run.
        Defaults to [], in which case the list (if any) in the model
