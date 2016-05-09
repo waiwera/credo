@@ -120,6 +120,7 @@ class SimpleJobRunner(JobRunner):
                 stdout=stdOutFile, stderr=stdErrFile)
             jobMI.procHandle = procHandle
         except OSError:
+            # TODO: [Refactor] this is not always correct? rewrite.
             raise ModelRunLaunchError(modelRun.name, runAsArgs[0],
                 "You can set the MPI_RUN_COMMAND env. variable to control"
                 " the MPI command used.")
@@ -134,6 +135,9 @@ class SimpleJobRunner(JobRunner):
         return jobMI
 
     def _getRunCommandLine(self, modelRun, prefixStr, extraCmdLineOpts):
+        """ Obtain run command from ModelRun object, if use MPI, related command
+        will be added.
+        """
         modelRunCommand = modelRun.getModelRunCommand(extraCmdLineOpts)
         # Construct full run line
         if self.mpi:
