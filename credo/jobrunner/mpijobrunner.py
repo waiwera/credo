@@ -53,12 +53,9 @@ class MPIJobMetaInfo(JobMetaInfo):
 
 
 class MPIJobRunner(JobRunner):
-    def __init__(self):
+    def __init__(self, mpi=False):
         JobRunner.__init__(self)
-        if MPI_RUN_COMMAND in os.environ:
-            self.mpiRunCommand = os.environ[MPI_RUN_COMMAND]
-        else:
-            self.mpiRunCommand = DEFAULT_MPI_RUN_COMMAND
+        self.mpi = mpi
         defProfiler = None
         # TODO: perhaps a more declarative approach to choosing profiler
         #  to use better in future than what's below ... e.g. have a profiler
@@ -88,7 +85,7 @@ class MPIJobRunner(JobRunner):
 
         modelRun.checkValidRunConfig()
         modelRun.preRunPreparation() #This includes finalising input files
-        runCommand = self._getMPIRunCommandLine(modelRun, prefixStr,
+        runCommand = self._getRunCommandLine(modelRun, prefixStr,
             extraCmdLineOpts)
 
         # Run the run command, sending stdout and stderr to defined log paths
@@ -136,12 +133,19 @@ class MPIJobRunner(JobRunner):
         self.attachPlatformInfo(jobMI)
         return jobMI
 
-    def _getMPIRunCommandLine(self, modelRun, prefixStr, extraCmdLineOpts):
+    def _getRunCommandLine(self, modelRun, prefixStr, extraCmdLineOpts):
         modelRunCommand = modelRun.getModelRunCommand(extraCmdLineOpts)
         # Construct full run line
-        mpiPart = "%s -np %d" % (self.mpiRunCommand,
-            modelRun.jobParams['nproc'])
-        runCommand = " ".join([mpiPart, modelRunCommand])
+        if self.mpi:
+            if MPI_RUN_COMMAND in os.environ:
+                mpiRunCommand = os.environ[MPI_RUN_COMMAND]
+            else:
+                mpiRunCommand = DEFAULT_MPI_RUN_COMMAND
+            mpiPart = "%s -np %d" % (mpiRunCommand,
+                modelRun.jobParams['nproc'])
+            runCommand = " ".join([mpiPart, modelRunCommand])
+        else:
+            runCommand = modelRunCommand
         if prefixStr is not None:
             # NB: in the case of MPI runs, we prefix the prefixStr before MPI
             # command and args ... appropriate for things like timing stuff.
