@@ -54,7 +54,66 @@ DEF_NPROC = 1
 DEF_MAX_RUN_TIME = None
 DEF_POLL_INTERVAL = 1
 
-class ModelRun:
+class ModelRun(object):
+    """ An abstract class that defines the common interface of various model
+    runs (for different simultors).
+
+    JobRunner only uses the following attributes:
+        .name .basePath .outputPath .jobParams .logPath
+        .getModelRunCommand() .getStdOutFilename() .getStdErrFilename()
+        .checkValidRunConfig() .preRunPreparation() .postRunCleanup()
+        .createModelResult()
+
+    """
+    def __init__(self, name, basePath=None, outputPath=None, logPath=None):
+        self.name = name
+        if basePath is None:
+            # Default to the path of the calling script
+            self.basePath = credo.utils.getCallingPath(1)
+        else:
+            self.basePath = basePath
+        self.basePath = os.path.abspath(self.basePath)
+        if outputPath is None:
+            # Sensible default is output/name
+            self.outputPath = os.path.join("output", name)
+        else:
+            self.outputPath = outputPath
+        if logPath is None:
+            self.logPath = self.outputPath
+        else:
+            self.logPath = logPath
+        self.jobParams = JobParams()
+
+    def getModelRunCommand(self, extraCmdLineOpts=None, absXMLPaths=False):
+        # TODO: [Refactor] do I need absXMLPaths?
+        raise NotImplementedError(".getModelRunCommand()")
+
+    def getStdOutFilename(self):
+        """Get the name of the file this Model's stdout needs to/has been
+        saved to."""
+        return os.path.join(self.outputPath, "%s.stdout" % self.name)
+
+    def getStdErrFilename(self):
+        """Get the name of the file this Model's stderr needs to/has been
+        saved to."""
+        return os.path.join(self.outputPath, "%s.stderr" % self.name)
+
+    def checkValidRunConfig(self):
+        pass
+
+    def preRunPreparation(self):
+        pass
+
+    def postRunCleanup(self):
+        pass
+
+    def createModelResult(self):
+        """ This is to be called by JobRunner to generate ModelResult.  It
+        returns a ModelResult object that matches the ModelRun object.
+        """
+        raise NotImplementedError(".createModelResult()")
+
+class UnderworldModelRun(ModelRun):
     """A class to keep records about a StgDomain/Underworld Model Run,
     including access to the underlying XML of the actual model.
 

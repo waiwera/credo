@@ -67,7 +67,7 @@ This requires to modify the way ModelResult is created.  CREDO creates a ModelRe
 
 A ModelRun should have the following interfaces:
 
-.basePath .name .outputPath .jobParams
+.basePath .name .outputPath .jobParams .logPath
 
 .getModelRunCommand()
 .getStdOutFilename() .getStdErrFilename()

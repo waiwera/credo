@@ -2,40 +2,17 @@ import unittest
 import os, sys
 
 from credo.jobrunner import SimpleJobRunner
-from credo.modelrun import JobParams
+from credo.modelrun import ModelRun, JobParams
 from credo.modelresult import ModelResult
 
 TEST_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'test_run_dir')
 
-class MockModelRun(object):
+class MockModelRun(ModelRun):
     def __init__(self):
-        self.name = 'mock_model_run'
-        self.basePath = TEST_PATH
-        self.outputPath = os.path.join("output", self.name)
-        self.logPath = self.outputPath
-        self.jobParams = JobParams()
+        super(MockModelRun, self).__init__('mock_model_run', TEST_PATH)
 
     def getModelRunCommand(self, extraCmdLineOpts=None, absXMLPaths=False):
         return 'dir'
-
-    def getStdOutFilename(self):
-        """Get the name of the file this Model's stdout needs to/has been
-        saved to."""
-        return os.path.join(self.logPath, "%s.stdout" % self.name)
-
-    def getStdErrFilename(self):
-        """Get the name of the file this Model's stderr needs to/has been
-        saved to."""
-        return os.path.join(self.logPath, "%s.stderr" % self.name)
-
-    def checkValidRunConfig(self):
-        pass
-
-    def preRunPreparation(self):
-        pass
-
-    def postRunCleanup(self):
-        pass
 
     def createModelResult(self):
         """ This is a new interface, to be called by JobRunner to generate
