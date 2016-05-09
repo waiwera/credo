@@ -76,6 +76,11 @@ A ModelRun should have the following interfaces:
 
 ### JobRunner
 
+JobRunner is used by SysTest in runTest() etc which requires jrunner to be passed in as an argument.  There are many ways of running tests (multi/single etc) that basically use the same mechanism: 
+
+1. call .submitRun(mrun, ...), which returns jobMI
+2. then call .blockResult(mrun, jobMI), which returns mresult
+
 Basically need to implement .submirRun() and .blockResult().  CREDO have two implementations already: MPIJobRunner (for running mpiexec etc directly) and PBSJobRunner (some kind of HPC scheduler).
 
 - These two JobRunners seems to have some repetition codes.  Maybe can refactor out in the future?
