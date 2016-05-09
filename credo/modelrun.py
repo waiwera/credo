@@ -64,6 +64,33 @@ class ModelRun(object):
         .checkValidRunConfig() .preRunPreparation() .postRunCleanup()
         .createModelResult()
 
+
+    Key attributes:
+
+    .. attribute:: name
+
+       name of the modelRun.
+
+    .. attribute:: basePath
+
+       The path from which all paths to model input files (on the local machine)
+       are specified relative to, and which the job will run in (if running
+       on local machine).
+
+    .. attribute:: outputPath
+
+       Output path that all model results will be saved to (is passed
+       through to StGermain).
+
+    .. attribute:: logPath
+
+       Path that log files of the run will be saved to.
+
+    .. attribute:: jobParams
+
+       A :class:`.JobParams` class, to record options needed to define
+       how the model should be actually run (eg number of procs to use).
+
     """
     def __init__(self, name, basePath=None, outputPath=None, logPath=None):
         self.name = name
