@@ -31,6 +31,8 @@ from credo.modelresult import ModelResult
 from credo.modelsuite import ModelSuite
 from credo.jobrunner.mpijobrunner import MPIJobRunner, MPIJobMetaInfo
 
+# TODO: [Refactor] this module does not seem to test anything, to remove
+
 class MPIJobRunnerTestCase(unittest.TestCase):
     def setUp(self):
         self.jobRunner = MPIJobRunner()

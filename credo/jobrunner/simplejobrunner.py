@@ -39,10 +39,10 @@ from credo.jobrunner.unixTimeCmdProfiler import UnixTimeCmdProfiler
 MPI_RUN_COMMAND = "MPI_RUN_COMMAND"
 DEFAULT_MPI_RUN_COMMAND = "mpiexec"
 
-class MPIJobMetaInfo(JobMetaInfo):
+class SimpleJobMetaInfo(JobMetaInfo):
     def __init__(self):
         JobMetaInfo.__init__(self, 0)
-        self.runType = "MPI"
+        self.runType = "Simple"
         self.runCommand = None
         self.procHandle = None
 
@@ -52,7 +52,7 @@ class MPIJobMetaInfo(JobMetaInfo):
         etree.SubElement(jmNode, 'runCommand').text = str(self.runCommand)
 
 
-class MPIJobRunner(JobRunner):
+class SimpleJobRunner(JobRunner):
     def __init__(self, mpi=False):
         JobRunner.__init__(self)
         self.mpi = mpi
@@ -74,7 +74,7 @@ class MPIJobRunner(JobRunner):
     def submitRun(self, modelRun, prefixStr=None, extraCmdLineOpts=None,
             dryRun=False, maxRunTime=None):
         """See :meth:`credo.jobrunner.api.JobRunner.submit`."""
-        jobMI = MPIJobMetaInfo()
+        jobMI = SimpleJobMetaInfo()
 
         # Navigate to the model's base directory
         startDir = os.getcwd()
