@@ -84,8 +84,17 @@ class ModelRun(object):
             self.logPath = logPath
         self.jobParams = JobParams()
 
-    def getModelRunCommand(self, extraCmdLineOpts=None, absXMLPaths=False):
-        # TODO: [Refactor] do I need absXMLPaths?
+    def getModelRunCommand(self, extraCmdLineOpts=None):
+        """ Construct the command needed to run that model, and return as a
+        string. This is mainly called by JobRunner.
+
+        :keyword extraCmdLineOpts: any extra command line options, to be
+          passed straight through to the model.
+
+        JobRunner may add mpiexec or profiler related commands in the front.
+        JobRunner may also pass additional commandline options that belongs to
+        the simulator.
+        """
         raise NotImplementedError(".getModelRunCommand()")
 
     def getStdOutFilename(self):
