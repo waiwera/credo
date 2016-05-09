@@ -3,6 +3,7 @@ import os, sys
 
 from credo.jobrunner import SimpleJobRunner
 from credo.modelrun import JobParams
+from credo.modelresult import ModelResult
 
 TEST_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'test_run_dir')
 
@@ -10,7 +11,7 @@ class MockModelRun(object):
     def __init__(self):
         self.name = 'mock_model_run'
         self.basePath = TEST_PATH
-        self.outputPath = self.basePath
+        self.outputPath = os.path.join("output", self.name)
         self.logPath = self.outputPath
         self.jobParams = JobParams()
 
@@ -35,6 +36,17 @@ class MockModelRun(object):
 
     def postRunCleanup(self):
         pass
+
+    def createModelResult(self):
+        """ This is a new interface, to be called by JobRunner to generate
+        ModelResult.  It returns a ModelResult object that matches the ModelRun
+        object.
+
+        Here it just use ModelResult (before refactoring)
+        """
+        absOutPath = os.path.join(self.basePath, self.outputPath)
+        mres = ModelResult(self.name, absOutPath)
+        return mres
 
 
 class TestJobRunner(unittest.TestCase):

@@ -61,6 +61,8 @@ This requires to modify the way ModelResult is created.  CREDO creates a ModelRe
 
 - ??? Should I let ModelRun generate ModelResult directly? eg. mResult = mRun.makeResult() ???
 
+*???* I am still not 100% sure if it's best to let ModelRun object to create ModelResult.  This almost implies that it's not JobRunner that generates modelresult.  In a way, a modelresult depends on the modelrun object, BUT it's generated as an product of JobRunner.
+
 ### ModelRun
 
 A ModelRun should have the following interfaces:
