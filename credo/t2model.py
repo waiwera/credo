@@ -1,0 +1,118 @@
+##  Copyright (C), 2010, Monash University
+##  Copyright (C), 2010, Victorian Partnership for Advanced Computing (VPAC)
+##  Copyright (C), 2016, University of Auckland
+##
+##  This file is part of the CREDO library.
+##  Developed as part of the Simulation, Analysis, Modelling program of
+##  AuScope Limited, and funded by the Australian Federal Government's
+##  National Collaborative Research Infrastructure Strategy (NCRIS) program.
+##
+##  This library is free software; you can redistribute it and/or
+##  modify it under the terms of the GNU Lesser General Public
+##  License as published by the Free Software Foundation; either
+##  version 2.1 of the License, or (at your option) any later version.
+##
+##  This library is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+##  Lesser General Public License for more details.
+##
+##  You should have received a copy of the GNU Lesser General Public
+##  License along with this library; if not, write to the Free Software
+##  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+##  MA  02110-1301  USA
+
+""" This module implements the supports for the AUTOUGH2/TOUGH2 simulator.
+
+These classes are concrete implementatins of ModelRun and ModelResult, core
+modules for CREDO.  They defines and manages running models of AUTOUGH2
+simulator.
+
+This module depends heavily on the PyTOUGH library.
+
+Primary interface is via the :class:`ModelRun`, which enables you to specify,
+configure and run a Model, and save records of this as an XML. This process will
+produce a :class:`credo.modelresult.ModelResult` class.
+"""
+
+from credo.modelrun import ModelRun
+
+from t2listing import t2listing
+
+# Allow MPI command to be overriden by env var.
+AUT2_COMMAND = "AUT2_COMMAND"
+DEFAULT_AUT2_COMMAND = "autough2_4"
+
+class T2ModelRun(ModelRun):
+    def __init__(self, name, dat_filename, save_filename='', incon_filename='',
+                 simulator=DEFAULT_AUT2_COMMAND,
+                 basePath=None, outputPath=None, logPath=None,
+                 ):
+        super(T2ModelRun, self).__init__(name, basePath, outputPath, logPath)
+
+        self._dat_filename = dat_filename
+        self._save_filename = save_filename
+        self._incon_filename = incon_filename
+        self._simulator = simulator
+
+        # initialised in .preRunPreparation()
+        self._runCommand = None
+        self._lstbase = None
+
+    def preRunPreparation(self):
+        from os.path import basename, join
+        datbase, savebase, inconbase = self._aut2FileNameBases()
+        runfilename = datbase + '_' + basename(self._simulator) + '.in'
+        with open(join(self.basePath, runfilename),'w') as f:
+            f.write('\n'.join([
+                savebase,
+                inconbase,
+                datbase,]))
+        self._runCommand = "%s < %s" % (self._simulator, runfilename)
+        self._lstbase = datbase
+
+    def getModelRunCommand(self, extraCmdLineOpts=None):
+        """ Note: this is called AFTER .preRunPreparation() """
+        # AUT2 does not care these
+        return self._runCommand
+
+    def _aut2FileNameBases(self):
+        """ Returns the basenames of the three model files (datbase, savebase,
+        inconbase)
+        """
+        from os.path import splitext, basename
+        datbase,ext = splitext(self._dat_filename)
+        if self._save_filename == '':
+            savebase = datbase
+        else:
+            savebase,ext = splitext(self._save_filename)
+        if self._incon_filename == '':
+            inconbase = datbase
+        else:
+            inconbase,ext = splitext(self._incon_filename)
+        return (datbase, savebase, inconbase)
+
+    def createModelResult(self):
+        """ Note: this is called AFTER .postRunCleanup() """
+        from os.path import join
+        lst_filename = join(self.outputPath, self._lstbase+'.listing')
+        mres = T2ModelResult(self.name, lst_filename)
+        return mres
+
+# TODO: [Refactor] this is kind of a simple mock up for testing T2ModelRun
+class T2ModelResult(object):
+    """ TODO: [Refactor] create and inherite base class with defined interface.
+    """
+    def __init__(self, name, lst_filename):
+        super(T2ModelResult, self).__init__()
+        self.name = name
+        self._lst = t2listing(lst_filename)
+
+        # TODO: [Refactor] check where are these expected
+        self.jobMetaInfo = None
+        self.outputPath = ''
+
+    def getFieldAtStep(self, field, time_step):
+        self._lst.step = time_step
+        return lst.element[field]
+
