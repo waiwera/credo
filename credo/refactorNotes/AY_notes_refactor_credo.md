@@ -101,4 +101,5 @@ I think I will try refactor the MPI-related parts out from MPIJobRunner:
 3. Implement MPI back from new JobRunner class.
 4. Finalise ModelRun base class, refactor CREDO's original ModelRun to create abstract ModelRun and concrete AUT2ModelRun.
 5. Refactor CREDO's original ModelResult to abstract ModelResult base class and concrete AUT2ModelResult.
-6. See if supercode ModelRun and ModelResult easy to create.
+6. Create a SciBenchmarkTest example to see if everything fits together, with just one TC (FieldWithinTolTC).
+7. See if supercode ModelRun and ModelResult easy to create.
