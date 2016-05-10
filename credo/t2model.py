@@ -45,6 +45,13 @@ AUT2_COMMAND = "AUT2_COMMAND"
 DEFAULT_AUT2_COMMAND = "autough2_4"
 
 class T2ModelRun(ModelRun):
+    """ for AUT2
+
+    TODO: ?? do I need to include the optional geometry file? which could help
+    as it can be passed into ModelResult so that modelresult can return
+    positions of elements etc.
+
+    """
     def __init__(self, name, dat_filename, save_filename='', incon_filename='',
                  simulator=DEFAULT_AUT2_COMMAND,
                  basePath=None, outputPath=None, logPath=None,
