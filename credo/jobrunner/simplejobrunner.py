@@ -116,6 +116,8 @@ class SimpleJobRunner(JobRunner):
         jobMI.stdErrFile = stdErrFile
         jobMI.submitTime = datetime.now()
         try:
+            # TODO: check side effect of shell=True:
+            # http://stackoverflow.com/a/1254322/2368167
             # shell=True needed when using shell features: '<' redirection
             procHandle = subprocess.Popen(runAsArgs, shell=True,
                 stdout=stdOutFile, stderr=stdErrFile)
