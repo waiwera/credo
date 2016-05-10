@@ -36,6 +36,7 @@ produce a :class:`credo.modelresult.ModelResult` class.
 """
 
 from credo.modelrun import ModelRun
+from credo.modelresult import ModelResult
 
 from t2listing import t2listing
 
@@ -124,18 +125,14 @@ class T2ModelRun(ModelRun):
         mres = T2ModelResult(self.name, lst_filename)
         return mres
 
-# TODO: [Refactor] this is kind of a simple mock up for testing T2ModelRun
-class T2ModelResult(object):
-    """ TODO: [Refactor] create and inherite base class with defined interface.
+class T2ModelResult(ModelResult):
+    """ for AUT2
     """
     def __init__(self, name, lst_filename):
-        super(T2ModelResult, self).__init__()
+        from os.path import dirname
+        super(T2ModelResult, self).__init__(name, dirname(lst_filename))
         self.name = name
         self._lst = t2listing(lst_filename)
-
-        # TODO: [Refactor] check where are these expected
-        self.jobMetaInfo = None
-        self.outputPath = ''
 
     def getFieldAtStep(self, field, time_step):
         self._lst.step = time_step
