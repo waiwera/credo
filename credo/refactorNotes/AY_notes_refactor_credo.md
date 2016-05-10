@@ -26,6 +26,12 @@ I think I will start with a few methods:
 .getFieldAtStep(field, timeStep)
 .getPositions()
 
+some attributes used by other parts of the CREDO code:
+.jobMetaInfo .modelName .outputPath
+
+.writeRecordXML() .readModelResultFromPath()
+
+
 Refactor TC
 -----------
 

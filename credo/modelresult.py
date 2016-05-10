@@ -36,7 +36,45 @@ from credo.io import stgfreq
 from credo.io.stgxml import writeXMLDoc
 from credo.analysis import fields
 
-class ModelResult:
+class ModelResult(object):
+    """ A (mostly abstract) base class that defines the common interface of
+    various model results from different simulators.  The primary users of these
+    interface is TestComponents, where a set of shared field values extraction
+    mehtods allows TCs to be reused (for different simulators).
+
+    I think I will start with a few new methods:
+        .getFieldAtStep(field, timeStep)
+        .getPositions()
+
+    TODO: ??? Should I let the the ModelResult to handle the calculation of
+    analytic solution?  That would allow the implementation of say volumetric
+    averaging of analytic solution so it's comparable to FV element results.
+    """
+    def __init__(self, modelName, outputPath):
+        super(ModelResult, self).__init__()
+
+        self.modelName = modelName
+        self.outputPath = outputPath # needed by jobrunner
+        self.jobMetaInfo = None  # needed by jobrunner
+
+    def getFieldAtStep(field, timeStep):
+        """ Returns a list of values of field variable, of all model's elements,
+        in order.  If timeStep is -1, it will be the last time step.  The
+        returned values are preferably in the form of NumPy array.
+        """
+        raise NotImplementedError(".getFieldAtStep()")
+
+    def getPositions():
+        """ Returns a list of positions of all model's elements in order.
+
+        Note the CREDO framework does not care what's in each of position
+        object, as long as it's accepted by the analytic function created by the
+        users.
+        """
+        raise NotImplementedError(".getPositions()")
+
+
+class UnderworldModelResult(ModelResult):
     """A class to keep records about the results of a StgDomain/Underworld
      model run. These are normally produced as a result of running a
      :class:`~credo.modelrun.ModelRun`.
@@ -60,6 +98,7 @@ class ModelResult:
         ModelResult created).
 
      .. attribute:: fieldResults
+     # TODO:[ Refactor] remove, StGermain specific
 
         A list of FieldComparisonResult objects.
 
@@ -67,6 +106,8 @@ class ModelResult:
            XML files from pre-existing sys test scripts, may be removed soon.
 
      .. attribute:: freqOutput
+     # TODO:[ Refactor] *maybe* remove, StGermain specific, but could be similar
+     # for time stepping etc.
 
         Initially `None`, if :meth:`.readFrequentOutput` is called, this will
         be populated with a reference to a :class:`credo.io.stgfreq.FreqOutput`
