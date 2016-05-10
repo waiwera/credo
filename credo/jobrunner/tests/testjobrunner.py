@@ -51,7 +51,7 @@ class TestJobRunner(unittest.TestCase):
         mrun = T2ModelRun('test_aut2',
                           'coarse.dat',
                           basePath=TEST_PATH,
-                          outputPath=TEST_PATH)
+                          )
         jrunner = SimpleJobRunner(mpi=False)
         jmi = jrunner.submitRun(mrun)
         mres = jrunner.blockResult(mrun, jmi)
