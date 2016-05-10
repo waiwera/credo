@@ -116,7 +116,8 @@ class SimpleJobRunner(JobRunner):
         jobMI.stdErrFile = stdErrFile
         jobMI.submitTime = datetime.now()
         try:
-            procHandle = subprocess.Popen(runAsArgs, shell=False,
+            # shell=True needed when using shell features: '<' redirection
+            procHandle = subprocess.Popen(runAsArgs, shell=True,
                 stdout=stdOutFile, stderr=stdErrFile)
             jobMI.procHandle = procHandle
         except OSError:
