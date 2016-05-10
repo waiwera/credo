@@ -92,6 +92,31 @@ class T2ModelRun(ModelRun):
             inconbase,ext = splitext(self._incon_filename)
         return (datbase, savebase, inconbase)
 
+    def postRunCleanup(self):
+        # AUT2 handles files differently from TOUGH2-MP and TOUGH2
+        # TODO: deal with case of .save/.incon etc. on some systems
+        def files_to_keep():
+            datbase, savebase, inconbase = self._aut2FileNameBases()
+            main_files = [
+                self._dat_filename,
+                self._save_filename,
+                self._incon_filename,
+                ]
+            other_exts = ['.listing', '.pdat', '.autogeners']
+            return [datbase+ext for ext in other_exts] + main_files
+        def files_to_clean():
+            return [n+'.data' for n in ['gener', 'lineq', 'mesh', 'table', 'vers']]
+        import os
+        import shutil
+        absOutputPath = os.path.join(self.basePath, self.outputPath)
+        if self.basePath != self.outputPath:
+            for f in files_to_keep():
+                if os.path.isfile(f):
+                    shutil.copy2(f, os.path.join(absOutputPath, f))
+        for f in files_to_clean():
+            if os.path.isfile(f):
+                os.remove(f)
+
     def createModelResult(self):
         """ Note: this is called AFTER .postRunCleanup() """
         from os.path import join
