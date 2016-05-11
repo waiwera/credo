@@ -169,6 +169,7 @@ class ModelRun(object):
         writePath+=os.sep
 
         # create XML document
+        # TODO: [Refactor] modified this from 'StgModelRun', check if okay
         root = etree.Element(self.__class__.__name__)
         xmlDoc = etree.ElementTree(root)
         # Write key entries:

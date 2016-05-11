@@ -82,6 +82,7 @@ class ModelResult(object):
 
         # Write extra model results, e.g.
         # create model file
+        # TODO: [Refactor] modified this from 'StgModelResult', check if okay
         mrNode = etree.Element(self.__class__.__name__)
         xmlDoc = etree.ElementTree(mrNode)
         etree.SubElement(mrNode, 'modelName').text = self.modelName
