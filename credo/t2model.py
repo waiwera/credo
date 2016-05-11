@@ -39,6 +39,7 @@ from credo.modelrun import ModelRun
 from credo.modelresult import ModelResult
 
 from t2listing import t2listing
+from mulgrids import mulgrid
 
 # Allow MPI command to be overriden by env var.
 AUT2_COMMAND = "AUT2_COMMAND"
@@ -53,7 +54,7 @@ class T2ModelRun(ModelRun):
 
     """
     def __init__(self, name, dat_filename, save_filename='', incon_filename='',
-                 simulator=DEFAULT_AUT2_COMMAND,
+                 geo_filename=None, simulator=DEFAULT_AUT2_COMMAND,
                  basePath=None, outputPath=None, logPath=None,
                  ):
         super(T2ModelRun, self).__init__(name, basePath, outputPath, logPath)
@@ -61,6 +62,7 @@ class T2ModelRun(ModelRun):
         self._dat_filename = dat_filename
         self._save_filename = save_filename
         self._incon_filename = incon_filename
+        self._geo_filename = geo_filename # optional
         self._simulator = simulator
 
         # initialised in .preRunPreparation()
@@ -110,6 +112,8 @@ class T2ModelRun(ModelRun):
                 self._save_filename,
                 self._incon_filename,
                 ]
+            if self._geo_filename:
+                main_files = main_files + [self._geo_filename]
             other_exts = ['.listing', '.pdat', '.autogeners']
             return [datbase+ext for ext in other_exts] + main_files
         def files_to_clean():
@@ -129,19 +133,29 @@ class T2ModelRun(ModelRun):
         """ Note: this is called AFTER .postRunCleanup() """
         from os.path import join
         lst_filename = join(self.outputPath, self._lstbase+'.listing')
-        mres = T2ModelResult(self.name, lst_filename)
+        if self._geo_filename:
+            geo_filename = join(self.outputPath, self._geo_filename)
+        else:
+            geo_filename = self._geo_filename
+        mres = T2ModelResult(self.name, lst_filename, geo_filename)
         return mres
 
 class T2ModelResult(ModelResult):
     """ for AUT2
     """
-    def __init__(self, name, lst_filename):
+    def __init__(self, name, lst_filename, geo_filename=None):
         from os.path import dirname
         super(T2ModelResult, self).__init__(name, dirname(lst_filename))
         self.name = name
         self._lst = t2listing(lst_filename)
+        if geo_filename:
+            self._geo = mulgrid(geo_filename)
 
     def getFieldAtStep(self, field, time_step):
         self._lst.step = time_step
         return self._lst.element[field]
+
+    def getPositions(self):
+        return [self._geo.block_centre(self._geo.layer_name(b), self._geo.column_name(b)) for b in self._geo.block_name_list]
+
 
