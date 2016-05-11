@@ -73,6 +73,36 @@ class ModelResult(object):
         """
         raise NotImplementedError(".getPositions()")
 
+    def writeRecordXML(self, outputDir="", filename="", prettyPrint=True):
+        """Write an XML record of a :class:`.ModelResult`."""
+        if filename == "":
+            filename = 'ModelResult-' + self.modelName + '.xml'
+        if outputDir == "":
+            outputDir = self.outputPath
+
+        # Write extra model results, e.g.
+        # create model file
+        mrNode = etree.Element(self.__class__.__name__)
+        xmlDoc = etree.ElementTree(mrNode)
+        etree.SubElement(mrNode, 'modelName').text = self.modelName
+        etree.SubElement(mrNode, 'outputPath').text = self.outputPath
+        if self.jobMetaInfo is not None:
+            self.jobMetaInfo.writeInfoXML(mrNode)
+        # if (self.fieldResults):
+        #     fieldResultsNode = etree.SubElement(mrNode,
+        #         fields.FieldComparisonResult.XML_INFO_LIST_TAG)
+        #     for fieldResult in self.fieldResults:
+        #         fieldResult.writeInfoXML(fieldResultsNode)
+
+        # Write the files
+        if not os.path.exists(outputDir): os.makedirs(outputDir)
+        fullPath = os.path.join(outputDir, filename)
+        outFile = open(fullPath, 'w')
+        writeXMLDoc(xmlDoc, outFile, prettyPrint)
+        outFile.close()
+        return fullPath
+
+
 
 class UnderworldModelResult(ModelResult):
     """A class to keep records about the results of a StgDomain/Underworld
