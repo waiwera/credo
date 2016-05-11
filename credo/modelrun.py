@@ -149,6 +149,67 @@ class ModelRun(object):
         """
         raise NotImplementedError(".createModelResult()")
 
+    def writeInfoXML(self, writePath="", filename="", update=False,
+            prettyPrint=True):
+        """Writes an XML recording the key details of this ModelRun, in CREDO
+        format - useful for benchmarking etc.
+
+        `writePath` and `filename` can be specified, if not they will use
+        default values (the outputPath of the model, and the value returned by
+        :attr:`defaultModelRunFilename()`, respectively)."""
+        def defaultModelRunFilename():
+            """Calculates and returns a default filename for the ModelRun's XML
+            record filename."""
+            return 'ModelRun-'+self.name+'.xml'
+
+        if filename == "":
+            filename = defaultModelRunFilename()
+        if writePath == "":
+            writePath=os.path.join(self.basePath, self.outputPath)
+        writePath+=os.sep
+
+        # create XML document
+        root = etree.Element(self.__class__.__name__)
+        xmlDoc = etree.ElementTree(root)
+        # Write key entries:
+        # Model description (grab from XML file perhaps)
+        name = etree.SubElement(root, 'name')
+        name.text = self.name
+        # filesList = etree.SubElement(root, 'modelInputFiles')
+        # for xmlFilename in self.modelInputFiles:
+        #     modFile = etree.SubElement(filesList, 'inputFile')
+        #     modFile.text = xmlFilename
+        etree.SubElement(root, 'basePath').text = self.basePath
+        etree.SubElement(root, 'outputPath').text = self.outputPath
+        # if self.cpReadPath:
+        #     etree.SubElement(root, 'cpReadPath').text = self.cpReadPath
+        self.jobParams.writeInfoXML(root)
+        # if not self.simParams:
+        #     # In this case:
+        #     # We will write a copy of the simParams read from actual model
+        #     # XMLs, plus the over-ride parameters)
+        #     simParams = self.getSimParams()
+        #     simParams.writeInfoXML(root)
+        # else:
+        #     self.simParams.writeInfoXML(root)
+
+        # writeParamOverridesInfoXML(self.paramOverrides, root)
+        # writeSolverOptsInfoXML(self.solverOpts, root)
+
+        # analysisNode = etree.SubElement(root, 'analysisOps')
+        # for opName, analysisOp in self.analysisOps.iteritems():
+        #     analysisOp.writeInfoXML(analysisNode)
+        # TODO : write info on cpFields?
+        # Write the file
+        if not os.path.exists(writePath):
+            os.makedirs(writePath)
+        outFile = open(writePath+filename, 'w')
+        writeXMLDoc(xmlDoc, outFile, prettyPrint)
+        outFile.close()
+        return writePath+filename
+
+
+
 class UnderworldModelRun(ModelRun):
     """A class to keep records about a StgDomain/Underworld Model Run,
     including access to the underlying XML of the actual model.
