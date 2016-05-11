@@ -64,7 +64,7 @@ class ModelResult(object):
         """
         raise NotImplementedError(".getFieldAtStep()")
 
-    def getPositions():
+    def getPositions(self):
         """ Returns a list of positions of all model's elements in order.
 
         Note the CREDO framework does not care what's in each of position

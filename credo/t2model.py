@@ -143,5 +143,5 @@ class T2ModelResult(ModelResult):
 
     def getFieldAtStep(self, field, time_step):
         self._lst.step = time_step
-        return lst.element[field]
+        return self._lst.element[field]
 
