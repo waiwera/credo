@@ -121,8 +121,26 @@ class ModelRun(object):
         JobRunner may add mpiexec or profiler related commands in the front.
         JobRunner may also pass additional commandline options that belongs to
         the simulator.
+
+        NOTE: This command is executed by using subprocess.Popen(), with
+        shell=False. (shell=True has security risk and does not work with
+        mpiexec in cygwin etc.) Therefore shell features such as redirection "<"
+        etc. cannot be used. If required, user can write a file with name
+        .getStdInFilename(), and it will be piped in as stdin with Popen().
         """
         raise NotImplementedError(".getModelRunCommand()")
+
+    def getStdInFilename(self):
+        """ If the simulator needs input while executing, user (Implemented in
+        ModelRun, often .preRunPreparation) can choose to write a file that
+        provides input.  This file is in the .basePath because it's part of the
+        model's input.
+
+        TODO: think again, currently ModelRun obj does not really know if it
+        uses the StdIn or not.  Only during .submitRun() it would check if the
+        file exists, if so use it as stdin.
+        """
+        return os.path.join(self.basePath, "%s.stdin" % self.name)
 
     def getStdOutFilename(self):
         """Get the name of the file this Model's stdout needs to/has been

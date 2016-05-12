@@ -110,6 +110,12 @@ class SimpleJobRunner(JobRunner):
 
         # Do the actual run
         runAsArgs = shlex.split(runCommand)
+        try:
+            # make sure open without buffer, see:
+            # http://stackoverflow.com/a/22417159/2368167
+            stdInFile = open(modelRun.getStdInFilename(), "rb", 0)
+        except IOError:
+            stdInFile = None
         stdOutFile = open(modelRun.getStdOutFilename(), "w+")
         stdErrFile = open(modelRun.getStdErrFilename(), "w+")
         jobMI.stdOutFile = stdOutFile
@@ -119,8 +125,8 @@ class SimpleJobRunner(JobRunner):
             # TODO: check side effect of shell=True:
             # http://stackoverflow.com/a/1254322/2368167
             # shell=True needed when using shell features: '<' redirection
-            procHandle = subprocess.Popen(runAsArgs, shell=True,
-                stdout=stdOutFile, stderr=stdErrFile)
+            procHandle = subprocess.Popen(runAsArgs, shell=False,
+                stdin=stdInFile, stdout=stdOutFile, stderr=stdErrFile)
             jobMI.procHandle = procHandle
         except OSError:
             # TODO: [Refactor] this is not always correct? rewrite.

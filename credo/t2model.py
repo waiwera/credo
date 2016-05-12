@@ -73,12 +73,12 @@ class T2ModelRun(ModelRun):
         from os.path import basename, join
         datbase, savebase, inconbase = self._aut2FileNameBases()
         runfilename = datbase + '_' + basename(self._simulator) + '.in'
-        with open(join(self.basePath, runfilename),'w') as f:
+        with open(self.getStdInFilename(), 'w') as f:
             f.write('\n'.join([
                 savebase,
                 inconbase,
                 datbase,]))
-        self._runCommand = "%s < %s" % (self._simulator, runfilename)
+        self._runCommand = self._simulator
         self._lstbase = datbase
 
     def getModelRunCommand(self, extraCmdLineOpts=None):
