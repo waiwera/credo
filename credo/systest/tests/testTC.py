@@ -31,7 +31,7 @@ class TestFieldWithinTolTC(unittest.TestCase):
                               defFieldTol=0.01,
                               fieldTols=None,
                               expected=ref,
-                              testTimestep=-1)
+                              testOutputIndex=-1)
         self.assertEqual(True, tc.check(res1))
         self.assertEqual(False, tc.check(res2))
 
@@ -48,7 +48,7 @@ class TestFieldWithinTolTC(unittest.TestCase):
                               defFieldTol=0.01,
                               fieldTols=None,
                               expected=analytic,
-                              testTimestep=-1)
+                              testOutputIndex=-1)
         self.assertEqual(True, tc.check(res1))
         self.assertEqual(False, tc.check(res2))
 

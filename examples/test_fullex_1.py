@@ -50,7 +50,7 @@ for runI, mRun in enumerate(sciBTest.mSuite.runs):
         FieldWithinTolTC(fieldsToTest=["Temperature"],
                          defFieldTol=1.0e-5,
                          expected=avdonin_at_radius,
-                         testTimestep=-1))
+                         testOutputIndex=-1))
 
 jrunner = SimpleJobRunner()
 testResult, mResults = sciBTest.runTest(jrunner,

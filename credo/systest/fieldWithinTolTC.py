@@ -36,7 +36,7 @@ class FieldWithinTolTC(SingleRunTestComponent):
     * expected: An expected solution in the form of a ModelResult
       (ReferenceResult, HighResReferenceResult) or a function (analytic
       solution).
-    * testTimestep: Integer, the timestep of the model that the comparison will
+    * testOutputIndex: Integer, the timestep of the model that the comparison will
       occur at.  If -1, means the final timestep.
 
     .. attribute:: fieldsToTest
@@ -74,7 +74,7 @@ class FieldWithinTolTC(SingleRunTestComponent):
             defFieldTol=0.01,
             fieldTols=None,
             expected=None,
-            testTimestep=-1
+            testOutputIndex=-1
             ):
         SingleRunTestComponent.__init__(self, "fieldWithinTol")
         self.fieldsToTest = fieldsToTest
@@ -89,7 +89,7 @@ class FieldWithinTolTC(SingleRunTestComponent):
             # TODO: [Refactor] add support for HighResReferenceResult
             self.compareSource = 'reference'
         self.expected = expected
-        self.testTimestep = testTimestep
+        self.testOutputIndex = testOutputIndex
         self.fieldResults = {}
         self.fieldErrors = {}
 
@@ -158,20 +158,20 @@ class FieldWithinTolTC(SingleRunTestComponent):
                 if dofError > tol: return False
             return True
         fieldTol = self._getTolForField(field)
-        result = mResult.getFieldAtOutputIndex(field, self.testTimestep)
+        result = mResult.getFieldAtOutputIndex(field, self.testOutputIndex)
         if callable(self.expected):
             # analytic, calls func with position
             expected = np.array([self.expected(pos) for pos in mResult.getPositions()])
         else:
             # TODO: [Refactor] add support for HighResReferenceResult
-            expected = self.expected.getFieldAtOutputIndex(field, self.testTimestep)
+            expected = self.expected.getFieldAtOutputIndex(field, self.testOutputIndex)
         dofErrors = calc_errors(expected, result)
         fieldResult = withinTol(fieldTol, dofErrors)
         return fieldResult, dofErrors
 
     def _writeXMLCustomSpec(self, specNode):
-        etree.SubElement(specNode, 'testTimestep',
-            value=str(self.testTimestep))
+        etree.SubElement(specNode, 'testOutputIndex',
+            value=str(self.testOutputIndex))
         etree.SubElement(specNode, 'compareSource',
             value=str(self.compareSource))
         fListNode = etree.SubElement(specNode, 'fields')
