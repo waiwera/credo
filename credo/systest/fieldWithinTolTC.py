@@ -142,7 +142,7 @@ class FieldWithinTolTC(SingleRunTestComponent):
 
         If using reference model as comparison source, expected should be
         ReferenceResult/HighResReferenceResult, which behaves like a normal
-        ModelResult, .getFieldAtStep() is used here.
+        ModelResult, .getFieldAtOutputIndex() is used here.
 
         If expected is an analytic function (callable), it will call
         ModelResult.getPositions() and get expected values from func using the
@@ -158,13 +158,13 @@ class FieldWithinTolTC(SingleRunTestComponent):
                 if dofError > tol: return False
             return True
         fieldTol = self._getTolForField(field)
-        result = mResult.getFieldAtStep(field, self.testTimestep)
+        result = mResult.getFieldAtOutputIndex(field, self.testTimestep)
         if callable(self.expected):
             # analytic, calls func with position
             expected = np.array([self.expected(pos) for pos in mResult.getPositions()])
         else:
             # TODO: [Refactor] add support for HighResReferenceResult
-            expected = self.expected.getFieldAtStep(field, self.testTimestep)
+            expected = self.expected.getFieldAtOutputIndex(field, self.testTimestep)
         dofErrors = calc_errors(expected, result)
         fieldResult = withinTol(fieldTol, dofErrors)
         return fieldResult, dofErrors

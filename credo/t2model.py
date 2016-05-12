@@ -151,8 +151,8 @@ class T2ModelResult(ModelResult):
         if geo_filename:
             self._geo = mulgrid(geo_filename)
 
-    def getFieldAtStep(self, field, time_step):
-        self._lst.step = time_step
+    def getFieldAtOutputIndex(self, field, outputIndex):
+        self._lst.step = self._lst.fullsteps[outputIndex]
         return self._lst.element[field]
 
     def getPositions(self):

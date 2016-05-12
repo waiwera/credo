@@ -43,7 +43,7 @@ class ModelResult(object):
     mehtods allows TCs to be reused (for different simulators).
 
     I think I will start with a few new methods:
-        .getFieldAtStep(field, timeStep)
+        .getFieldAtOutputIndex(field, outputIndex)
         .getPositions()
 
     TODO: ??? Should I let the the ModelResult to handle the calculation of
@@ -57,12 +57,12 @@ class ModelResult(object):
         self.outputPath = outputPath # needed by jobrunner
         self.jobMetaInfo = None  # needed by jobrunner
 
-    def getFieldAtStep(field, timeStep):
+    def getFieldAtOutputIndex(field, outputIndex):
         """ Returns a list of values of field variable, of all model's elements,
-        in order.  If timeStep is -1, it will be the last time step.  The
+        in order.  If outputIndex is -1, it will be the last time step.  The
         returned values are preferably in the form of NumPy array.
         """
-        raise NotImplementedError(".getFieldAtStep()")
+        raise NotImplementedError(".getFieldAtOutputIndex()")
 
     def getPositions(self):
         """ Returns a list of positions of all model's elements in order.

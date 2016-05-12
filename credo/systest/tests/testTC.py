@@ -8,7 +8,7 @@ class MockModelResult(object):
         self.data = np.zeros(5)
         self.data += v
 
-    def getFieldAtStep(self, field, time_step):
+    def getFieldAtOutputIndex(self, field, time_step):
         return self.data
 
     def getPositions(self):
