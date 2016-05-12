@@ -5,6 +5,7 @@ from credo.jobrunner import SimpleJobRunner
 from credo.modelrun import ModelRun, JobParams
 from credo.modelresult import ModelResult
 from credo.t2model import T2ModelRun
+from credo.supermodel import SuperModelRun
 
 TEST_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'test_run_dir')
 
@@ -53,6 +54,16 @@ class TestJobRunner(unittest.TestCase):
                           basePath=TEST_PATH,
                           )
         jrunner = SimpleJobRunner(mpi=False)
+        jmi = jrunner.submitRun(mrun)
+        mres = jrunner.blockResult(mrun, jmi)
+
+    def test_supermodel(self):
+        mrun = SuperModelRun('test_super_fruit',
+                             '',
+                             simulator='test_all.exe',
+                             basePath=TEST_PATH,
+                             )
+        jrunner = SimpleJobRunner(mpi=True)
         jmi = jrunner.submitRun(mrun)
         mres = jrunner.blockResult(mrun, jmi)
 
