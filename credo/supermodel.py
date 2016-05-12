@@ -67,13 +67,22 @@ class SuperModelRun(ModelRun):
 class SuperModelResult(ModelResult):
     """ for supermodel
     """
-    def __init__(self, name, outputPath):
+    def __init__(self, name, outputPath, h5_filename):
         from os.path import dirname
         super(SuperModelResult, self).__init__(name, outputPath)
         self.name = name
 
-    def getFieldAtStep(self, field, time_step):
-        pass
+        import h5py
+        # have to keep it open, unless copy all data, which is not ideal.
+        self._data = h5py.File(h5_filename, 'r')
+        # obtain slicing arrays for converting values back to natural ordering
+        self.cell_idx = self._data['cell_interior_index'][:,0] # cell_fields/*
+        self.geom_idx = self._data['cell_index'][:,0] # fields/cell_geometry
+
+    def getFieldAtOutputIndex(self, field, outputIndex):
+        return self._data['cell_fields'][field][outputIndex][self.cell_idx]
 
     def getPositions(self):
-        pass
+        # cannot do self._data['fields'][cell_geometry][self.geom_idx,:3]
+        # it would have to be in increasing order
+        return self._data['fields']['cell_geometry'][:,:3][self.geom_idx]
