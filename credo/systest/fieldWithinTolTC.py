@@ -36,8 +36,8 @@ class FieldWithinTolTC(SingleRunTestComponent):
     * expected: An expected solution in the form of a ModelResult
       (ReferenceResult, HighResReferenceResult) or a function (analytic
       solution).
-    * testOutputIndex: Integer, the timestep of the model that the comparison will
-      occur at.  If -1, means the final timestep.
+    * testOutputIndex: Integer, the index of the model output that the
+      comparison will occur at.  If -1, means the final result.
 
     .. attribute:: fieldsToTest
 
