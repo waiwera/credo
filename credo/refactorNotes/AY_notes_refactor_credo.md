@@ -103,3 +103,17 @@ I think I will try refactor the MPI-related parts out from MPIJobRunner:
 5. Refactor CREDO's original ModelResult to abstract ModelResult base class and concrete AUT2ModelResult.
 6. Create a SciBenchmarkTest example to see if everything fits together, with just one TC (FieldWithinTolTC).
 7. See if supercode ModelRun and ModelResult easy to create.
+
+
+Project Organisation
+====================
+
+Python Project Howto
+http://infinitemonkeycorps.net/docs/pph/
+
+Packaging and Distributing Projects
+http://python-packaging-user-guide.readthedocs.io/en/latest/distributing/
+
+Should I use git submodules?
+https://git-scm.com/book/en/v2/Git-Tools-Submodules
+
