@@ -61,8 +61,27 @@ class SuperModelRun(ModelRun):
 
     def createModelResult(self):
         """ Note: this is called AFTER .postRunCleanup() """
-        mres = SuperModelResult(self.name, self.outputPath)
+        mres = SuperModelResult(self.name, self.outputPath,
+                                self._getH5Filename())
         return mres
+
+    def _getH5Filename(self):
+        """ Returns the hdf5 output filename of a model run.
+
+        Supermodel's output filename is default to have the same name as the
+        input filename, with extension .h5.  It can also be specified by user in
+        the input (json) file.
+        """
+        import json
+        import os
+        input_fn = os.path.join(self.basePath, self._input_filename)
+        try:
+            with open(input_fn, 'r') as jf:
+                jdata = json.load(jf)
+            h5_fn = jdata['output']['filename']
+        except KeyError:
+            h5_fn = os.path.splitext(input_fn) + '.h5'
+        return h5_fn
 
 class SuperModelResult(ModelResult):
     """ for supermodel
