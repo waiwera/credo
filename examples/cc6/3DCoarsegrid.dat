@@ -1,0 +1,675 @@
+GENER01              1.0E-6
+VERTI
+aaa      0.00      0.00
+aab    500.00      0.00
+aac   1000.00      0.00
+aad   1500.00      0.00
+aae   2000.00      0.00
+aaf   2500.00      0.00
+aag   3000.00      0.00
+aah   3500.00      0.00
+aai   4000.00      0.00
+aaj   4500.00      0.00
+aak   5000.00      0.00
+aba      0.00    500.00
+abb    500.00    500.00
+abc   1000.00    500.00
+abd   1500.00    500.00
+abe   2000.00    500.00
+abf   2500.00    500.00
+abg   3000.00    500.00
+abh   3500.00    500.00
+abi   4000.00    500.00
+abj   4500.00    500.00
+abk   5000.00    500.00
+aca      0.00   1000.00
+acb    500.00   1000.00
+acc   1000.00   1000.00
+acd   1500.00   1000.00
+ace   2000.00   1000.00
+acf   2500.00   1000.00
+acg   3000.00   1000.00
+ach   3500.00   1000.00
+aci   4000.00   1000.00
+acj   4500.00   1000.00
+ack   5000.00   1000.00
+ada      0.00   1500.00
+adb    500.00   1500.00
+adc   1000.00   1500.00
+add   1500.00   1500.00
+ade   2000.00   1500.00
+adf   2500.00   1500.00
+adg   3000.00   1500.00
+adh   3500.00   1500.00
+adi   4000.00   1500.00
+adj   4500.00   1500.00
+adk   5000.00   1500.00
+aea      0.00   2000.00
+aeb    500.00   2000.00
+aec   1000.00   2000.00
+aed   1500.00   2000.00
+aee   2000.00   2000.00
+aef   2500.00   2000.00
+aeg   3000.00   2000.00
+aeh   3500.00   2000.00
+aei   4000.00   2000.00
+aej   4500.00   2000.00
+aek   5000.00   2000.00
+afa      0.00   2500.00
+afb    500.00   2500.00
+afc   1000.00   2500.00
+afd   1500.00   2500.00
+afe   2000.00   2500.00
+aff   2500.00   2500.00
+afg   3000.00   2500.00
+afh   3500.00   2500.00
+afi   4000.00   2500.00
+afj   4500.00   2500.00
+afk   5000.00   2500.00
+aga      0.00   3000.00
+agb    500.00   3000.00
+agc   1000.00   3000.00
+agd   1500.00   3000.00
+age   2000.00   3000.00
+agf   2500.00   3000.00
+agg   3000.00   3000.00
+agh   3500.00   3000.00
+agi   4000.00   3000.00
+agj   4500.00   3000.00
+agk   5000.00   3000.00
+aha      0.00   3500.00
+ahb    500.00   3500.00
+ahc   1000.00   3500.00
+ahd   1500.00   3500.00
+ahe   2000.00   3500.00
+ahf   2500.00   3500.00
+ahg   3000.00   3500.00
+ahh   3500.00   3500.00
+ahi   4000.00   3500.00
+ahj   4500.00   3500.00
+ahk   5000.00   3500.00
+aia      0.00   4000.00
+aib    500.00   4000.00
+aic   1000.00   4000.00
+aid   1500.00   4000.00
+aie   2000.00   4000.00
+aif   2500.00   4000.00
+aig   3000.00   4000.00
+aih   3500.00   4000.00
+aii   4000.00   4000.00
+aij   4500.00   4000.00
+aik   5000.00   4000.00                                                
+          
+GRID                                                         
+aaa1 4    250.00    250.00
+aaa
+aab
+abb
+aba
+aab1 4    750.00    250.00
+aab
+aac
+abc
+abb
+aac1 4   1250.00    250.00
+aac
+aad
+abd
+abc
+aad1 4   1750.00    250.00
+aad
+aae
+abe
+abd
+aae1 4   2250.00    250.00
+aae
+aaf
+abf
+abe
+aaf1 4   2750.00    250.00
+aaf
+aag
+abg
+abf
+aag1 4   3250.00    250.00
+aag
+aah
+abh
+abg
+aah1 4   3750.00    250.00
+aah
+aai
+abi
+abh
+aai1 4   4250.00    250.00
+aai
+aaj
+abj
+abi
+aaj1 4   4750.00    250.00
+aaj
+aak
+abk
+abj
+aba1 4    250.00    750.00
+aba
+abb
+acb
+aca
+abb1 4    750.00    750.00
+abb
+abc
+acc
+acb
+abc1 4   1250.00    750.00
+abc
+abd
+acd
+acc
+abd1 4   1750.00    750.00
+abd
+abe
+ace
+acd
+abe1 4   2250.00    750.00
+abe
+abf
+acf
+ace
+abf1 4   2750.00    750.00
+abf
+abg
+acg
+acf
+abg1 4   3250.00    750.00
+abg
+abh
+ach
+acg
+abh1 4   3750.00    750.00
+abh
+abi
+aci
+ach
+abi1 4   4250.00    750.00
+abi
+abj
+acj
+aci
+abj1 4   4750.00    750.00
+abj
+abk
+ack
+acj
+aca1 4    250.00   1250.00
+aca
+acb
+adb
+ada
+acb1 4    750.00   1250.00
+acb
+acc
+adc
+adb
+acc1 4   1250.00   1250.00
+acc
+acd
+add
+adc
+acd1 4   1750.00   1250.00
+acd
+ace
+ade
+add
+ace1 4   2250.00   1250.00
+ace
+acf
+adf
+ade
+acf1 4   2750.00   1250.00
+acf
+acg
+adg
+adf
+acg1 4   3250.00   1250.00
+acg
+ach
+adh
+adg
+ach1 4   3750.00   1250.00
+ach
+aci
+adi
+adh
+aci1 4   4250.00   1250.00
+aci
+acj
+adj
+adi
+acj1 4   4750.00   1250.00
+acj
+ack
+adk
+adj
+ada1 4    250.00   1750.00
+ada
+adb
+aeb
+aea
+adb1 4    750.00   1750.00
+adb
+adc
+aec
+aeb
+adc1 4   1250.00   1750.00
+adc
+add
+aed
+aec
+add1 4   1750.00   1750.00
+add
+ade
+aee
+aed
+ade1 4   2250.00   1750.00
+ade
+adf
+aef
+aee
+adf1 4   2750.00   1750.00
+adf
+adg
+aeg
+aef
+adg1 4   3250.00   1750.00
+adg
+adh
+aeh
+aeg
+adh1 4   3750.00   1750.00
+adh
+adi
+aei
+aeh
+adi1 4   4250.00   1750.00
+adi
+adj
+aej
+aei
+adj1 4   4750.00   1750.00
+adj
+adk
+aek
+aej
+aea1 4    250.00   2250.00
+aea
+aeb
+afb
+afa
+aeb1 4    750.00   2250.00
+aeb
+aec
+afc
+afb
+aec1 4   1250.00   2250.00
+aec
+aed
+afd
+afc
+aed1 4   1750.00   2250.00
+aed
+aee
+afe
+afd
+aee1 4   2250.00   2250.00
+aee
+aef
+aff
+afe
+aef1 4   2750.00   2250.00
+aef
+aeg
+afg
+aff
+aeg1 4   3250.00   2250.00
+aeg
+aeh
+afh
+afg
+aeh1 4   3750.00   2250.00
+aeh
+aei
+afi
+afh
+aei1 4   4250.00   2250.00
+aei
+aej
+afj
+afi
+aej1 4   4750.00   2250.00
+aej
+aek
+afk
+afj
+afa1 4    250.00   2750.00
+afa
+afb
+agb
+aga
+afb1 4    750.00   2750.00
+afb
+afc
+agc
+agb
+afc1 4   1250.00   2750.00
+afc
+afd
+agd
+agc
+afd1 4   1750.00   2750.00
+afd
+afe
+age
+agd
+afe1 4   2250.00   2750.00
+afe
+aff
+agf
+age
+aff1 4   2750.00   2750.00
+aff
+afg
+agg
+agf
+afg1 4   3250.00   2750.00
+afg
+afh
+agh
+agg
+afh1 4   3750.00   2750.00
+afh
+afi
+agi
+agh
+afi1 4   4250.00   2750.00
+afi
+afj
+agj
+agi
+afj1 4   4750.00   2750.00
+afj
+afk
+agk
+agj
+aga1 4    250.00   3250.00
+aga
+agb
+ahb
+aha
+agb1 4    750.00   3250.00
+agb
+agc
+ahc
+ahb
+agc1 4   1250.00   3250.00
+agc
+agd
+ahd
+ahc
+agd1 4   1750.00   3250.00
+agd
+age
+ahe
+ahd
+age1 4   2250.00   3250.00
+age
+agf
+ahf
+ahe
+agf1 4   2750.00   3250.00
+agf
+agg
+ahg
+ahf
+agg1 4   3250.00   3250.00
+agg
+agh
+ahh
+ahg
+agh1 4   3750.00   3250.00
+agh
+agi
+ahi
+ahh
+agi1 4   4250.00   3250.00
+agi
+agj
+ahj
+ahi
+agj1 4   4750.00   3250.00
+agj
+agk
+ahk
+ahj
+aha1 4    250.00   3750.00
+aha
+ahb
+aib
+aia
+ahb1 4    750.00   3750.00
+ahb
+ahc
+aic
+aib
+ahc1 4   1250.00   3750.00
+ahc
+ahd
+aid
+aic
+ahd1 4   1750.00   3750.00
+ahd
+ahe
+aie
+aid
+ahe1 4   2250.00   3750.00
+ahe
+ahf
+aif
+aie
+ahf1 4   2750.00   3750.00
+ahf
+ahg
+aig
+aif
+ahg1 4   3250.00   3750.00
+ahg
+ahh
+aih
+aig
+ahh1 4   3750.00   3750.00
+ahh
+ahi
+aii
+aih
+ahi1 4   4250.00   3750.00
+ahi
+ahj
+aij
+aii
+ahj1 4   4750.00   3750.00
+ahj
+ahk
+aik
+aij                                                                 
+
+CONNE
+aaaaab
+aabaac
+aacaad
+aadaae
+aaeaaf
+aafaag
+aagaah
+aahaai
+aaiaaj
+abaabb
+abbabc
+abcabd
+abdabe
+abeabf
+abfabg
+abgabh
+abhabi
+abiabj
+acaacb
+acbacc
+accacd
+acdace
+aceacf
+acfacg
+acgach
+achaci
+aciacj
+adaadb
+adbadc
+adcadd
+addade
+adeadf
+adfadg
+adgadh
+adhadi
+adiadj
+aeaaeb
+aebaec
+aecaed
+aedaee
+aeeaef
+aefaeg
+aegaeh
+aehaei
+aeiaej
+afaafb
+afbafc
+afcafd
+afdafe
+afeaff
+affafg
+afgafh
+afhafi
+afiafj
+agaagb
+agbagc
+agcagd
+agdage
+ageagf
+agfagg
+aggagh
+aghagi
+agiagj
+ahaahb
+ahbahc
+ahcahd
+ahdahe
+aheahf
+ahfahg
+ahgahh
+ahhahi
+ahiahj
+aaaaba
+aababb
+aacabc
+aadabd
+aaeabe
+aafabf
+aagabg
+aahabh
+aaiabi
+aajabj
+abaaca
+abbacb
+abcacc
+abdacd
+abeace
+abfacf
+abgacg
+abhach
+abiaci
+abjacj
+acaada
+acbadb
+accadc
+acdadd
+aceade
+acfadf
+acgadg
+achadh
+aciadi
+acjadj
+adaaea
+adbaeb
+adcaec
+addaed
+adeaee
+adfaef
+adgaeg
+adhaeh
+adiaei
+adjaej
+aeaafa
+aebafb
+aecafc
+aedafd
+aeeafe
+aefaff
+aegafg
+aehafh
+aeiafi
+aejafj
+afaaga
+afbagb
+afcagc
+afdagd
+afeage
+affagf
+afgagg
+afhagh
+afiagi
+afjagj
+agaaha
+agbahb
+agcahc
+agdahd
+ageahe
+agfahf
+aggahg
+aghahh
+agiahi
+agjahj
+
+LAYER
+ 0   1000.0   1001.0
+ 1    900.0    950.0
+ 2    800.0    850.0
+ 3    700.0    750.0
+ 4    600.0    650.0
+ 5    500.0    550.0
+ 6    400.0    450.0
+ 7    300.0    350.0
+ 8    200.0    250.0
+ 9    100.0    150.0
+10      0.0     50.0
+11   -200.0   -100.0
+12   -400.0   -300.0
+13   -600.0   -500.0
+14   -800.0   -700.0
+15  -1000.0   -900.0
+16  -1200.0  -1100.0
+17  -1400.0  -1300.0
+18  -1600.0  -1500.0
+19  -1800.0  -1700.0
+20  -2000.0  -1900.0
+
+SURFA
+aaa   1000.
+
+
