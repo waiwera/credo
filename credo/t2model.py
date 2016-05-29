@@ -54,7 +54,8 @@ class T2ModelRun(ModelRun):
 
     """
     def __init__(self, name, dat_filename, save_filename='', incon_filename='',
-                 geo_filename=None, simulator=DEFAULT_AUT2_COMMAND,
+                 geo_filename=None, index_map=None,
+                 simulator=DEFAULT_AUT2_COMMAND,
                  basePath=None, outputPath=None, logPath=None,
                  ):
         super(T2ModelRun, self).__init__(name, basePath, outputPath, logPath)
@@ -63,6 +64,7 @@ class T2ModelRun(ModelRun):
         self._save_filename = save_filename
         self._incon_filename = incon_filename
         self._geo_filename = geo_filename # optional
+        self._index_map = index_map
         self._simulator = simulator
 
         # initialised in .preRunPreparation()
@@ -137,7 +139,8 @@ class T2ModelRun(ModelRun):
             geo_filename = join(self.outputPath, self._geo_filename)
         else:
             geo_filename = self._geo_filename
-        mres = T2ModelResult(self.name, lst_filename, geo_filename)
+        mres = T2ModelResult(self.name, lst_filename, geo_filename,
+                             indexMap=self._index_map)
         return mres
 
 class T2ModelResult(ModelResult):
