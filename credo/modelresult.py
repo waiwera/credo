@@ -57,7 +57,7 @@ class ModelResult(object):
         self.outputPath = outputPath # needed by jobrunner
         self.jobMetaInfo = None  # needed by jobrunner
 
-    def getFieldAtOutputIndex(field, outputIndex):
+    def getFieldAtOutputIndex(self, field, outputIndex):
         """ Returns a list of values of field variable, of all model's elements,
         in order.  If outputIndex is -1, it will be the last time step.  The
         returned values are preferably in the form of NumPy array.
