@@ -46,23 +46,48 @@ class ModelResult(object):
         .getFieldAtOutputIndex(field, outputIndex)
         .getPositions()
 
+    Attribute .indexMap is used to convert internal storage's element order to
+    external order, which is used to make TestComponent able to compare
+    different model results from different simulators (some of which may have
+    dummy boundary elements).  .indexMap should be a list of integers, indices
+    point to internal element/block order, size and order matches other
+    simulators it compared to.
+
     TODO: ??? Should I let the the ModelResult to handle the calculation of
     analytic solution?  That would allow the implementation of say volumetric
     averaging of analytic solution so it's comparable to FV element results.
     """
-    def __init__(self, modelName, outputPath):
+    def __init__(self, modelName, outputPath, indexMap=None):
         super(ModelResult, self).__init__()
 
         self.modelName = modelName
         self.outputPath = outputPath # needed by jobrunner
         self.jobMetaInfo = None  # needed by jobrunner
 
+        self.indexMap = indexMap
+
     def getFieldAtOutputIndex(self, field, outputIndex):
         """ Returns a list of values of field variable, of all model's elements,
         in order.  If outputIndex is -1, it will be the last time step.  The
         returned values are preferably in the form of NumPy array.
+
+        Sub-classes should implement _getFieldAtOutputIndex() instead of this.
+        This is done to support element mapping, to make different simulators
+        compatible (some with dummy element for boundary conditions to be mapped
+        out).
         """
-        raise NotImplementedError(".getFieldAtOutputIndex()")
+        if self.indexMap is None:
+            return self._getFieldAtOutputIndex(field, outputIndex)
+        else:
+            orig = self._getFieldAtOutputIndex(field, outputIndex)
+            return [orig[i] for i in self.indexMap]
+
+    def _getFieldAtOutputIndex(self, field, outputIndex):
+        """ Returns a list of values of field variable, of all model's elements,
+        in order.  If outputIndex is -1, it will be the last time step.  The
+        returned values are preferably in the form of NumPy array.
+        """
+        raise NotImplementedError("._getFieldAtOutputIndex()")
 
     def getPositions(self):
         """ Returns a list of positions of all model's elements in order.
@@ -70,8 +95,26 @@ class ModelResult(object):
         Note the CREDO framework does not care what's in each of position
         object, as long as it's accepted by the analytic function created by the
         users.
+
+        Sub-classes should implement _getFieldAtOutputIndex() instead of this.
+        This is done to support element mapping, to make different simulators
+        compatible (some with dummy element for boundary conditions to be mapped
+        out).
         """
-        raise NotImplementedError(".getPositions()")
+        if self.indexMap is None:
+            return self._getPositions()
+        else:
+            orig = self._getPositions()
+            return [orig[i] for i in self.indexMap]
+
+    def _getPositions(self):
+        """ Returns a list of positions of all model's elements in order.
+
+        Note the CREDO framework does not care what's in each of position
+        object, as long as it's accepted by the analytic function created by the
+        users.
+        """
+        raise NotImplementedError("._getPositions()")
 
     def writeRecordXML(self, outputDir="", filename="", prettyPrint=True):
         """Write an XML record of a :class:`.ModelResult`."""
