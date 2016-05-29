@@ -143,19 +143,19 @@ class T2ModelRun(ModelRun):
 class T2ModelResult(ModelResult):
     """ for AUT2
     """
-    def __init__(self, name, lst_filename, geo_filename=None):
+    def __init__(self, name, lst_filename, geo_filename=None, indexMap=None):
         from os.path import dirname
-        super(T2ModelResult, self).__init__(name, dirname(lst_filename))
+        super(T2ModelResult, self).__init__(name, dirname(lst_filename), indexMap)
         self.name = name
         self._lst = t2listing(lst_filename)
         if geo_filename:
             self._geo = mulgrid(geo_filename)
 
-    def getFieldAtOutputIndex(self, field, outputIndex):
+    def _getFieldAtOutputIndex(self, field, outputIndex):
         self._lst.step = self._lst.fullsteps[outputIndex]
         return self._lst.element[field]
 
-    def getPositions(self):
+    def _getPositions(self):
         return [self._geo.block_centre(self._geo.layer_name(b), self._geo.column_name(b)) for b in self._geo.block_name_list]
 
 
