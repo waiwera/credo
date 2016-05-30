@@ -47,10 +47,10 @@ class ModelResult(object):
         .getFieldAtOutputIndex(field, outputIndex)
         .getPositions()
 
-    Attribute .indexMap is used to convert internal storage's element order to
+    Attribute .ordering_map is used to convert internal storage's element order to
     external order, which is used to make TestComponent able to compare
     different model results from different simulators (some of which may have
-    dummy boundary elements).  .indexMap should be a list of integers, indices
+    dummy boundary elements).  .ordering_map should be a list of integers, indices
     point to internal element/block order, size and order matches other
     simulators it compared to.
 
@@ -58,14 +58,14 @@ class ModelResult(object):
     analytic solution?  That would allow the implementation of say volumetric
     averaging of analytic solution so it's comparable to FV element results.
     """
-    def __init__(self, modelName, outputPath, indexMap=None):
+    def __init__(self, modelName, outputPath, ordering_map=None):
         super(ModelResult, self).__init__()
 
         self.modelName = modelName
         self.outputPath = outputPath # needed by jobrunner
         self.jobMetaInfo = None  # needed by jobrunner
 
-        self.indexMap = indexMap
+        self.ordering_map = ordering_map
 
     def getFieldAtOutputIndex(self, field, outputIndex):
         """ Returns a list of values of field variable, of all model's elements,
@@ -77,14 +77,14 @@ class ModelResult(object):
         compatible (some with dummy element for boundary conditions to be mapped
         out).
         """
-        if self.indexMap is None:
+        if self.ordering_map is None:
             return self._getFieldAtOutputIndex(field, outputIndex)
         else:
             orig = self._getFieldAtOutputIndex(field, outputIndex)
             if type(orig) == 'numpy.ndarray':
-                return orign[self.indexMap]
+                return orign[self.ordering_map]
             else:
-                return np.array([orig[i] for i in self.indexMap])
+                return np.array([orig[i] for i in self.ordering_map])
 
     def _getFieldAtOutputIndex(self, field, outputIndex):
         """ Returns a list of values of field variable, of all model's elements,
@@ -105,11 +105,11 @@ class ModelResult(object):
         compatible (some with dummy element for boundary conditions to be mapped
         out).
         """
-        if self.indexMap is None:
+        if self.ordering_map is None:
             return self._getPositions()
         else:
             orig = self._getPositions()
-            return [orig[i] for i in self.indexMap]
+            return [orig[i] for i in self.ordering_map]
 
     def _getPositions(self):
         """ Returns a list of positions of all model's elements in order.

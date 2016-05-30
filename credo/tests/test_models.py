@@ -40,10 +40,10 @@ class TestAUT2Model(unittest.TestCase):
         self.idxmap = range(80,1680)
         self.mres_map = T2ModelResult('test_aut2_map',
                                       lst_filename=lstname,
-                                      indexMap=self.idxmap)
+                                      ordering_map=self.idxmap)
         self.mres = T2ModelResult('test_aut2_map',
                                   lst_filename=lstname,
-                                  indexMap=None)
+                                  ordering_map=None)
         from t2listing import t2listing
         self.lst = t2listing(lstname)
 

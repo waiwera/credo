@@ -43,7 +43,8 @@ DEFAULT_COMMAND = "supermodel.exe"
 class SuperModelRun(ModelRun):
     """ for supermodel
 
-    TODO: should I add suport of .indexMap? Supermodel does not use dummy blocks
+    TODO: should I add suport of .ordering_map? Supermodel does not use dummy
+    blocks.
     """
     def __init__(self, name, input_filename,
                  simulator=DEFAULT_COMMAND,
