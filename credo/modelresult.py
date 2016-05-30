@@ -31,6 +31,7 @@ The primary interface is via the :class:`~credo.modelrun.ModelRun` class.
 import os
 import glob
 from xml.etree import ElementTree as etree
+import numpy as np
 
 from credo.io import stgfreq
 from credo.io.stgxml import writeXMLDoc
@@ -80,7 +81,10 @@ class ModelResult(object):
             return self._getFieldAtOutputIndex(field, outputIndex)
         else:
             orig = self._getFieldAtOutputIndex(field, outputIndex)
-            return [orig[i] for i in self.indexMap]
+            if type(orig) == 'numpy.ndarray':
+                return orign[self.indexMap]
+            else:
+                return np.array([orig[i] for i in self.indexMap])
 
     def _getFieldAtOutputIndex(self, field, outputIndex):
         """ Returns a list of values of field variable, of all model's elements,
