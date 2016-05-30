@@ -75,6 +75,7 @@ map_out_atm = range(80,1680)
 mrun_t = T2ModelRun("aut2", t2dat_fn,
                     geo_filename=t2geo_fn,
                     ordering_map=map_out_atm,
+                    fieldname_map={'Pressure':'Pressure'},
                     simulator='AUTOUGH2_5Dbeta',
                     basePath=os.path.realpath(MODELDIR)
                     )
@@ -83,10 +84,20 @@ jmeta = jrunner.submitRun(mrun_t)
 mres_t = jrunner.blockResult(mrun_t, jmeta)
 
 mrun_s = SuperModelRun("super", super_fn,
+                       fieldname_map={'Pressure':'fluid_pressure'},
                        simulator='supermodel.exe',
                        basePath=os.path.realpath(MODELDIR)
                        )
 jrunner = SimpleJobRunner(mpi=True)
 jmeta = jrunner.submitRun(mrun_s)
 mres_s = jrunner.blockResult(mrun_s, jmeta)
+
+print mres_t.getFieldAtOutputIndex('Pressure', -1)[-1],
+print mres_s.getFieldAtOutputIndex('Pressure', -1)[-1]
+
+print mres_t.getFieldAtOutputIndex('Pressure', -1)[0],
+print mres_s.getFieldAtOutputIndex('Pressure', -1)[0]
+
+print mres_t.getFieldAtOutputIndex('Pressure', -1)[1000],
+print mres_s.getFieldAtOutputIndex('Pressure', -1)[1000]
 
