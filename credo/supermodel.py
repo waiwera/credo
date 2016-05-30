@@ -42,6 +42,8 @@ DEFAULT_COMMAND = "supermodel.exe"
 
 class SuperModelRun(ModelRun):
     """ for supermodel
+
+    TODO: should I add suport of .indexMap? Supermodel does not use dummy blocks
     """
     def __init__(self, name, input_filename,
                  simulator=DEFAULT_COMMAND,
@@ -98,10 +100,10 @@ class SuperModelResult(ModelResult):
         self.cell_idx = self._data['cell_interior_index'][:,0] # cell_fields/*
         self.geom_idx = self._data['cell_index'][:,0] # fields/cell_geometry
 
-    def getFieldAtOutputIndex(self, field, outputIndex):
+    def _getFieldAtOutputIndex(self, field, outputIndex):
         return self._data['cell_fields'][field][outputIndex][self.cell_idx]
 
-    def getPositions(self):
+    def _getPositions(self):
         # cannot do self._data['fields'][cell_geometry][self.geom_idx,:3]
         # it would have to be in increasing order
         return self._data['fields']['cell_geometry'][:,:3][self.geom_idx]
