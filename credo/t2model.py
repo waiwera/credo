@@ -54,7 +54,7 @@ class T2ModelRun(ModelRun):
 
     """
     def __init__(self, name, dat_filename, save_filename='', incon_filename='',
-                 geo_filename=None, ordering_map=None,
+                 geo_filename=None, ordering_map=None, fieldname_map=None,
                  simulator=DEFAULT_AUT2_COMMAND,
                  basePath=None, outputPath=None, logPath=None,
                  ):
@@ -67,6 +67,7 @@ class T2ModelRun(ModelRun):
         self._simulator = simulator
 
         self._ordering_map = ordering_map
+        self._fieldname_map = fieldname_map
 
         # initialised in .preRunPreparation()
         self._runCommand = None
@@ -141,17 +142,19 @@ class T2ModelRun(ModelRun):
         else:
             geo_filename = self._geo_filename
         mres = T2ModelResult(self.name, lst_filename, geo_filename,
-                             ordering_map=self._ordering_map)
+                             ordering_map=self._ordering_map,
+                             fieldname_map=self._fieldname_map)
         return mres
 
 class T2ModelResult(ModelResult):
     """ for AUT2
     """
     def __init__(self, name, lst_filename, geo_filename=None,
-                 ordering_map=None):
+                 ordering_map=None, fieldname_map=None):
         from os.path import dirname
         super(T2ModelResult, self).__init__(name, dirname(lst_filename),
-                                            ordering_map)
+                                            ordering_map=ordering_map,
+                                            fieldname_map=fieldname_map)
         self.name = name
         self._lst = t2listing(lst_filename)
         if geo_filename:

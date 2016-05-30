@@ -47,6 +47,7 @@ class SuperModelRun(ModelRun):
     blocks.
     """
     def __init__(self, name, input_filename,
+                 fieldname_map=None,
                  simulator=DEFAULT_COMMAND,
                  basePath=None, outputPath=None, logPath=None,
                  ):
@@ -54,6 +55,8 @@ class SuperModelRun(ModelRun):
 
         self._input_filename = input_filename
         self._simulator = simulator
+
+        self._fieldname_map = fieldname_map
 
     def getModelRunCommand(self, extraCmdLineOpts=None):
         """ Note: this is called AFTER .preRunPreparation() """
@@ -65,7 +68,8 @@ class SuperModelRun(ModelRun):
     def createModelResult(self):
         """ Note: this is called AFTER .postRunCleanup() """
         mres = SuperModelResult(self.name, self.outputPath,
-                                self._getH5Filename())
+                                self._getH5Filename(),
+                                fieldname_map=self._fieldname_map)
         return mres
 
     def _getH5Filename(self):
@@ -89,9 +93,11 @@ class SuperModelRun(ModelRun):
 class SuperModelResult(ModelResult):
     """ for supermodel
     """
-    def __init__(self, name, outputPath, h5_filename):
+    def __init__(self, name, outputPath, h5_filename,
+                 fieldname_map=None):
         from os.path import dirname
-        super(SuperModelResult, self).__init__(name, outputPath)
+        super(SuperModelResult, self).__init__(name, outputPath,
+                                               fieldname_map=fieldname_map)
         self.name = name
 
         import h5py

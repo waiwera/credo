@@ -54,11 +54,20 @@ class ModelResult(object):
     point to internal element/block order, size and order matches other
     simulators it compared to.
 
+    Attribute .fieldname_map is used to convert field names from the internal
+    storage to external field names shared by different simulator.
+    .fieldname_map should be a dictionary with keys of names used in TC, and
+    values of names within the internal storage.
+
+    TODO: .ordering_map and .fieldname_map are both handled by subclass at the
+    moment, should it be part of the ModelRun superclass?
+
     TODO: ??? Should I let the the ModelResult to handle the calculation of
     analytic solution?  That would allow the implementation of say volumetric
     averaging of analytic solution so it's comparable to FV element results.
     """
-    def __init__(self, modelName, outputPath, ordering_map=None):
+    def __init__(self, modelName, outputPath, ordering_map=None,
+                 fieldname_map=None):
         super(ModelResult, self).__init__()
 
         self.modelName = modelName
@@ -66,6 +75,7 @@ class ModelResult(object):
         self.jobMetaInfo = None  # needed by jobrunner
 
         self.ordering_map = ordering_map
+        self.fieldname_map = fieldname_map
 
     def getFieldAtOutputIndex(self, field, outputIndex):
         """ Returns a list of values of field variable, of all model's elements,
@@ -77,6 +87,8 @@ class ModelResult(object):
         compatible (some with dummy element for boundary conditions to be mapped
         out).
         """
+        if self.fieldname_map is not None:
+            field = self.fieldname_map[field]
         if self.ordering_map is None:
             return self._getFieldAtOutputIndex(field, outputIndex)
         else:
