@@ -68,9 +68,13 @@ t2dat_fn = "CC6C001.DAT"
 # cheated by running in windows and get the files
 super_fn = 'CC6C001.json'
 
+# AUT2 uses dummy block for boundary condition, (atmospheric blocks here)
+# get rid of them to be identical to supermodel
+map_out_atm = range(80,1680)
 
 mrun_t = T2ModelRun("aut2", t2dat_fn,
                     geo_filename=t2geo_fn,
+                    ordering_map=map_out_atm,
                     simulator='AUTOUGH2_5Dbeta',
                     basePath=os.path.realpath(MODELDIR)
                     )
