@@ -10,11 +10,25 @@ NOTE:
 
 import os
 
+from credo.systest import SciBenchmarkTest
+from credo.systest import FieldWithinTolTC
+
 from credo.jobrunner import SimpleJobRunner
 from credo.t2model import T2ModelRun
 from credo.supermodel import SuperModelRun
 
 MODELDIR = 'cc6'
+
+AUT2_FIELDMAP = {
+    'Pressure': 'Pressure',
+    'Temperature': 'Temperature',
+    'Vapour saturation': 'Vapour saturation',
+}
+SUPER_FIELDMAP = {
+    'Pressure': 'fluid_pressure',
+    'Temperature': 'fluid_temperature',
+    'Vapour saturation': 'fluid_vapour_saturation',
+}
 
 def t2_to_super(geofilename, datfilename, basepath=None):
     """ convert tough2 model into supermodel, saves input files and return the
@@ -72,10 +86,12 @@ super_fn = 'CC6C001.json'
 # get rid of them to be identical to supermodel
 map_out_atm = range(80,1680)
 
+
+# use AUT2 to work out expected/reference results
 mrun_t = T2ModelRun("aut2", t2dat_fn,
                     geo_filename=t2geo_fn,
                     ordering_map=map_out_atm,
-                    fieldname_map={'Pressure':'Pressure'},
+                    fieldname_map=AUT2_FIELDMAP,
                     simulator='AUTOUGH2_5Dbeta',
                     basePath=os.path.realpath(MODELDIR)
                     )
@@ -83,21 +99,38 @@ jrunner = SimpleJobRunner()
 jmeta = jrunner.submitRun(mrun_t)
 mres_t = jrunner.blockResult(mrun_t, jmeta)
 
+
+# construct supermodel run and benchamrk test
 mrun_s = SuperModelRun("super", super_fn,
-                       fieldname_map={'Pressure':'fluid_pressure'},
+                       fieldname_map=SUPER_FIELDMAP,
                        simulator='supermodel.exe',
                        basePath=os.path.realpath(MODELDIR)
                        )
+
+sciBTest = SciBenchmarkTest("CC6")
+sciBTest.description = """Mike's test problem 6, CC6"""
+sciBTest.mSuite.addRun(mrun_s, "SuperModel")
+
+sciBTest.setupEmptyTestCompsList()
+for runI, mRun in enumerate(sciBTest.mSuite.runs):
+    sciBTest.addTestComp(runI, "pressu",
+        FieldWithinTolTC(fieldsToTest=["Pressure"],
+                         defFieldTol=1.0e-5,
+                         expected=mres_t,
+                         testOutputIndex=-1))
+    sciBTest.addTestComp(runI, "temp",
+        FieldWithinTolTC(fieldsToTest=["Temperature"],
+                         defFieldTol=1.0e-5,
+                         expected=mres_t,
+                         testOutputIndex=-1))
+    sciBTest.addTestComp(runI, "vapsat",
+        FieldWithinTolTC(fieldsToTest=["Vapour saturation"],
+                         defFieldTol=1.0e-5,
+                         expected=mres_t,
+                         testOutputIndex=-1))
+
 jrunner = SimpleJobRunner(mpi=True)
-jmeta = jrunner.submitRun(mrun_s)
-mres_s = jrunner.blockResult(mrun_s, jmeta)
-
-print mres_t.getFieldAtOutputIndex('Pressure', -1)[-1],
-print mres_s.getFieldAtOutputIndex('Pressure', -1)[-1]
-
-print mres_t.getFieldAtOutputIndex('Pressure', -1)[0],
-print mres_s.getFieldAtOutputIndex('Pressure', -1)[0]
-
-print mres_t.getFieldAtOutputIndex('Pressure', -1)[1000],
-print mres_s.getFieldAtOutputIndex('Pressure', -1)[1000]
+testResult, mResults = sciBTest.runTest(jrunner,
+    # postProcFromExisting=True,
+    createReports=True)
 
