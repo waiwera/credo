@@ -34,7 +34,8 @@ def t2_to_super(geofilename, datfilename, basepath=None):
     """ convert tough2 model into supermodel, saves input files and return the
     name of main input file
 
-    TODO: add basepath, for specifying where to write input files
+    TODO: maybe this should be external, and formalised more as utility
+    TODO: maybe this should return ordering map, to be used in testing
     """
     from mulgrids import mulgrid
     from t2data_json import t2data_export_json
@@ -87,6 +88,7 @@ super_fn = 'CC6C001.json'
 map_out_atm = range(80,1680)
 
 
+# ---------------------------------------------------------------------------
 # use AUT2 to work out expected/reference results
 mrun_t = T2ModelRun("aut2", t2dat_fn,
                     geo_filename=t2geo_fn,
@@ -100,6 +102,7 @@ jmeta = jrunner.submitRun(mrun_t)
 mres_t = jrunner.blockResult(mrun_t, jmeta)
 
 
+# ---------------------------------------------------------------------------
 # construct supermodel run and benchamrk test
 mrun_s = SuperModelRun("super", super_fn,
                        fieldname_map=SUPER_FIELDMAP,
@@ -134,3 +137,6 @@ testResult, mResults = sciBTest.runTest(jrunner,
     # postProcFromExisting=True,
     createReports=True)
 
+
+# ---------------------------------------------------------------------------
+# report generation
