@@ -19,7 +19,7 @@ from credo.systest import SciBenchmarkTest
 from credo.systest import FieldWithinTolTC
 
 from credo.jobrunner import SimpleJobRunner
-from credo.t2model import T2ModelRun
+from credo.t2model import T2ModelRun, T2ModelResult
 from credo.supermodel import SuperModelRun
 
 import credo.reporting.standardReports as sReps
@@ -90,14 +90,15 @@ MODELDIR = 'cc6'
 t2geo_fn = "3DCoarsegrid.dat"
 t2dat_fn = "CC6C001.DAT"
 
-# this does not work in cygwin at the moment (no python vtk)
-super_fn = t2_to_super(t2geo_fn,
-                       t2dat_fn,
-                       basepath=MODELDIR
-                       )
+super_fn = None
 # cheated by running in windows and get the files
 # super_fn = 'CC6C001.json'
-
+if super_fn is None:
+    # this does not work in cygwin at the moment (no python vtk)
+    super_fn = t2_to_super(t2geo_fn,
+                           t2dat_fn,
+                           basepath=MODELDIR
+                           )
 # AUT2 uses dummy block for boundary condition, (atmospheric blocks here)
 # get rid of them to be identical to supermodel
 geo = mulgrid(os.path.join(MODELDIR, t2geo_fn))
@@ -116,6 +117,12 @@ mrun_t = T2ModelRun("aut2", t2dat_fn,
 jrunner = SimpleJobRunner()
 jmeta = jrunner.submitRun(mrun_t)
 mres_t = jrunner.blockResult(mrun_t, jmeta)
+# can directly load ModelResult instead
+# mres_t = T2ModelResult("aut2",
+#                        "CC6/CC6C001.LISTING",
+#                        geo_filename="CC6/"+t2geo_fn,
+#                        ordering_map=map_out_atm,
+#                        fieldname_map=AUT2_FIELDMAP)
 
 
 # ---------------------------------------------------------------------------
