@@ -62,6 +62,8 @@ class SimpleJobRunner(JobRunner):
         #  factory that chooses based on platform info, job runner type,
         #  and installed software.
         if sys.platform[0:len("linux")] == "linux":
+            # TODO: UnixTimeCmdProfiler does not seem to work now that I use
+            # Popen(shell=False).  check this on Adrian's machine
             # Add at least a UnixTimeCmdProfiler
             defProfiler = UnixTimeCmdProfiler()
             self.profilers.append(defProfiler)
