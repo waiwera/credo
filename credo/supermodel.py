@@ -38,7 +38,7 @@ produce a :class:`credo.modelresult.ModelResult` class.
 from credo.modelrun import ModelRun
 from credo.modelresult import ModelResult
 
-DEFAULT_COMMAND = "supermodel.exe"
+DEFAULT_COMMAND = "supermodel"
 
 class SuperModelRun(ModelRun):
     """ for supermodel
