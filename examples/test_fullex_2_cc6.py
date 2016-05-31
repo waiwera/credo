@@ -25,6 +25,10 @@ from credo.supermodel import SuperModelRun
 import credo.reporting.standardReports as sReps
 from credo.reporting import getGenerators
 
+from mulgrids import mulgrid
+import matplotlib.pyplot as plt
+import numpy as np
+
 MODELDIR = 'cc6'
 
 AUT2_FIELDMAP = {
@@ -146,6 +150,37 @@ jrunner = SimpleJobRunner(mpi=True)
 testResult, mResults = sciBTest.runTest(jrunner,
     # postProcFromExisting=True,
     createReports=True)
+
+
+# ---------------------------------------------------------------------------
+# generate plots
+geo = mulgrid(os.path.join(MODELDIR, t2geo_fn))
+atmvals = np.zeros(geo.num_atmosphere_blocks)
+y = 125.
+slc = [np.array([0., y]), np.array([5000., y])]
+names = {
+    "pressu": ("Pressure", "Pressure difference", "bar"),
+    "temp": ("Temperature", "Temperature difference", "$^\circ$C"),
+    "vapsat": ("Vapour saturation", "Vapour saturation difference", ""),
+}
+for i, tc_name in enumerate(names.keys()):
+    field_name, title, unit = names[tc_name]
+    var = np.array(sciBTest.testComps[0][tc_name].fieldErrors[field_name])
+    var = np.hstack([atmvals, var])
+    geo.slice_plot(slc,
+                   var,
+                   title,
+                   unit,
+                   plt=plt)
+    img_filename = os.path.join(sciBTest.mSuite.runs[0].basePath,
+                                sciBTest.mSuite.outputPathBase,
+                                ("%i.png" % i))
+    plt.savefig(img_filename,
+                dpi=None, facecolor='w', edgecolor='w',
+                orientation='portrait', papertype=None, format=None,
+                transparent=False)
+    plt.clf()
+    sciBTest.mSuite.analysisImages.append(img_filename)
 
 
 # ---------------------------------------------------------------------------
