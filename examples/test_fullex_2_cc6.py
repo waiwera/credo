@@ -6,6 +6,11 @@ NOTE:
     export PYTHONPATH=$PYTHONPATH:/cygdrive/d/_Geothermal/Apps/credo/credo2/
 2. Make sure supermodel is in the path
     export PATH=$PATH:/home/cyeh015/supermodels-test/dist/
+
+TODO: check and revive CREDO's ability to do dry run (use results kept on disk)
+TODO: check ModelRun.jobParams, which allows options for jobrunner
+TODO: create new ModelResult class for loading existing results (or maybe just
+use SuperModelResult and T2ModelResult)
 """
 
 import os
@@ -16,6 +21,9 @@ from credo.systest import FieldWithinTolTC
 from credo.jobrunner import SimpleJobRunner
 from credo.t2model import T2ModelRun
 from credo.supermodel import SuperModelRun
+
+import credo.reporting.standardReports as sReps
+from credo.reporting import getGenerators
 
 MODELDIR = 'cc6'
 
@@ -35,7 +43,9 @@ def t2_to_super(geofilename, datfilename, basepath=None):
     name of main input file
 
     TODO: maybe this should be external, and formalised more as utility
-    TODO: maybe this should return ordering map, to be used in testing
+    TODO: maybe this should return ordering map, to be used in testing, eg. use
+    standard geo.num_atmosphere_blocks to generate a normal one?  but this is
+    not always true.
     """
     from mulgrids import mulgrid
     from t2data_json import t2data_export_json
@@ -140,3 +150,9 @@ testResult, mResults = sciBTest.runTest(jrunner,
 
 # ---------------------------------------------------------------------------
 # report generation
+for rGen in getGenerators(["RST"], sciBTest.outputPathBase):
+    sReps.makeSciBenchReport(sciBTest, mResults, rGen,
+        os.path.join(sciBTest.outputPathBase,
+                     "%s-report.%s" % (sciBTest.testName, rGen.stdExt)))
+
+print "NOTE: use 'rst2html xxx-report.rst' to generate html"
