@@ -362,6 +362,11 @@ class ModelSuite:
         self.iterGen = None
         self.modelVariants = {}
 
+        # TODO: AY: this seems to be WIP, should I set attribute here?
+        # a list of image file(names), and model images for report
+        self.analysisImages = []
+        self.modelImagesToDisplay = None
+
     def addRun(self, modelRun, runDescrip=None, runCustomOpts=None,
             forceOutputPathBaseSubdir=True):
         """Add a model run to the list of those to be run.
