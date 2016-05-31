@@ -160,9 +160,9 @@ atmvals = np.zeros(geo.num_atmosphere_blocks)
 y = 125.
 slc = [np.array([0., y]), np.array([5000., y])]
 names = {
-    "pressu": ("Pressure", "Pressure difference", "bar"),
-    "temp": ("Temperature", "Temperature difference", "$^\circ$C"),
-    "vapsat": ("Vapour saturation", "Vapour saturation difference", ""),
+    "pressu": ("Pressure", "Pressure relative error", "bar"),
+    "temp": ("Temperature", "Temperature relative error", "$^\circ$C"),
+    "vapsat": ("Vapour saturation", "Vapour saturation relative error", ""),
 }
 for i, tc_name in enumerate(names.keys()):
     field_name, title, unit = names[tc_name]
