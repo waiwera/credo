@@ -41,9 +41,7 @@ from credo.modelresult import ModelResult
 from t2listing import t2listing
 from mulgrids import mulgrid
 
-# Allow MPI command to be overriden by env var.
-AUT2_COMMAND = "AUT2_COMMAND"
-DEFAULT_AUT2_COMMAND = "autough2_4"
+DEFAULT_COMMAND = "autough2_4"
 
 class T2ModelRun(ModelRun):
     """ for AUT2
@@ -55,7 +53,7 @@ class T2ModelRun(ModelRun):
     """
     def __init__(self, name, dat_filename, save_filename='', incon_filename='',
                  geo_filename=None, ordering_map=None, fieldname_map=None,
-                 simulator=DEFAULT_AUT2_COMMAND,
+                 simulator=DEFAULT_COMMAND,
                  basePath=None, outputPath=None, logPath=None,
                  ):
         super(T2ModelRun, self).__init__(name, basePath, outputPath, logPath)
