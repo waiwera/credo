@@ -92,7 +92,7 @@ t2dat_fn = "CC6C001.DAT"
 
 super_fn = None
 # cheated by running in windows and get the files
-# super_fn = 'CC6C001.json'
+# super_fn = 'CC6C001.json'  # AY_CYGWIN
 if super_fn is None:
     # this does not work in cygwin at the moment (no python vtk)
     super_fn = t2_to_super(t2geo_fn,
@@ -111,7 +111,7 @@ mrun_t = T2ModelRun("aut2", t2dat_fn,
                     geo_filename=t2geo_fn,
                     ordering_map=map_out_atm,
                     fieldname_map=AUT2_FIELDMAP,
-                    # simulator='AUTOUGH2_5Dbeta',
+                    # simulator='AUTOUGH2_5Dbeta',  # AY_CYGWIN
                     basePath=os.path.realpath(MODELDIR)
                     )
 jrunner = SimpleJobRunner()
@@ -129,7 +129,7 @@ mres_t = jrunner.blockResult(mrun_t, jmeta)
 # construct supermodel run and benchamrk test
 mrun_s = SuperModelRun("super", super_fn,
                        fieldname_map=SUPER_FIELDMAP,
-                       # simulator='supermodel.exe',
+                       # simulator='supermodel.exe',  # AY_CYGWIN
                        basePath=os.path.realpath(MODELDIR)
                        )
 
