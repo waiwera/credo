@@ -29,8 +29,6 @@ from mulgrids import mulgrid
 import matplotlib.pyplot as plt
 import numpy as np
 
-MODELDIR = 'cc6'
-
 AUT2_FIELDMAP = {
     'Pressure': 'Pressure',
     'Temperature': 'Temperature',
@@ -86,6 +84,9 @@ def t2_to_super(geofilename, datfilename, basepath=None):
     return input_filename
 
 
+# ---------------------------------------------------------------------------
+# setup models, load files etc.
+MODELDIR = 'cc6'
 t2geo_fn = "3DCoarsegrid.dat"
 t2dat_fn = "CC6C001.DAT"
 
@@ -99,7 +100,8 @@ super_fn = t2_to_super(t2geo_fn,
 
 # AUT2 uses dummy block for boundary condition, (atmospheric blocks here)
 # get rid of them to be identical to supermodel
-map_out_atm = range(80,1680)
+geo = mulgrid(os.path.join(MODELDIR, t2geo_fn))
+map_out_atm = range(geo.num_atmosphere_blocks, geo.num_blocks)
 
 
 # ---------------------------------------------------------------------------
@@ -154,7 +156,6 @@ testResult, mResults = sciBTest.runTest(jrunner,
 
 # ---------------------------------------------------------------------------
 # generate plots
-geo = mulgrid(os.path.join(MODELDIR, t2geo_fn))
 atmvals = np.zeros(geo.num_atmosphere_blocks)
 y = 125.
 slc = [np.array([0., y]), np.array([5000., y])]
@@ -190,4 +191,4 @@ for rGen in getGenerators(["RST"], sciBTest.outputPathBase):
         os.path.join(sciBTest.outputPathBase,
                      "%s-report.%s" % (sciBTest.testName, rGen.stdExt)))
 
-print "NOTE: use 'rst2html xxx-report.rst' to generate html"
+print "NOTE: use 'rst2html xxx-report.rst > xxx-report.html' to generate html"
