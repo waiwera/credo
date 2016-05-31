@@ -34,6 +34,7 @@ from credo.jobrunner.api import *
 from credo.modelresult import ModelResult
 from credo.modelresult import getSimInfoFromFreqOutput
 from credo.jobrunner.unixTimeCmdProfiler import UnixTimeCmdProfiler
+from credo.jobrunner.walltimeProfiler import WalltimeProfiler
 
 # Allow MPI command to be overriden by env var.
 MPI_RUN_COMMAND = "MPI_RUN_COMMAND"
@@ -67,6 +68,7 @@ class SimpleJobRunner(JobRunner):
             # Add at least a UnixTimeCmdProfiler
             defProfiler = UnixTimeCmdProfiler()
             self.profilers.append(defProfiler)
+        self.profilers.append(WalltimeProfiler())
         self.defaultProfiler = defProfiler
 
     def setup(self):
@@ -124,6 +126,8 @@ class SimpleJobRunner(JobRunner):
         jobMI.stdErrFile = stdErrFile
         jobMI.submitTime = datetime.now()
         try:
+            for profiler in self.profilers:
+                profiler.startTimer()
             # TODO: check side effect of shell=True:
             # http://stackoverflow.com/a/1254322/2368167
             # shell=True needed when using shell features: '<' redirection
@@ -205,6 +209,8 @@ class SimpleJobRunner(JobRunner):
                     (str(timedelta(seconds=maxRunTime)))
                 os.kill(procHandle.pid, signal.SIGQUIT)
         # TODO: set finishTime
+        for profiler in self.profilers:
+            profiler.stopTimer()
 
         # Check status of run (eg error status)
         stdOutFilename = modelRun.getStdOutFilename()

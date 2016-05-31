@@ -148,7 +148,11 @@ def makeSciBenchReport(sciBTest, mResults, rGen, outName, imgPerRow=3):
     else:
         provDict = {"": ""}
     #TODO: performance
-    perfDict = {"": ""}
+    perfDict = {}
+    for runI, mRes in enumerate(mResults):
+        jmeta = mRes.jobMetaInfo
+        if jmeta is not None:
+            perfDict["Run %i" % runI] = jmeta.performance
 
     #Build doc layout
     elements = []

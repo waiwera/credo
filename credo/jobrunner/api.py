@@ -35,7 +35,11 @@ class PerformanceProfiler:
     profile performance of each ModelRun ran by given JobRunner.
 
     This is an abstract base class, user code will have to select a concrete
-    instantiation."""
+    instantiation.
+
+    .startTimer() and .stopTimer() are optional for most profilers, it s really
+    only designed for a dumb profiler implemented using pure Python.
+    """
     def __init__(self, typeStr):
         self.typeStr = typeStr
 
@@ -45,6 +49,12 @@ class PerformanceProfiler:
 
     def modifyRun(self, modelRun, modelRunCommand, jobMetaInfo):
         raise NotImplementedError("Error, virtual func on base class")
+
+    def startTimer(self):
+        pass
+
+    def stopTimer(self):
+        pass
 
     def attachPerformanceInfo(self, jobMetaInfo, modelResult):
         #Open result filename
