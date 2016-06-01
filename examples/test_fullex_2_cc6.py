@@ -132,8 +132,11 @@ mrun_s = SuperModelRun("super", super_fn,
                        # simulator='supermodel.exe',  # AY_CYGWIN
                        basePath=os.path.realpath(MODELDIR)
                        )
+mrun_s.jobParams['nproc'] = 6
 
-sciBTest = SciBenchmarkTest("CC6")
+# TODO: specifying nproc in SciBenchmarkTest does not seem to work, model runs'
+# jobParams not updated, so a.t.m. this is only for report
+sciBTest = SciBenchmarkTest("CC6", nproc=mrun_s.jobParams['nproc'])
 sciBTest.description = """Mike's test problem 6, CC6"""
 sciBTest.mSuite.addRun(mrun_s, "SuperModel")
 
