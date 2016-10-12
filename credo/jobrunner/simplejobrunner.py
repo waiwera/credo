@@ -57,18 +57,22 @@ class SimpleJobRunner(JobRunner):
     def __init__(self, mpi=False):
         JobRunner.__init__(self)
         self.mpi = mpi
-        defProfiler = None
+        defProfiler = WalltimeProfiler()
         # TODO: perhaps a more declarative approach to choosing profiler
         #  to use better in future than what's below ... e.g. have a profiler
         #  factory that chooses based on platform info, job runner type,
         #  and installed software.
-        if sys.platform[0:len("linux")] == "linux":
-            # TODO: UnixTimeCmdProfiler does not seem to work now that I use
-            # Popen(shell=False).  check this on Adrian's machine
-            # Add at least a UnixTimeCmdProfiler
-            defProfiler = UnixTimeCmdProfiler()
-            self.profilers.append(defProfiler)
-        self.profilers.append(WalltimeProfiler())
+
+        # temporarily disable UnixTimeCmdProfiler, does not work on Adrian's
+        # machine:
+        # if sys.platform[0:len("linux")] == "linux":
+        #     # TODO: UnixTimeCmdProfiler does not seem to work now that I use
+        #     # Popen(shell=False).  check this on Adrian's machine
+        #     # Add at least a UnixTimeCmdProfiler
+        #     defProfiler = UnixTimeCmdProfiler()
+        #     self.profilers.append(defProfiler)
+
+        self.profilers.append(defProfiler)
         self.defaultProfiler = defProfiler
 
     def setup(self):
