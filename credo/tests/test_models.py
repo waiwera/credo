@@ -35,6 +35,19 @@ class TestSuperModel(unittest.TestCase):
         for i in range(3):
             self.assertAlmostEqual(p[800][i], expected[i], places=7)
 
+    def test_gethistory(self):
+        expected = [101350.0, 683451.7997278131]
+        expected_times = [0.0, 1.0E15]
+
+        phist = self.mres.getFieldHistoryAtCell('fluid_pressure', 800)
+        for p,pe in zip(phist, expected):
+            self.assertAlmostEqual(p, pe, places=7)
+
+        times = self.mres.getTimes()
+        for t,te in zip(times, expected_times):
+            self.assertAlmostEqual(t, te, places=7)
+
+
 class TestAUT2Model(unittest.TestCase):
     def setUp(self):
         # cc6 has eleme 1-80 as atmosphere blocks

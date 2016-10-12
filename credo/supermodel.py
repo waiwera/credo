@@ -110,7 +110,13 @@ class SuperModelResult(ModelResult):
     def _getFieldAtOutputIndex(self, field, outputIndex):
         return self._data['cell_fields'][field][outputIndex][self.cell_idx]
 
+    def _getFieldHistoryAtCell(self, field, cellIndex):
+        return self._data['cell_fields'][field][:,cellIndex]
+
     def _getPositions(self):
         # cannot do self._data['fields'][cell_geometry][self.geom_idx,:3]
         # it would have to be in increasing order
         return self._data['fields']['cell_geometry'][:,:3][self.geom_idx]
+
+    def _getTimes(self):
+        return self._data['time']
