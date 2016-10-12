@@ -74,6 +74,10 @@ class T2ModelRun(ModelRun):
     def preRunPreparation(self):
         from os.path import basename, join
         datbase, savebase, inconbase = self._aut2FileNameBases()
+
+        # check cases of filename for later use
+        self._dat_case = datbase[0].isupper()
+
         runfilename = datbase + '_' + basename(self._simulator) + '.in'
         with open(self.getStdInFilename(), 'w') as f:
             f.write('\n'.join([
@@ -116,10 +120,16 @@ class T2ModelRun(ModelRun):
                 ]
             if self._geo_filename:
                 main_files = main_files + [self._geo_filename]
-            other_exts = ['.listing', '.pdat', '.autogeners']
+            if self._dat_case:
+                other_exts = ['.LISTING', '.PDAT', '.AUTOGENERS']
+            else:
+                other_exts = ['.listing', '.pdat', '.autogeners']
             return [datbase+ext for ext in other_exts] + main_files
         def files_to_clean():
-            return [n+'.data' for n in ['gener', 'lineq', 'mesh', 'table', 'vers']]
+            if self._dat_case:
+                return [n+'.data' for n in ['gener', 'lineq', 'mesh', 'table', 'vers']]
+            else:
+                return [n+'.DATA' for n in ['GENER', 'LINEQ', 'MESH', 'TABLE', 'VERS']]
         import os
         import shutil
         absOutputPath = os.path.join(self.basePath, self.outputPath)
@@ -134,7 +144,11 @@ class T2ModelRun(ModelRun):
     def createModelResult(self):
         """ Note: this is called AFTER .postRunCleanup() """
         from os.path import join
-        lst_filename = join(self.outputPath, self._lstbase+'.listing')
+        if self._dat_case:
+            lst_ext = '.listing'
+        else:
+            lst_ext = '.LISTING'
+        lst_filename = join(self.outputPath, self._lstbase+lst_ext)
         if self._geo_filename:
             geo_filename = join(self.outputPath, self._geo_filename)
         else:
