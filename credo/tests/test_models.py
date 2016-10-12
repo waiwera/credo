@@ -69,12 +69,16 @@ class TestAUT2Model(unittest.TestCase):
         ele = self.lst.element.row_name[-1]
         expected_times, expected = self.lst.history(('e', ele, 'Pressure'))
         phist = self.mres.getFieldHistoryAtCell('Pressure', 1679)
+        times = self.mres.getTimes()
 
         self.assertEqual(type(phist), numpy.ndarray)
         self.assertEqual(type(expected), numpy.ndarray)
 
         for p,pe in zip(phist, expected):
             self.assertEqual(p, pe)
+
+        for t,te in zip(times, expected_times):
+            self.assertEqual(t, te)
 
 if __name__ == '__main__':
     unittest.main()

@@ -184,4 +184,5 @@ class T2ModelResult(ModelResult):
     def _getPositions(self):
         return [self._geo.block_centre(self._geo.layer_name(b), self._geo.column_name(b)) for b in self._geo.block_name_list]
 
-
+    def _getTimes(self):
+        return self._lst.fulltimes

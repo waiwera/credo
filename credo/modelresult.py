@@ -160,6 +160,20 @@ class ModelResult(object):
         """
         raise NotImplementedError("._getPositions()")
 
+    def getTimes(self):
+        """ Returns a numpy array of model result's output times.
+        """
+        times = self._getTimes()
+        if type(times) == np.ndarray:
+            return times
+        else:
+            return np.array(times)
+
+    def _getTimes(self):
+        """ Returns a numpy array of model result's output times.
+        """
+        raise NotImplementedError("._getTimes()")
+
     def writeRecordXML(self, outputDir="", filename="", prettyPrint=True):
         """Write an XML record of a :class:`.ModelResult`."""
         if filename == "":
