@@ -76,7 +76,7 @@ class T2ModelRun(ModelRun):
         datbase, savebase, inconbase = self._aut2FileNameBases()
 
         # check cases of filename for later use
-        self._dat_case = datbase[0].isupper()
+        self._dat_case_upper = datbase[0].isupper()
 
         runfilename = datbase + '_' + basename(self._simulator) + '.in'
         with open(self.getStdInFilename(), 'w') as f:
@@ -120,13 +120,13 @@ class T2ModelRun(ModelRun):
                 ]
             if self._geo_filename:
                 main_files = main_files + [self._geo_filename]
-            if self._dat_case:
+            if self._dat_case_upper:
                 other_exts = ['.LISTING', '.PDAT', '.AUTOGENERS']
             else:
                 other_exts = ['.listing', '.pdat', '.autogeners']
             return [datbase+ext for ext in other_exts] + main_files
         def files_to_clean():
-            if self._dat_case:
+            if self._dat_case_upper:
                 return [n+'.data' for n in ['gener', 'lineq', 'mesh', 'table', 'vers']]
             else:
                 return [n+'.DATA' for n in ['GENER', 'LINEQ', 'MESH', 'TABLE', 'VERS']]
@@ -144,10 +144,10 @@ class T2ModelRun(ModelRun):
     def createModelResult(self):
         """ Note: this is called AFTER .postRunCleanup() """
         from os.path import join
-        if self._dat_case:
-            lst_ext = '.listing'
-        else:
+        if self._dat_case_upper:
             lst_ext = '.LISTING'
+        else:
+            lst_ext = '.listing'
         lst_filename = join(self.outputPath, self._lstbase+lst_ext)
         if self._geo_filename:
             geo_filename = join(self.outputPath, self._geo_filename)
