@@ -69,13 +69,15 @@ class TestAUT2Model(unittest.TestCase):
         ele = self.lst.element.row_name[-1]
         expected_times, expected = self.lst.history(('e', ele, 'Pressure'))
         phist = self.mres.getFieldHistoryAtCell('Pressure', 1679)
+        phist_map = self.mres_map.getFieldHistoryAtCell('Pressure', 1599)
         times = self.mres.getTimes()
 
         self.assertEqual(type(phist), numpy.ndarray)
         self.assertEqual(type(expected), numpy.ndarray)
 
-        for p,pe in zip(phist, expected):
+        for p,pmap,pe in zip(phist, phist_map, expected):
             self.assertEqual(p, pe)
+            self.assertEqual(pmap, pe)
 
         for t,te in zip(times, expected_times):
             self.assertEqual(t, te)
