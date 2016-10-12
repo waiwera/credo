@@ -93,8 +93,8 @@ class ModelResult(object):
             return self._getFieldAtOutputIndex(field, outputIndex)
         else:
             orig = self._getFieldAtOutputIndex(field, outputIndex)
-            if type(orig) == 'numpy.ndarray':
-                return orign[self.ordering_map]
+            if type(orig) == np.ndarray:
+                return orig[self.ordering_map]
             else:
                 return np.array([orig[i] for i in self.ordering_map])
 
@@ -121,7 +121,7 @@ class ModelResult(object):
             return self._getFieldHistoryAtCell(field, cellIndex)
         else:
             orig = self._getFieldHistoryAtCell(field, self.ordering_map[cellIndex])
-            if type(orig) == 'numpy.ndarray':
+            if type(orig) == np.ndarray:
                 return orig
             else:
                 return np.array(orig)
