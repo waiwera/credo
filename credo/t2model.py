@@ -176,6 +176,11 @@ class T2ModelResult(ModelResult):
         self._lst.step = self._lst.fullsteps[outputIndex]
         return self._lst.element[field]
 
+    def _getFieldHistoryAtCell(self, field, cellIndex):
+        ele = self._lst.element.row_name[cellIndex]
+        hist = self._lst.history(('e', ele, field), short=False)
+        return hist[1]
+
     def _getPositions(self):
         return [self._geo.block_centre(self._geo.layer_name(b), self._geo.column_name(b)) for b in self._geo.block_name_list]
 

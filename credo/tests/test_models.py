@@ -3,6 +3,8 @@
 import unittest
 import os, sys
 
+import numpy
+
 from credo.supermodel import SuperModelResult
 from credo.t2model import T2ModelResult
 
@@ -62,6 +64,17 @@ class TestAUT2Model(unittest.TestCase):
 
         self.assertEqual(plst[-1], pmap[-1])
         self.assertEqual(plst[-1], pnom[-1])
+
+    def test_gethistory(self):
+        ele = self.lst.element.row_name[-1]
+        expected_times, expected = self.lst.history(('e', ele, 'Pressure'))
+        phist = self.mres.getFieldHistoryAtCell('Pressure', 1679)
+
+        self.assertEqual(type(phist), numpy.ndarray)
+        self.assertEqual(type(expected), numpy.ndarray)
+
+        for p,pe in zip(phist, expected):
+            self.assertEqual(p, pe)
 
 if __name__ == '__main__':
     unittest.main()

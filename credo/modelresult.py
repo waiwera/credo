@@ -105,6 +105,34 @@ class ModelResult(object):
         """
         raise NotImplementedError("._getFieldAtOutputIndex()")
 
+    def getFieldHistoryAtCell(self, field, cellIndex):
+        """ Returns history value of specified field at one of the model's
+        element/cell.  Note the cellIndex will be mapped if self.ordering_map is
+        specified at the construction of the model result.
+
+        Sub-classes should implement _getFieldHistoryAtCell() instead of this.
+        This is done to support element mapping, to make different simulators
+        compatible (some with dummy element for boundary conditions to be mapped
+        out).
+        """
+        if self.fieldname_map is not None:
+            field = self.fieldname_map[field]
+        if self.ordering_map is None:
+            return self._getFieldHistoryAtCell(field, cellIndex)
+        else:
+            orig = self._getFieldHistoryAtCell(field, self.ordering_map[cellIndex])
+            if type(orig) == 'numpy.ndarray':
+                return orig
+            else:
+                return np.array(orig)
+
+    def _getFieldHistoryAtCell(self, field, cellIndex):
+        """ Returns history value of specified field at one of the model's
+        element/cell.  The returned values are preferred to be in the form of
+        NumPy array.
+        """
+        raise NotImplementedError("._getFieldHistoryAtCell()")
+
     def getPositions(self):
         """ Returns a list of positions of all model's elements in order.
 
