@@ -205,7 +205,10 @@ def calc_errors(data1, data2, zero_tolerance=1.e-9):
     """
     import numpy as np
     diff = data1 - data2
-    rdiff = np.abs(diff / data1)
+    # ignore divide by zero error, replace values with small data1 after
+    # see http://stackoverflow.com/a/35696047/2368167
+    with np.errstate(divide='ignore', invalid='ignore'):
+        rdiff = np.abs(diff / data1)
     iz = np.where(np.abs(data1) <= zero_tolerance)
     rdiff[iz] = np.abs(diff[iz])
     return rdiff
