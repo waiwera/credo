@@ -131,11 +131,13 @@ class TestHistoryWithinTolTC(unittest.TestCase):
         self.assertEqual(check_history(self.mres1, self.mres2, "Temperature", 0.001), True)
         self.assertEqual(check_history(self.mres2, self.mres1, "Temperature", 0.001), True)
 
+        self.assertEqual(check_history(self.mres1, self.mres2, "Pressure", 0.005), True)
+        self.assertEqual(check_history(self.mres2, self.mres1, "Pressure", 0.005), True)
+
         # one of the pressure fails because aut2 results does not have result at
         # time zero hence interpolation cause the first pressure to be at time
         # 10000, already dropped from true start
-        self.assertEqual(check_history(self.mres1, self.mres2, "Pressure", 0.005), True)
-        self.assertEqual(check_history(self.mres2, self.mres1, "Pressure", 0.005), True)
+        self.assertEqual(check_history(self.mres4, self.mres3, "Pressure", 0.005), False)
 
         self.assertEqual(check_history(self.mres1, self.mres2, "Vapour saturation", 0.028), True)
         self.assertEqual(check_history(self.mres2, self.mres1, "Vapour saturation", 0.029), True)
@@ -143,6 +145,9 @@ class TestHistoryWithinTolTC(unittest.TestCase):
         self.assertEqual(check_history(self.mres1, self.mres2, "Vapour saturation", 0.027), False)
         self.assertEqual(check_history(self.mres2, self.mres1, "Vapour saturation", 0.028), False)
 
+        # these would have a lot of trouble as the simulations have very different time stepping
+        self.assertEqual(check_history(self.mres3, self.mres4, "Vapour saturation", 0.35), True)
+        self.assertEqual(check_history(self.mres3, self.mres4, "Vapour saturation", 0.34), False)
 
 if __name__ == '__main__':
     unittest.main()
