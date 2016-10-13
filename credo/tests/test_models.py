@@ -36,7 +36,7 @@ class TestSuperModel(unittest.TestCase):
             self.assertAlmostEqual(p[800][i], expected[i], places=7)
 
     def test_gethistory(self):
-        expected = [101350.0, 683451.7997278131]
+        expected = [101350.0, 1.0525784029355975E7]
         expected_times = [0.0, 1.0E15]
 
         phist = self.mres.getFieldHistoryAtCell('fluid_pressure', 800)

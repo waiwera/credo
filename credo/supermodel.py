@@ -111,7 +111,7 @@ class SuperModelResult(ModelResult):
         return self._data['cell_fields'][field][outputIndex][self.cell_idx]
 
     def _getFieldHistoryAtCell(self, field, cellIndex):
-        return self._data['cell_fields'][field][:,cellIndex]
+        return self._data['cell_fields'][field][:,self.cell_idx[cellIndex]]
 
     def _getPositions(self):
         # cannot do self._data['fields'][cell_geometry][self.geom_idx,:3]
