@@ -119,4 +119,4 @@ class SuperModelResult(ModelResult):
         return self._data['fields']['cell_geometry'][:,:3][self.geom_idx]
 
     def _getTimes(self):
-        return self._data['time']
+        return self._data['time'][:,0]
