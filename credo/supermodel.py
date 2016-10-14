@@ -120,3 +120,58 @@ class SuperModelResult(ModelResult):
 
     def _getTimes(self):
         return self._data['time'][:,0]
+
+def t2_to_super(geofilename, datfilename, incfilename =  None, basepath = None):
+    """ convert tough2 model into supermodel, saves input files and return the
+    name of main input file
+
+    TODO: maybe this should be external, and formalised more as utility
+    TODO: maybe this should return ordering map, to be used in testing, eg. use
+    standard geo.num_atmosphere_blocks to generate a normal one?  but this is
+    not always true.
+    """
+    from mulgrids import mulgrid
+    from t2incons import t2incon
+    from t2data_json import t2data_export_json
+    from os import getcwd, chdir
+    from os.path import splitext, basename
+    import json
+
+    if basepath is None:
+        basepath = getcwd()
+    startpath = getcwd()
+    if basepath != startpath:
+        print "Changing to specified base path '%s'" % (basepath)
+        os.chdir(basepath)
+
+    geo = mulgrid(geofilename)
+    dat = t2data_export_json(datfilename)
+
+    geobase, ext = splitext(basename(geofilename))
+    datbase, ext = splitext(basename(datfilename))
+    mesh_filename = geobase+'.exo'
+    input_filename = datbase + '.json'
+
+    if incfilename:
+        inc = t2incon(incfilename)
+        incbase, ext = splitext(basename(incfilename))
+        initial_filename = incbase  + '_ss.h5'
+    else:
+        inc = None
+        initial_filename = None
+
+    geo.write_exodusii(mesh_filename)
+    print '  Mesh file %s created.' % mesh_filename
+    jsondata = dat.json(geo, mesh_filename,
+                        incons = initial_filename,
+                        bdy_incons = inc)
+    with open(input_filename, 'w') as jf:
+        json.dump(jsondata, jf, indent=2)
+        print '  Input file %s created.' % input_filename
+
+    if basepath != startpath:
+        print "Restoring initial path '%s'" % (startpath)
+        os.chdir(startpath)
+
+    return input_filename
+
