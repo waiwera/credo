@@ -104,14 +104,14 @@ class HistoryWithinTolTC(SingleRunTestComponent):
         statusMsg = ""
         overallResult = True
         for field in self.fieldsToTest:
-            fieldResult, timesError = self._checkFieldWithinTol(field, mResult)
+            fieldResult, errors = self._checkFieldWithinTol(field, mResult)
             self.fieldResults[field] = fieldResult
-            self.fieldErrors[field] = timesError
+            self.fieldErrors[field] = errors
             fieldTol = self._getTolForField(field)
             if not fieldResult:
                 statusMsg += "Field comp '%s' error(s) of %s not within"\
                     " tol %g of %s solution\n"\
-                    % (field, timesError, fieldTol, self.compareSource)
+                    % (field, errors, fieldTol, self.compareSource)
                 overallResult = False
             else:
                 statusMsg += "Field comp '%s' error within tol %g of %s"\
@@ -124,7 +124,7 @@ class HistoryWithinTolTC(SingleRunTestComponent):
 
     def _checkFieldWithinTol(self, field, mResult):
         """ This is the core of the TC, checks a field from ModelResult against
-        the expected.  Returns fieldResult (a True/False) and timesError (a list
+        the expected.  Returns fieldResult (a True/False) and errors (a list
         of float).
 
         If using reference model as comparison source, expected should be
@@ -139,10 +139,10 @@ class HistoryWithinTolTC(SingleRunTestComponent):
         accepts the positions returned by (ModelResult.getPositions()[I], time).
         """
         import numpy as np
-        def withinTol(tol, timesError):
+        def withinTol(tol, errors):
             """Checks that the difference between the fields is within a given
             tolerance, at the final timestep."""
-            for timeError in timesError:
+            for timeError in errors:
                 if timeError > tol: return False
             return True
 
@@ -156,7 +156,7 @@ class HistoryWithinTolTC(SingleRunTestComponent):
                 self.times = result_times
             pos = mResult.getPositions()[self.testCellIndex]
             expected = np.array([self.expected(pos, t) for t in self.times])
-            timesError = calc_errors(expected, result)
+            errors = calc_errors(expected, result)
         else:
             expected = self.expected.getFieldHistoryAtCell(field, self.testCellIndex)
             expected_times = self.expected.getTimes()
@@ -166,10 +166,10 @@ class HistoryWithinTolTC(SingleRunTestComponent):
             else:
                 interp_expected = numpy.interp(self.times, expected_times, expected)
             result = numpy.interp(self.times, result_times, result)
-            timesError = calc_errors(interp_expected, result)
+            errors = calc_errors(interp_expected, result)
 
-        fieldResult = withinTol(fieldTol, timesError)
-        return fieldResult, timesError
+        fieldResult = withinTol(fieldTol, errors)
+        return fieldResult, errors
 
     def _writeXMLCustomSpec(self, specNode):
         etree.SubElement(specNode, 'testCellIndex',
@@ -188,9 +188,9 @@ class HistoryWithinTolTC(SingleRunTestComponent):
             fieldRes = self.fieldResults[fName]
             fieldNode = etree.SubElement(frNode, "field", name=fName)
             fieldNode.attrib['allTimesWithinTol'] = str(fieldRes)
-            desNode = etree.SubElement(fieldNode, "timesError")
-            for dofI, timeError in enumerate(self.fieldErrors[fName]):
-                deNode = etree.SubElement(desNode, "timeError")
-                deNode.attrib["num"] = str(dofI)
-                deNode.attrib["error"] = "%6e" % timeError
-                deNode.attrib["withinTol"] = str(timeError <= fieldTol)
+            desNode = etree.SubElement(fieldNode, "historyErrors")
+            for idx, error in enumerate(self.fieldErrors[fName]):
+                deNode = etree.SubElement(desNode, "historyError")
+                deNode.attrib["num"] = str(idx)
+                deNode.attrib["error"] = "%6e" % error
+                deNode.attrib["withinTol"] = str(error <= fieldTol)
