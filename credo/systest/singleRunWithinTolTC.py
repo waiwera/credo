@@ -256,3 +256,60 @@ class HistoryWithinTolTC(BaseWithinTolTC):
         etree.SubElement(specNode, 'testCellIndex',
             value=str(self.testCellIndex))
         BaseWithinTolTC._writeXMLCustomSpec(self, specNode)
+
+class FieldWithinTolTC(BaseWithinTolTC):
+    """
+    Additional arguments compared to the base class:
+
+    * testOutputIndex: Integer, the index of the model output that the
+      comparison will occur at.  If -1, means the final result.
+    """
+    def __init__(self,
+                 fieldsToTest=None,
+                 defFieldTol=0.01,
+                 fieldTols=None,
+                 expected=None,
+                 absoluteErrorTol=1.0,
+                 testOutputIndex=-1 ):
+        BaseWithinTolTC.__init__(self,
+                                 fieldsToTest=fieldsToTest,
+                                 defFieldTol=defFieldTol,
+                                 fieldTols=fieldTols,
+                                 expected=expected,
+                                 absoluteErrorTol=absoluteErrorTol )
+        self.testOutputIndex = testOutputIndex
+
+    def _checkFieldWithinTol(self, field, mResult):
+        """ This is the core of the TC, checks a field from ModelResult against
+        the expected.  Returns fieldResult (a True/False) and errors (a list
+        of float).
+
+        If using reference model as comparison source, expected should be
+        ReferenceResult/HighResReferenceResult, which behaves like a normal
+        ModelResult, .getFieldAtOutputIndex() is used here.
+
+        If expected is an analytic function (callable), it will call
+        ModelResult.getPositions() and get expected values from func using the
+        positions (a list of tuples).  It is user's responsibility to ensure the
+        analytic function accepts the positions returned by
+        ModelResult.getPositions().
+        """
+        fieldTol = self._getTolForField(field)
+        result = mResult.getFieldAtOutputIndex(field, self.testOutputIndex)
+
+        if callable(self.expected):
+            # analytic, calls func with position
+            expected = numpy.array([self.expected(pos) for pos in mResult.getPositions()])
+        else:
+            # TODO: [Refactor] add support for HighResReferenceResult
+            expected = self.expected.getFieldAtOutputIndex(field, self.testOutputIndex)
+        errors = calc_errors(expected, result, self.absoluteErrorTol)
+
+        fieldResult = all(e <= fieldTol for e in errors)
+        return fieldResult, errors
+
+    def _writeXMLCustomSpec(self, specNode):
+        etree.SubElement(specNode, 'testOutputIndex',
+            value=str(self.testOutputIndex))
+        BaseWithinTolTC._writeXMLCustomSpec(self, specNode)
+
