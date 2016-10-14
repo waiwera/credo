@@ -100,7 +100,7 @@ class TestHistoryWithinTolTC(unittest.TestCase):
     def test_single_field(self):
         SHOW_PLOT = False
 
-        def check_history(result, expected, field, tol):
+        def check_history(result, expected, field, tol, abs_err_tol=1.0):
             p1 = result.getFieldHistoryAtCell(field, 4)
             t1 = result.getTimes()
             p2 = expected.getFieldHistoryAtCell(field, 4)
@@ -109,6 +109,7 @@ class TestHistoryWithinTolTC(unittest.TestCase):
                                     defFieldTol=tol,
                                     fieldTols=None,
                                     expected=expected,
+                                    absoluteErrorTol=abs_err_tol,
                                     testCellIndex=4,
                                     times=None
                                     )
@@ -139,15 +140,19 @@ class TestHistoryWithinTolTC(unittest.TestCase):
         # 10000, already dropped from true start
         self.assertEqual(check_history(self.mres4, self.mres3, "Pressure", 0.005), False)
 
-        self.assertEqual(check_history(self.mres1, self.mres2, "Vapour saturation", 0.028), True)
-        self.assertEqual(check_history(self.mres2, self.mres1, "Vapour saturation", 0.029), True)
+        self.assertEqual(check_history(self.mres1, self.mres2, "Vapour saturation", 0.0042), True)
+        self.assertEqual(check_history(self.mres1, self.mres2, "Vapour saturation", 0.0041), False)
 
-        self.assertEqual(check_history(self.mres1, self.mres2, "Vapour saturation", 0.027), False)
-        self.assertEqual(check_history(self.mres2, self.mres1, "Vapour saturation", 0.028), False)
+        self.assertEqual(check_history(self.mres2, self.mres1, "Vapour saturation", 0.0042), True)
+        self.assertEqual(check_history(self.mres2, self.mres1, "Vapour saturation", 0.0041), False)
 
         # these would have a lot of trouble as the simulations have very different time stepping
-        self.assertEqual(check_history(self.mres3, self.mres4, "Vapour saturation", 0.35), True)
-        self.assertEqual(check_history(self.mres3, self.mres4, "Vapour saturation", 0.34), False)
+        self.assertEqual(check_history(self.mres3, self.mres4, "Vapour saturation", 0.020), True)
+        self.assertEqual(check_history(self.mres3, self.mres4, "Vapour saturation", 0.019), False)
+
+        # these uses the old 1.0e-9 absolute error tolerance, so should behave as before
+        self.assertEqual(check_history(self.mres1, self.mres2, "Vapour saturation", 0.028, 1.0e-9), True)
+        self.assertEqual(check_history(self.mres1, self.mres2, "Vapour saturation", 0.027, 1.0e-9), False)
 
 if __name__ == '__main__':
     unittest.main()

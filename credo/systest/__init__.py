@@ -72,7 +72,7 @@ from .sciBenchmarkTest import SciBenchmarkTest
 # import all test components here too so available for benchmark tests
 from .fieldCvgWithScaleTC import FieldCvgWithScaleTC
 from .fieldWithinTolTC import FieldWithinTolTC
-from .historyWithinTolTC import HistoryWithinTolTC
+from .singleRunWithinTolTC import HistoryWithinTolTC
 from .outputWithinRangeTC import OutputWithinRangeTC
 
 # Now import tests/tcs dependent on specific libraries such as PIL
