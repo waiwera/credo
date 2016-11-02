@@ -23,15 +23,23 @@ def calc_errors(data1, data2, abs_err_tol=1.0e-9):
     rdiff[iz] = numpy.abs(diff[iz])
     return rdiff
 
-def non_dimensionalise(x1, x2):
+def non_dimensionalise(x1, x2, abs_err_tol=1.0):
+    """ Given two lists of numeric values, scales elements of both lists to be
+    between 0.0 and 1.0.  If the range of values is smaller than abs_err_tol,
+    typically 1.0, the data sets will be shifted down to 0.0, but scale remains.
+    """
     xmin = min(min(x1), min(x2))
     xmax = max(max(x1), max(x2))
     xd = xmax - xmin
+    if xd < abs_err_tol:
+        x1 = [x - xmin for x in x1]
+        x2 = [x - xmin for x in x2]
+        xmin, xmax, xd = 0.0, 1.0, 1.0
     xx1 = [(x - xmin)/xd for x in x1]
     xx2 = [(x - xmin)/xd for x in x2]
     return xx1, xx2
 
-def calc_dist_errors(x1, y1, x2, y2):
+def calc_dist_errors(x1, y1, x2, y2, abs_err_tol=1.0):
     """ Calculates normalised distance (errors) of data points to a polyline
     (expected curve).
 
@@ -42,8 +50,8 @@ def calc_dist_errors(x1, y1, x2, y2):
     """
     from shapely.geometry import Point, LineString
     # non-dimensionalise both data sets
-    xx1, xx2 = non_dimensionalise(x1, x2)
-    yy1, yy2 = non_dimensionalise(y1, y2)
+    xx1, xx2 = non_dimensionalise(x1, x2, abs_err_tol)
+    yy1, yy2 = non_dimensionalise(y1, y2, abs_err_tol)
     line = LineString([(x,y) for x,y in zip(xx2,yy2)])
     return [Point(x,y).distance(line) for x,y in zip(xx1, yy1)]
 
@@ -283,7 +291,9 @@ class HistoryWithinTolTC(BaseWithinTolTC):
                 self.times = expected_times
 
         if self.useNormalisedDistance:
-            errors = calc_dist_errors(expected_times, expected, result_times, result)
+            errors = calc_dist_errors(expected_times, expected,
+                                      result_times, result,
+                                      self.absoluteErrorTol)
         else:
             # expected/result needs to have the same length here (self.times)
             expected = numpy.interp(self.times, expected_times, expected)

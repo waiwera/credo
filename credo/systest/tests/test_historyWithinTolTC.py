@@ -166,6 +166,16 @@ class TestCurveFitting(unittest.TestCase):
         xx1, xx2 = [0.0, 0.4, 0.2], [0.1, 1.0]
         self.assertEqual((xx1,xx2), non_dimensionalise(x1,x2))
 
+        x1, x2 = [0.0, 0.001, 0.002], [0.0011, 0.0012]
+        xx1, xx2 = [0.0, 0.001, 0.002], [0.0011, 0.0012]
+        self.assertEqual((xx1,xx2), non_dimensionalise(x1,x2))
+
+        x1, x2 = [999.0, 999.001, 999.002], [999.0011, 999.0012]
+        xx1, xx2 = [0.0, 0.001, 0.002], [0.0011, 0.0012]
+        xxx1, xxx2 = non_dimensionalise(x1,x2)
+        for a,b in zip(xx1+xx2, xxx1+xxx2):
+            self.assertAlmostEqual(a, b)
+
     def test_dist_errors(self):
         from credo.systest.singleRunWithinTolTC import calc_dist_errors
         # within a square of 2.0 x 2.0, dist "~" is 1.0, hence scalled to 0.5
