@@ -39,21 +39,21 @@ def non_dimensionalise(x1, x2, abs_err_tol=1.0):
     xx2 = [(x - xmin)/xd for x in x2]
     return xx1, xx2
 
-def calc_dist_errors(x1, y1, x2, y2, abs_err_tol=1.0):
-    """ Calculates normalised distance (errors) of data points to a polyline
-    (expected curve).
+def calc_dist_errors(ptx, pty, linex, liney, abs_err_tol=1.0):
+    """ Calculates non-dimensionalised distance (errors) of points to a polyline
+    (curve).
 
     The x-y space is non-dimensionalised before the calculation so the errors
-    are normalised errors.  The second set is the expected polyline, so the
-    errors returned will have length of the first set.  Generally the expected
+    are normalised errors.  The second set of x/y is the polyline.  Errors are
+    calculated from each of the points in the first x/y set.  Generally the
     polyline (second set) should have more points.
     """
     from shapely.geometry import Point, LineString
     # non-dimensionalise both data sets
-    xx1, xx2 = non_dimensionalise(x1, x2, abs_err_tol)
-    yy1, yy2 = non_dimensionalise(y1, y2, abs_err_tol)
-    line = LineString([(x,y) for x,y in zip(xx2,yy2)])
-    return [Point(x,y).distance(line) for x,y in zip(xx1, yy1)]
+    ptxx, linexx = non_dimensionalise(ptx, linex, abs_err_tol)
+    ptyy, lineyy = non_dimensionalise(pty, liney, abs_err_tol)
+    line = LineString([(x,y) for x,y in zip(linexx, lineyy)])
+    return [Point(x,y).distance(line) for x,y in zip(ptxx, ptyy)]
 
 class BaseWithinTolTC(SingleRunTestComponent):
     """Checks whether, for a particular set of fields and a specified cell
@@ -222,7 +222,15 @@ class HistoryWithinTolTC(BaseWithinTolTC):
     * times: A list of floats, times that the ModelResult will be interpolated
       onto.  If this is unspecified (None), it will use reference ModelResult's
       .getTimes(). If expected is a analytic function, this will be set to the
-      model run's output times.
+      model run's output times.  NOTE, this should not be specified in general,
+      the attribute will contain the times error was calculated when test
+      finished, which is useful for plotting.
+
+    * orthogonalError: if set to True, error will be non-dimensionalised
+      distance (from expected data points) to curve (polyline from model
+      result).  Otherwise the default error is between the expected data points
+      to interpolated model results.  Orthorgonal error is particularly useful
+      if the expected model results are digitised points from plots in print.
 
     """
     def __init__(self,
@@ -233,7 +241,7 @@ class HistoryWithinTolTC(BaseWithinTolTC):
                  absoluteErrorTol=1.0,
                  testCellIndex=0,
                  times=None,
-                 useNormalisedDistance=False,
+                 orthogonalError=False,
                  enforceLogic=True ):
         BaseWithinTolTC.__init__(self,
                                  fieldsToTest=fieldsToTest,
@@ -243,7 +251,7 @@ class HistoryWithinTolTC(BaseWithinTolTC):
                                  absoluteErrorTol=absoluteErrorTol )
         self.testCellIndex = testCellIndex
         self.times = times
-        self.useNormalisedDistance = useNormalisedDistance
+        self.orthogonalError = orthogonalError
 
         # avoid doing stupid comparison (raise exception)
         # - analytical always use result times (NO times allowed)
@@ -254,7 +262,7 @@ class HistoryWithinTolTC(BaseWithinTolTC):
             if self.times is not None:
                 raise Exception("There is no need to specify times in common tests.")
             if callable(self.expected):
-                if self.useNormalisedDistance is True:
+                if self.orthogonalError is True:
                     raise Exception("Comparison with analytic solution cannot use orthorgonal erroes.")
 
     def _checkFieldWithinTol(self, field, mResult):
@@ -290,7 +298,7 @@ class HistoryWithinTolTC(BaseWithinTolTC):
             if self.times is None:
                 self.times = expected_times
 
-        if self.useNormalisedDistance:
+        if self.orthogonalError:
             errors = calc_dist_errors(expected_times, expected,
                                       result_times, result,
                                       self.absoluteErrorTol)
