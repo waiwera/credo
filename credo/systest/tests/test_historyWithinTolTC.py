@@ -77,7 +77,8 @@ class TestHistoryWithinTolTC(unittest.TestCase):
                                 fieldTols=None,
                                 expected=self.mres4,
                                 testCellIndex=4,
-                                times=[0.0, 1.0, 2.0]
+                                times=[0.0, 1.0, 2.0],
+                                enforceLogic=False
                                 )
         status = tc.check(self.mres3)
         self.assertEqual(len(tc.times), 3)
@@ -153,6 +154,30 @@ class TestHistoryWithinTolTC(unittest.TestCase):
         # these uses the old 1.0e-9 absolute error tolerance, so should behave as before
         self.assertEqual(check_history(self.mres1, self.mres2, "Vapour saturation", 0.028, 1.0e-9), True)
         self.assertEqual(check_history(self.mres1, self.mres2, "Vapour saturation", 0.027, 1.0e-9), False)
+
+
+class TestCurveFitting(unittest.TestCase):
+    def setUp(self):
+        pass
+
+    def test_non_dimensionalise(self):
+        from credo.systest.singleRunWithinTolTC import non_dimensionalise
+        x1, x2 = [1.0, 5.0, 3.0], [2.0, 11.0]
+        xx1, xx2 = [0.0, 0.4, 0.2], [0.1, 1.0]
+        self.assertEqual((xx1,xx2), non_dimensionalise(x1,x2))
+
+    def test_dist_errors(self):
+        from credo.systest.singleRunWithinTolTC import calc_dist_errors
+        # within a square of 2.0 x 2.0, dist "~" is 1.0, hence scalled to 0.5
+        #   b
+        #   |
+        #   |~a
+        #   |
+        # b-b
+        xa, ya = [2.0], [1.5]
+        xb, yb = [0, 1, 1], [0, 0, 2]
+        self.assertEqual([0.5], calc_dist_errors(xa, ya, xb, yb))
+
 
 if __name__ == '__main__':
     unittest.main()

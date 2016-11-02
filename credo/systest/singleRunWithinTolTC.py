@@ -23,6 +23,29 @@ def calc_errors(data1, data2, abs_err_tol=1.0e-9):
     rdiff[iz] = numpy.abs(diff[iz])
     return rdiff
 
+def non_dimensionalise(x1, x2):
+    xmin = min(min(x1), min(x2))
+    xmax = max(max(x1), max(x2))
+    xd = xmax - xmin
+    xx1 = [(x - xmin)/xd for x in x1]
+    xx2 = [(x - xmin)/xd for x in x2]
+    return xx1, xx2
+
+def calc_dist_errors(x1, y1, x2, y2):
+    """ Calculates normalised distance (errors) of data points to a polyline
+    (expected curve).
+
+    The x-y space is non-dimensionalised before the calculation so the errors
+    are normalised errors.  The second set is the expected polyline, so the
+    errors returned will have length of the first set.  Generally the expected
+    polyline (second set) should have more points.
+    """
+    from shapely.geometry import Point, LineString
+    # non-dimensionalise both data sets
+    xx1, xx2 = non_dimensionalise(x1, x2)
+    yy1, yy2 = non_dimensionalise(y1, y2)
+    line = LineString([(x,y) for x,y in zip(xx2,yy2)])
+    return [Point(x,y).distance(line) for x,y in zip(xx1, yy1)]
 
 class BaseWithinTolTC(SingleRunTestComponent):
     """Checks whether, for a particular set of fields and a specified cell
@@ -201,7 +224,9 @@ class HistoryWithinTolTC(BaseWithinTolTC):
                  expected=None,
                  absoluteErrorTol=1.0,
                  testCellIndex=0,
-                 times=None ):
+                 times=None,
+                 useNormalisedDistance=False,
+                 enforceLogic=True ):
         BaseWithinTolTC.__init__(self,
                                  fieldsToTest=fieldsToTest,
                                  defFieldTol=defFieldTol,
@@ -210,6 +235,19 @@ class HistoryWithinTolTC(BaseWithinTolTC):
                                  absoluteErrorTol=absoluteErrorTol )
         self.testCellIndex = testCellIndex
         self.times = times
+        self.useNormalisedDistance = useNormalisedDistance
+
+        # avoid doing stupid comparison (raise exception)
+        # - analytical always use result times (NO times allowed)
+        # - analytical solution cannot use curve fitting
+        # - curve fitting do not use interpolation (No times allowed)
+        # - simple error, times use either expected times or specified times
+        if enforceLogic:
+            if self.times is not None:
+                raise Exception("There is no need to specify times in common tests.")
+            if callable(self.expected):
+                if self.useNormalisedDistance is True:
+                    raise Exception("Comparison with analytic solution cannot use orthorgonal erroes.")
 
     def _checkFieldWithinTol(self, field, mResult):
         """ This is the core of the TC, checks a field from ModelResult against
@@ -237,17 +275,23 @@ class HistoryWithinTolTC(BaseWithinTolTC):
                 self.times = result_times
             pos = mResult.getPositions()[self.testCellIndex]
             expected = numpy.array([self.expected(pos, t) for t in self.times])
-            errors = calc_errors(expected, result, self.absoluteErrorTol)
+            expected_times = self.times
         else:
             expected = self.expected.getFieldHistoryAtCell(field, self.testCellIndex)
             expected_times = self.expected.getTimes()
             if self.times is None:
-                self.times = self.expected.getTimes()
-                interp_expected = expected
-            else:
-                interp_expected = numpy.interp(self.times, expected_times, expected)
+                self.times = expected_times
+
+        if self.useNormalisedDistance:
+            errors = calc_dist_errors(expected_times, expected, result_times, result)
+        else:
+            # expected/result needs to have the same length here (self.times)
+            expected = numpy.interp(self.times, expected_times, expected)
+            expected_times = self.times
             result = numpy.interp(self.times, result_times, result)
-            errors = calc_errors(interp_expected, result, self.absoluteErrorTol)
+            result_times = self.times
+            # TODO: check if interp is actually skipped if times matched
+            errors = calc_errors(expected, result, self.absoluteErrorTol)
 
         fieldResult = all(e <= fieldTol for e in errors)
         return fieldResult, errors
