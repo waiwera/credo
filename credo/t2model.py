@@ -40,6 +40,7 @@ from credo.modelresult import ModelResult
 
 from t2listing import t2listing
 from mulgrids import mulgrid
+from t2data import t2data
 
 DEFAULT_COMMAND = "autough2_4"
 
@@ -153,7 +154,10 @@ class T2ModelRun(ModelRun):
             geo_filename = join(self.outputPath, self._geo_filename)
         else:
             geo_filename = self._geo_filename
-        mres = T2ModelResult(self.name, lst_filename, geo_filename,
+        dat_filename = join(self.outputPath, self._dat_filename)
+        mres = T2ModelResult(self.name, lst_filename,
+                             dat_filename,
+                             geo_filename,
                              ordering_map=self._ordering_map,
                              fieldname_map=self._fieldname_map)
         return mres
@@ -161,7 +165,7 @@ class T2ModelRun(ModelRun):
 class T2ModelResult(ModelResult):
     """ for AUT2
     """
-    def __init__(self, name, lst_filename, geo_filename=None,
+    def __init__(self, name, lst_filename, dat_filename=None, geo_filename=None,
                  ordering_map=None, fieldname_map=None):
         from os.path import dirname
         super(T2ModelResult, self).__init__(name, dirname(lst_filename),
@@ -171,8 +175,32 @@ class T2ModelResult(ModelResult):
         self._lst = t2listing(lst_filename)
         if geo_filename:
             self._geo = mulgrid(geo_filename)
+        if dat_filename:
+            self._dat = t2data(dat_filename)
+
+    def _getOtherValues(self, field):
+        if field is 'Porosity':
+            return [b.rocktype.porosity for b in self._dat.grid.blocklist]
+        if field is 'Permeability1':
+            return [b.rocktype.permeability[0] for b in self._dat.grid.blocklist]
+        if field is 'Permeability2':
+            return [b.rocktype.permeability[1] for b in self._dat.grid.blocklist]
+        if field is 'Permeability3':
+            return [b.rocktype.permeability[2] for b in self._dat.grid.blocklist]
+        elif field is 'Volume':
+            return [b.volume for b in self._dat.grid.blocklist]
+        else:
+            raise Exception
 
     def _getFieldAtOutputIndex(self, field, outputIndex):
+        other_field_names = [
+            'Porosity',
+            'Permeability1',
+            'Permeability2',
+            'Permeability3',
+            'Volume']
+        if field in other_field_names:
+            return self._getOtherValues(field)
         self._lst.step = self._lst.fullsteps[outputIndex]
         return self._lst.element[field]
 

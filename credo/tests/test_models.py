@@ -62,6 +62,15 @@ class TestAUT2Model(unittest.TestCase):
         from t2listing import t2listing
         self.lst = t2listing(lstname)
 
+        ### mResult with data file
+        datname = 'mdat_fivespot.dat'
+        self.mres_w_dat = T2ModelResult('test_aut2_map',
+                                        lst_filename=lstname,
+                                        dat_filename=datname,
+                                        ordering_map=None)
+        from t2data import t2data
+        self.dat = t2data(datname)
+
     def test_getfield(self):
         plst = self.lst.element['Pressure']
         pmap = self.mres_map.getFieldAtOutputIndex('Pressure', -1)
@@ -77,6 +86,16 @@ class TestAUT2Model(unittest.TestCase):
 
         self.assertEqual(plst[-1], pmap[-1])
         self.assertEqual(plst[-1], pnom[-1])
+
+        porosity5 = self.dat.grid.blocklist[5].rocktype.porosity
+        porosity_mres = self.mres_w_dat.getFieldAtOutputIndex('Porosity', 1234)
+        self.assertEqual(len(porosity_mres), self.dat.grid.num_blocks)
+        self.assertEqual(porosity5, porosity_mres[5])
+
+        volume6 = self.dat.grid.blocklist[6].volume
+        volume_mres = self.mres_w_dat.getFieldAtOutputIndex('Volume', 5678)
+        self.assertEqual(len(volume_mres), self.dat.grid.num_blocks)
+        self.assertEqual(volume6, volume_mres[6])
 
     def test_gethistory(self):
         ele = self.lst.element.row_name[-1]
