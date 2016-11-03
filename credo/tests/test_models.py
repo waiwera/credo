@@ -95,6 +95,59 @@ class TestAUT2Model(unittest.TestCase):
         for t,te in zip(times, expected_times):
             self.assertEqual(t, te)
 
+class TestCustomField(unittest.TestCase):
+    def setUp(self):
+        self.lstname = 'mres_aut2_fivespot.listing'
+        from t2listing import t2listing
+        self.lst = t2listing(self.lstname)
+
+    def test_simple(self):
+        """ Tests basic custom variable usage.  Incls values at all cells and
+        history of a single cell.
+        """
+        # example of ustom variable function, first argument is always
+        # ModelResult object, the second is an integer index.
+        def calc_p_in_bar(mResult, index):
+            """ Implement this func to calculate customised variable.
+
+            Within this function, users should try to use only the public
+            methods of ModelResult, such as .getFieldAtOutputIndex() and
+            .getFieldHistoryAtCell().  Also the names of fields should be the
+            keys specified in field_map.  This would allow the function to be
+            used in (almost) all ModelResults.
+            """
+            return mResult.getFieldAtOutputIndex('pressu', index) / 1.0e5
+
+        def calc_p_hist_in_bar(mResult, index):
+            return mResult.getFieldHistoryAtCell('pressu', index) / 1.0e5
+
+        # then pass the function into the ModelResult (or ModelRun) as part of
+        # the field name map
+        field_map = {
+            'pressu': 'Pressure',
+            'p_in_bar': calc_p_in_bar,
+            'p_hist_in_bar': calc_p_hist_in_bar,
+        }
+        mres = T2ModelResult('test_aut2_map',
+                             lst_filename=self.lstname,
+                             fieldname_map=field_map,
+                             )
+
+        # test final result table
+        self.lst.index = -1
+        p_f = self.lst.element['Pressure']
+        b_f = p_f / 1.0e5
+        self.assertEqual(mres.getFieldAtOutputIndex('pressu', -1)[30], p_f[30])
+        self.assertEqual(mres.getFieldAtOutputIndex('p_in_bar', -1)[30], b_f[30])
+
+        # test history
+        ele = self.lst.element.row_name[30]
+        ph_f = self.lst.history(('e', ele, 'Pressure'), short=False)[1]
+        bh_f = ph_f / 1.0e5
+        self.assertEqual(mres.getFieldHistoryAtCell('pressu', 30)[1], ph_f[1])
+        self.assertEqual(mres.getFieldHistoryAtCell('p_hist_in_bar', 30)[1], bh_f[1])
+
+
 if __name__ == '__main__':
     unittest.main()
 

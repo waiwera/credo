@@ -78,6 +78,14 @@ class ModelResult(object):
         self.fieldname_map = fieldname_map
 
     def getFieldAtOutputIndex(self, field, outputIndex):
+        if self.fieldname_map is not None:
+            field = self.fieldname_map[field]
+        if callable(field):
+            return field(self, outputIndex)
+        else:
+            return self._getFieldAtOutputIndex_(field, outputIndex)
+
+    def _getFieldAtOutputIndex_(self, field, outputIndex):
         """ Returns a list of values of field variable, of all model's elements,
         in order.  If outputIndex is -1, it will be the last time step.  The
         returned values are preferably in the form of NumPy array.
@@ -87,8 +95,8 @@ class ModelResult(object):
         compatible (some with dummy element for boundary conditions to be mapped
         out).
         """
-        if self.fieldname_map is not None:
-            field = self.fieldname_map[field]
+        # if self.fieldname_map is not None:
+        #     field = self.fieldname_map[field]
         if self.ordering_map is None:
             return self._getFieldAtOutputIndex(field, outputIndex)
         else:
@@ -106,6 +114,14 @@ class ModelResult(object):
         raise NotImplementedError("._getFieldAtOutputIndex()")
 
     def getFieldHistoryAtCell(self, field, cellIndex):
+        if self.fieldname_map is not None:
+            field = self.fieldname_map[field]
+        if callable(field):
+            return field(self, cellIndex)
+        else:
+            return self._getFieldHistoryAtCell_(field, cellIndex)
+
+    def _getFieldHistoryAtCell_(self, field, cellIndex):
         """ Returns history value of specified field at one of the model's
         element/cell.  Note the cellIndex will be mapped if self.ordering_map is
         specified at the construction of the model result.
@@ -115,8 +131,8 @@ class ModelResult(object):
         compatible (some with dummy element for boundary conditions to be mapped
         out).
         """
-        if self.fieldname_map is not None:
-            field = self.fieldname_map[field]
+        # if self.fieldname_map is not None:
+        #     field = self.fieldname_map[field]
         if self.ordering_map is None:
             return self._getFieldHistoryAtCell(field, cellIndex)
         else:
