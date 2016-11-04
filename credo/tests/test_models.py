@@ -16,6 +16,11 @@ class TestSuperModel(unittest.TestCase):
                                 outputPath=THIS_DIR,
                                 h5_filename='mres_supermodel_1.h5')
 
+        self.mres2 = SuperModelResult('test_super_2',
+                                outputPath=THIS_DIR,
+                                h5_filename='problem6.h5',
+                                input_filename='problem6.json')
+
     def tearDown(self):
         pass
 
@@ -46,6 +51,22 @@ class TestSuperModel(unittest.TestCase):
         times = self.mres.getTimes()
         for t,te in zip(times, expected_times):
             self.assertAlmostEqual(t, te, places=7)
+
+    def test_getothers(self):
+        # other non h5 data, these can be easily checked in 'problem6.dat'
+        v = self.mres2.getFieldAtOutputIndex('geom_volume', 1234)
+        self.assertListEqual(list(v[:100]), [2.4e8]*100)
+        self.assertListEqual(list(v[100:125]), [4.8e8]*25)
+
+        v = self.mres2.getFieldAtOutputIndex('rock_porosity', 1234)
+        self.assertListEqual(list(v[:25]), [0.2]*25) # rck 1
+        self.assertListEqual(list(v[25:100]), [0.25]*75) # rck 2
+        self.assertListEqual(list(v[100:]), [0.2]*25) # rck 1
+
+        v = self.mres2.getFieldAtOutputIndex('rock_permeability1', 1234)
+        self.assertListEqual(list(v[:25]), [1.0e-13]*25) # rck 1
+        self.assertListEqual(list(v[25:100]), [2.0e-13]*75) # rck 2
+        self.assertListEqual(list(v[100:]), [1.0e-13]*25) # rck 1
 
 
 class TestAUT2Model(unittest.TestCase):

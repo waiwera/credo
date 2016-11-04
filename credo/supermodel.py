@@ -69,6 +69,7 @@ class SuperModelRun(ModelRun):
         """ Note: this is called AFTER .postRunCleanup() """
         mres = SuperModelResult(self.name, self.outputPath,
                                 self._getH5Filename(),
+                                input_filename=self._input_filename,
                                 fieldname_map=self._fieldname_map)
         return mres
 
@@ -93,7 +94,7 @@ class SuperModelRun(ModelRun):
 class SuperModelResult(ModelResult):
     """ for supermodel
     """
-    def __init__(self, name, outputPath, h5_filename,
+    def __init__(self, name, outputPath, h5_filename, input_filename=None,
                  fieldname_map=None):
         from os.path import dirname
         super(SuperModelResult, self).__init__(name, outputPath,
@@ -106,8 +107,55 @@ class SuperModelResult(ModelResult):
         # obtain slicing arrays for converting values back to natural ordering
         self.cell_idx = self._data['cell_interior_index'][:,0] # cell_fields/*
         self.geom_idx = self._data['cell_index'][:,0] # fields/cell_geometry
+        self.num_cells = len(self.cell_idx)
+
+        import json
+        self._input = {}
+        if input_filename is not None:
+            with open(input_filename, 'r') as fin:
+                self._input = json.load(fin)
+
+    def _getOtherValues(self, field):
+        import numpy
+        # TODO: sync with Waiwera's internal default
+        if field is 'rock_porosity':
+            v = numpy.full(self.num_cells, 0.1)
+            for rock in self._input['rock']['types']:
+                for i in rock['cells']:
+                    v[i] = rock['porosity']
+            return v
+        if field is 'rock_permeability1':
+            v = numpy.full(self.num_cells, 1.0e-13)
+            for rock in self._input['rock']['types']:
+                for i in rock['cells']:
+                    v[i] = rock['permeability'][0]
+            return v
+        if field is 'rock_permeability2':
+            v = numpy.full(self.num_cells, 1.0e-13)
+            for rock in self._input['rock']['types']:
+                for i in rock['cells']:
+                    v[i] = rock['permeability'][1]
+            return v
+        if field is 'rock_permeability3':
+            v = numpy.full(self.num_cells, 1.0e-13)
+            for rock in self._input['rock']['types']:
+                for i in rock['cells']:
+                    v[i] = rock['permeability'][2]
+            return v
+        elif field is 'geom_volume':
+            return self._data['fields']['cell_geometry'][:,3][self.geom_idx]
+        else:
+            raise Exception
 
     def _getFieldAtOutputIndex(self, field, outputIndex):
+        other_field_names = [
+            'rock_porosity',
+            'rock_permeability1',
+            'rock_permeability2',
+            'rock_permeability3',
+            'geom_volume']
+        if field in other_field_names:
+            return self._getOtherValues(field)
         return self._data['cell_fields'][field][outputIndex][self.cell_idx]
 
     def _getFieldHistoryAtCell(self, field, cellIndex):
