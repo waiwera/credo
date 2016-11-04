@@ -16,7 +16,7 @@ I may need new classes to manage the expected values such as `ReferenceResult` a
 
 ### TestComponents
 
-SingleRunTestComponent.attachOps() and MultiRunTestComponent.attachOps() are really just pre-run process applied to ModelRun(s)?  Most of these are not necessary for AUT2/supermodel.
+SingleRunTestComponent.attachOps() and MultiRunTestComponent.attachOps() are really just pre-run process applied to ModelRun(s)?  Most of these are not necessary for AUT2/Waiwera.
 
 ### ModelResult
 
@@ -45,7 +45,7 @@ Here is the steps that I will be taking:
 4. Maybe write a unit test to drive this and make sure it works.
 --- done above ---
 5. Copy AUT2 hack codes into places
-6. Code up for supermodel
+6. Code up for Waiwera
 
 If these works, then remove some dead codes not used by new structure, eg. AnalysisOperations, FieldComparisonList, FieldComparisonOp etc.
 
@@ -53,13 +53,13 @@ If these works, then remove some dead codes not used by new structure, eg. Analy
 Refactor ModelRun/ModelResult/JobRunner
 ---------------------------------------
 
-As noted in CREDO doc, JobRunner is an abstract base class, user code will need to choose a concrete implementation. It is designed to allow both serial, and parallel non-blocking job submission and reporting.  For example MPI JobRunner can run both TOUGH2MP and Supermodel?
+As noted in CREDO doc, JobRunner is an abstract base class, user code will need to choose a concrete implementation. It is designed to allow both serial, and parallel non-blocking job submission and reporting.  For example MPI JobRunner can run both TOUGH2MP and Waiwera?
 
 - Should I create a serial JobRunner along with MPI JobRunner?  It seems they are really similar apart from organising the mpiexec -np etc.
 - MPIJobRunner gets the command from `ModelRun.getModelRunCommand()`, it's the ModelRun object knows what command to run itself.  MPIJobRunner deals with other things like number of processors etc.
 - SysTest uses JobRunner.runSuite().  .runSuite() calls self.submirSuite(), then self.blockSuite() then returns ModelResults.  JobRunner.runModel() is a single ModelRun version of .runSuite(), in term uses .submitRun() and .blockResult() which need to be implemented.
 
-Currently CREDO only has one ModelRun and one ModelResult, both concrete implementations directly.  I want to change this so that both are abstract, which can be inherited by concrete classes such as AUT2ModelRun AUT2ModelResult.  Then add more like for supermodels etc.
+Currently CREDO only has one ModelRun and one ModelResult, both concrete implementations directly.  I want to change this so that both are abstract, which can be inherited by concrete classes such as AUT2ModelRun AUT2ModelResult.  Then add more like for waiwera etc.
 
 This requires to modify the way ModelResult is created.  CREDO creates a ModelResult object directly within JobRunners, which only needs a name and output path.  To make it work for multiple simulators etc, ModelResult should be generated directly by ModelRun, with the help of JobRunner.
 
@@ -102,7 +102,7 @@ I think I will try refactor the MPI-related parts out from MPIJobRunner:
 4. Finalise ModelRun base class, refactor CREDO's original ModelRun to create abstract ModelRun and concrete AUT2ModelRun.
 5. Refactor CREDO's original ModelResult to abstract ModelResult base class and concrete AUT2ModelResult.
 6. Create a SciBenchmarkTest example to see if everything fits together, with just one TC (FieldWithinTolTC).
-7. See if supercode ModelRun and ModelResult easy to create.
+7. See if Waiwera ModelRun and ModelResult easy to create.
 
 
 Project Organisation

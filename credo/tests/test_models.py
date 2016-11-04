@@ -5,18 +5,18 @@ import os, sys
 
 import numpy
 
-from credo.supermodel import SuperModelResult
+from credo.waiwera import WaiweraModelResult
 from credo.t2model import T2ModelResult
 
 THIS_DIR = os.path.dirname(os.path.realpath(__file__))
 
-class TestSuperModel(unittest.TestCase):
+class TestWaiweraModelResult(unittest.TestCase):
     def setUp(self):
-        self.mres = SuperModelResult('test_super',
+        self.mres = WaiweraModelResult('test_super',
                                 outputPath=THIS_DIR,
-                                h5_filename='mres_supermodel_1.h5')
+                                h5_filename='mres_waiwera_1.h5')
 
-        self.mres2 = SuperModelResult('test_super_2',
+        self.mres2 = WaiweraModelResult('test_waiwera_2',
                                 outputPath=THIS_DIR,
                                 h5_filename='problem6.h5',
                                 input_filename='problem6.json')

@@ -38,12 +38,12 @@ produce a :class:`credo.modelresult.ModelResult` class.
 from credo.modelrun import ModelRun
 from credo.modelresult import ModelResult
 
-DEFAULT_COMMAND = "supermodel"
+DEFAULT_COMMAND = "waiwera"
 
-class SuperModelRun(ModelRun):
-    """ for supermodel
+class WaiweraModelRun(ModelRun):
+    """ for Waiwera
 
-    TODO: should I add suport of .ordering_map? Supermodel does not use dummy
+    TODO: should I add suport of .ordering_map? Waiwera does not use dummy
     blocks.
     """
     def __init__(self, name, input_filename,
@@ -51,7 +51,7 @@ class SuperModelRun(ModelRun):
                  simulator=DEFAULT_COMMAND,
                  basePath=None, outputPath=None, logPath=None,
                  ):
-        super(SuperModelRun, self).__init__(name, basePath, outputPath, logPath)
+        super(WaiweraModelRun, self).__init__(name, basePath, outputPath, logPath)
 
         self._input_filename = input_filename
         self._simulator = simulator
@@ -67,7 +67,7 @@ class SuperModelRun(ModelRun):
 
     def createModelResult(self):
         """ Note: this is called AFTER .postRunCleanup() """
-        mres = SuperModelResult(self.name, self.outputPath,
+        mres = WaiweraModelResult(self.name, self.outputPath,
                                 self._getH5Filename(),
                                 input_filename=self._input_filename,
                                 fieldname_map=self._fieldname_map)
@@ -76,7 +76,7 @@ class SuperModelRun(ModelRun):
     def _getH5Filename(self):
         """ Returns the hdf5 output filename of a model run.
 
-        Supermodel's output filename is default to have the same name as the
+        Waiwera's output filename is default to have the same name as the
         input filename, with extension .h5.  It can also be specified by user in
         the input (json) file.
         """
@@ -91,13 +91,13 @@ class SuperModelRun(ModelRun):
             h5_fn = os.path.splitext(input_fn) + '.h5'
         return h5_fn
 
-class SuperModelResult(ModelResult):
-    """ for supermodel
+class WaiweraModelResult(ModelResult):
+    """ for Waiwera
     """
     def __init__(self, name, outputPath, h5_filename, input_filename=None,
                  fieldname_map=None):
         from os.path import dirname
-        super(SuperModelResult, self).__init__(name, outputPath,
+        super(WaiweraModelResult, self).__init__(name, outputPath,
                                                fieldname_map=fieldname_map)
         self.name = name
 
@@ -169,8 +169,8 @@ class SuperModelResult(ModelResult):
     def _getTimes(self):
         return self._data['time'][:,0]
 
-def t2_to_super(geofilename, datfilename, incfilename =  None, basepath = None):
-    """ convert tough2 model into supermodel, saves input files and return the
+def t2_to_waiwera(geofilename, datfilename, incfilename =  None, basepath = None):
+    """ convert tough2 model into Waiwera, saves input files and return the
     name of main input file
 
     TODO: maybe this should be external, and formalised more as utility

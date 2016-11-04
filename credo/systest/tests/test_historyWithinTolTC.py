@@ -5,7 +5,7 @@ import os, sys
 
 import numpy
 
-from credo.supermodel import SuperModelResult
+from credo.waiwera import WaiweraModelResult
 from credo.t2model import T2ModelResult
 
 from credo.systest import HistoryWithinTolTC
@@ -19,27 +19,27 @@ class TestHistoryWithinTolTC(unittest.TestCase):
             'Temperature': 'Temperature',
             'Vapour saturation': 'Vapour saturation',
         }
-        SUPER_FIELDMAP = {
+        WAIWERA_FIELDMAP = {
             'Pressure': 'fluid_pressure',
             'Temperature': 'fluid_temperature',
             'Vapour saturation': 'fluid_vapour_saturation',
         }
 
         # these two sets all have 50 output times, made identical
-        self.mres1 = SuperModelResult('waiwera',
+        self.mres1 = WaiweraModelResult('waiwera',
                                       outputPath=THIS_DIR,
                                       h5_filename='deliv.h5',
-                                      fieldname_map=SUPER_FIELDMAP)
+                                      fieldname_map=WAIWERA_FIELDMAP)
         self.mres2 = T2ModelResult('aut2',
                                    lst_filename='deliv.listing',
                                    ordering_map=range(1,11),
                                    fieldname_map=AUT2_FIELDMAP)
 
         # these two have different length of output results
-        self.mres3 = SuperModelResult('waiwera',
+        self.mres3 = WaiweraModelResult('waiwera',
                                       outputPath=THIS_DIR,
                                       h5_filename='deliv_38.h5',
-                                      fieldname_map=SUPER_FIELDMAP)
+                                      fieldname_map=WAIWERA_FIELDMAP)
         self.mres4 = T2ModelResult('aut2',
                                    lst_filename='deliv_39.listing',
                                    ordering_map=range(1,11),

@@ -1,16 +1,16 @@
 """
-A full example testing with AUT2 and Supermodel, CC6, from Adrian/Mike
+A full example testing with AUT2 and Waiwera, CC6, from Adrian/Mike
 
 NOTE:
 1. Make sure credo2 is in the PYTHONPATH, eg.
     export PYTHONPATH=$PYTHONPATH:/cygdrive/d/_Geothermal/Apps/credo/credo2/
-2. Make sure supermodel is in the path
-    export PATH=$PATH:/home/cyeh015/supermodels-test/dist/
+2. Make sure Waiwera is in the path
+    export PATH=$PATH:/home/cyeh015/Waiweras-test/dist/
 
 TODO: check and revive CREDO's ability to do dry run (use results kept on disk)
 TODO: check ModelRun.jobParams, which allows options for jobrunner
 TODO: create new ModelResult class for loading existing results (or maybe just
-use SuperModelResult and T2ModelResult)
+use WaiweraResult and T2ModelResult)
 """
 
 import os
@@ -20,7 +20,7 @@ from credo.systest import FieldWithinTolTC
 
 from credo.jobrunner import SimpleJobRunner
 from credo.t2model import T2ModelRun, T2ModelResult
-from credo.supermodel import SuperModelRun
+from credo.waiwera import WaiweraModelRun
 
 import credo.reporting.standardReports as sReps
 from credo.reporting import getGenerators
@@ -34,14 +34,14 @@ AUT2_FIELDMAP = {
     'Temperature': 'Temperature',
     'Vapour saturation': 'Vapour saturation',
 }
-SUPER_FIELDMAP = {
+WAIWERA_FIELDMAP = {
     'Pressure': 'fluid_pressure',
     'Temperature': 'fluid_temperature',
     'Vapour saturation': 'fluid_vapour_saturation',
 }
 
-def t2_to_super(geofilename, datfilename, basepath=None):
-    """ convert tough2 model into supermodel, saves input files and return the
+def t2_to_waiwera(geofilename, datfilename, basepath=None):
+    """ convert tough2 model into Waiwera, saves input files and return the
     name of main input file
 
     TODO: maybe this should be external, and formalised more as utility
@@ -90,17 +90,17 @@ MODELDIR = 'cc6'
 t2geo_fn = "3DCoarsegrid.dat"
 t2dat_fn = "CC6C001.DAT"
 
-super_fn = None
+waiwera_fn = None
 # cheated by running in windows and get the files
-# super_fn = 'CC6C001.json'  # AY_CYGWIN
-if super_fn is None:
+# waiwera_fn = 'CC6C001.json'  # AY_CYGWIN
+if waiwera_fn is None:
     # this does not work in cygwin at the moment (no python vtk)
-    super_fn = t2_to_super(t2geo_fn,
+    waiwera_fn = t2_to_waiwera(t2geo_fn,
                            t2dat_fn,
                            basepath=MODELDIR
                            )
 # AUT2 uses dummy block for boundary condition, (atmospheric blocks here)
-# get rid of them to be identical to supermodel
+# get rid of them to be identical to Waiwera
 geo = mulgrid(os.path.join(MODELDIR, t2geo_fn))
 map_out_atm = range(geo.num_atmosphere_blocks, geo.num_blocks)
 
@@ -126,10 +126,10 @@ mres_t = jrunner.blockResult(mrun_t, jmeta)
 
 
 # ---------------------------------------------------------------------------
-# construct supermodel run and benchamrk test
-mrun_s = SuperModelRun("super", super_fn,
-                       fieldname_map=SUPER_FIELDMAP,
-                       # simulator='supermodel.exe',  # AY_CYGWIN
+# construct Waiwera run and benchamrk test
+mrun_s = WaiweraModelRun("waiwera", waiwera_fn,
+                       fieldname_map=WAIWERA_FIELDMAP,
+                       # simulator='Waiwera.exe',  # AY_CYGWIN
                        basePath=os.path.realpath(MODELDIR)
                        )
 mrun_s.jobParams['nproc'] = 6
@@ -138,7 +138,7 @@ mrun_s.jobParams['nproc'] = 6
 # jobParams not updated, so a.t.m. this is only for report
 sciBTest = SciBenchmarkTest("CC6", nproc=mrun_s.jobParams['nproc'])
 sciBTest.description = """Mike's test problem 6, CC6"""
-sciBTest.mSuite.addRun(mrun_s, "SuperModel")
+sciBTest.mSuite.addRun(mrun_s, "Waiwera")
 
 sciBTest.setupEmptyTestCompsList()
 for runI, mRun in enumerate(sciBTest.mSuite.runs):
