@@ -200,7 +200,8 @@ class T2ModelResult(ModelResult):
             'rock_permeability3',
             'geom_volume']
         if field in other_field_names:
-            return self._getOtherValues(field)
+            import numpy
+            return numpy.array(self._getOtherValues(field))
         self._lst.step = self._lst.fullsteps[outputIndex]
         return self._lst.element[field]
 
