@@ -88,12 +88,12 @@ class TestAUT2Model(unittest.TestCase):
         self.assertEqual(plst[-1], pnom[-1])
 
         porosity5 = self.dat.grid.blocklist[5].rocktype.porosity
-        porosity_mres = self.mres_w_dat.getFieldAtOutputIndex('Porosity', 1234)
+        porosity_mres = self.mres_w_dat.getFieldAtOutputIndex('rock_porosity', 1234)
         self.assertEqual(len(porosity_mres), self.dat.grid.num_blocks)
         self.assertEqual(porosity5, porosity_mres[5])
 
         volume6 = self.dat.grid.blocklist[6].volume
-        volume_mres = self.mres_w_dat.getFieldAtOutputIndex('Volume', 5678)
+        volume_mres = self.mres_w_dat.getFieldAtOutputIndex('geom_volume', 5678)
         self.assertEqual(len(volume_mres), self.dat.grid.num_blocks)
         self.assertEqual(volume6, volume_mres[6])
 

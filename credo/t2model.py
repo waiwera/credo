@@ -179,26 +179,26 @@ class T2ModelResult(ModelResult):
             self._dat = t2data(dat_filename)
 
     def _getOtherValues(self, field):
-        if field is 'Porosity':
+        if field is 'rock_porosity':
             return [b.rocktype.porosity for b in self._dat.grid.blocklist]
-        if field is 'Permeability1':
+        if field is 'rock_permeability1':
             return [b.rocktype.permeability[0] for b in self._dat.grid.blocklist]
-        if field is 'Permeability2':
+        if field is 'rock_permeability2':
             return [b.rocktype.permeability[1] for b in self._dat.grid.blocklist]
-        if field is 'Permeability3':
+        if field is 'rock_permeability3':
             return [b.rocktype.permeability[2] for b in self._dat.grid.blocklist]
-        elif field is 'Volume':
+        elif field is 'geom_volume':
             return [b.volume for b in self._dat.grid.blocklist]
         else:
             raise Exception
 
     def _getFieldAtOutputIndex(self, field, outputIndex):
         other_field_names = [
-            'Porosity',
-            'Permeability1',
-            'Permeability2',
-            'Permeability3',
-            'Volume']
+            'rock_porosity',
+            'rock_permeability1',
+            'rock_permeability2',
+            'rock_permeability3',
+            'geom_volume']
         if field in other_field_names:
             return self._getOtherValues(field)
         self._lst.step = self._lst.fullsteps[outputIndex]
