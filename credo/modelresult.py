@@ -102,8 +102,6 @@ class ModelResult(object):
         compatible (some with dummy element for boundary conditions to be mapped
         out).
         """
-        # if self.fieldname_map is not None:
-        #     field = self.fieldname_map[field]
         if self.ordering_map is None:
             return self._getFieldAtOutputIndex(field, outputIndex)
         else:
@@ -140,8 +138,6 @@ class ModelResult(object):
         compatible (some with dummy element for boundary conditions to be mapped
         out).
         """
-        # if self.fieldname_map is not None:
-        #     field = self.fieldname_map[field]
         if self.ordering_map is None:
             return self._getFieldHistoryAtCell(field, cellIndex)
         else:

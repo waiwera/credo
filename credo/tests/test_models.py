@@ -12,7 +12,7 @@ THIS_DIR = os.path.dirname(os.path.realpath(__file__))
 
 class TestWaiweraModelResult(unittest.TestCase):
     def setUp(self):
-        self.mres = WaiweraModelResult('test_super',
+        self.mres = WaiweraModelResult('test_waiwera',
                                 outputPath=THIS_DIR,
                                 h5_filename='mres_waiwera_1.h5')
 
