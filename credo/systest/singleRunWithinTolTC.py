@@ -162,9 +162,15 @@ class BaseWithinTolTC(SingleRunTestComponent):
             self.fieldErrors[field] = errors
             fieldTol = self._getTolForField(field)
             if not fieldResult:
-                statusMsg += "Field comp '%s' error(s) of %s not within"\
-                    " tol %g of %s solution\n"\
-                    % (field, errors, fieldTol, self.compareSource)
+                failed = [(i,e) for i,e in enumerate(errors) if e > fieldTol]
+                failed_indices, failed_errors = zip(*failed)
+                max_error = max(failed_errors)
+                statusMsg += "Field comp '%s' has failed error(s) of %s at"\
+                    " indices %s not within tol %g of %s solution\n"\
+                    % (field, list(failed_errors), list(failed_indices), fieldTol, self.compareSource)
+                # statusMsg += "Field comp '%s' error(s) of %s not within"\
+                #     " tol %g of %s solution\n"\
+                #     % (field, errors, fieldTol, self.compareSource)
                 overallResult = False
             else:
                 statusMsg += "Field comp '%s' error within tol %g of %s"\
