@@ -57,7 +57,10 @@ class ModelResult(object):
     Attribute .fieldname_map is used to convert field names from the internal
     storage to external field names shared by different simulator.
     .fieldname_map should be a dictionary with keys of names used in TC, and
-    values of names within the internal storage.
+    values of names within the internal storage.  If not specified, default will
+    be empty dictionary.  NOTE that only field names need *translation* need to
+    be specified in the dictionary.  i.e. field name not in the keys will be
+    left untouched.
 
     TODO: .ordering_map and .fieldname_map are both handled by subclass at the
     moment, should it be part of the ModelRun superclass?
@@ -67,7 +70,7 @@ class ModelResult(object):
     averaging of analytic solution so it's comparable to FV element results.
     """
     def __init__(self, modelName, outputPath, ordering_map=None,
-                 fieldname_map=None):
+                 fieldname_map={}):
         super(ModelResult, self).__init__()
 
         self.modelName = modelName
@@ -76,10 +79,14 @@ class ModelResult(object):
 
         self.ordering_map = ordering_map
         self.fieldname_map = fieldname_map
+        if self.fieldname_map is None:
+            self.fieldname_map = {}
 
     def getFieldAtOutputIndex(self, field, outputIndex):
-        if self.fieldname_map is not None:
+        try:
             field = self.fieldname_map[field]
+        except KeyError:
+            pass
         if callable(field):
             return field(self, outputIndex)
         else:
@@ -114,8 +121,10 @@ class ModelResult(object):
         raise NotImplementedError("._getFieldAtOutputIndex()")
 
     def getFieldHistoryAtCell(self, field, cellIndex):
-        if self.fieldname_map is not None:
+        try:
             field = self.fieldname_map[field]
+        except KeyError:
+            pass
         if callable(field):
             return field(self, cellIndex)
         else:

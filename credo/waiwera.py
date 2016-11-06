@@ -47,7 +47,7 @@ class WaiweraModelRun(ModelRun):
     blocks.
     """
     def __init__(self, name, input_filename,
-                 fieldname_map=None,
+                 fieldname_map={},
                  simulator=DEFAULT_COMMAND,
                  basePath=None, outputPath=None, logPath=None,
                  ):
@@ -95,7 +95,7 @@ class WaiweraModelResult(ModelResult):
     """ for Waiwera
     """
     def __init__(self, name, outputPath, h5_filename, input_filename=None,
-                 fieldname_map=None):
+                 fieldname_map={}):
         from os.path import dirname
         super(WaiweraModelResult, self).__init__(name, outputPath,
                                                fieldname_map=fieldname_map)

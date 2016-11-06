@@ -53,7 +53,7 @@ class T2ModelRun(ModelRun):
 
     """
     def __init__(self, name, dat_filename, save_filename='', incon_filename='',
-                 geo_filename=None, ordering_map=None, fieldname_map=None,
+                 geo_filename=None, ordering_map=None, fieldname_map={},
                  simulator=DEFAULT_COMMAND,
                  basePath=None, outputPath=None, logPath=None,
                  ):
@@ -166,7 +166,7 @@ class T2ModelResult(ModelResult):
     """ for AUT2
     """
     def __init__(self, name, lst_filename, dat_filename=None, geo_filename=None,
-                 ordering_map=None, fieldname_map=None):
+                 ordering_map=None, fieldname_map={}):
         from os.path import dirname
         super(T2ModelResult, self).__init__(name, dirname(lst_filename),
                                             ordering_map=ordering_map,
