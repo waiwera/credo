@@ -75,6 +75,8 @@ from .singleRunWithinTolTC import FieldWithinTolTC
 from .singleRunWithinTolTC import HistoryWithinTolTC
 from .outputWithinRangeTC import OutputWithinRangeTC
 
+from .singleRunWithinTolTC import BaseWithinTolTC, calc_errors, calc_dist_errors
+
 # Now import tests/tcs dependent on specific libraries such as PIL
 try:
     from .imageReferenceTest import ImageReferenceTest
