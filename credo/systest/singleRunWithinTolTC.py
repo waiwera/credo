@@ -244,8 +244,10 @@ class HistoryWithinTolTC(BaseWithinTolTC):
     * orthogonalError: if set to True, error will be non-dimensionalised
       distance (from expected data points) to curve (polyline from model
       result).  Otherwise the default error is between the expected data points
-      to interpolated model results.  Orthorgonal error is particularly useful
+      to interpolated model results.  Orthogonal error is particularly useful
       if the expected model results are digitised points from plots in print.
+      The logx and logy parameters can be used for logarithmic scaling of either
+      axis when using the orthogonal error option.
 
     """
     def __init__(self,
@@ -257,6 +259,7 @@ class HistoryWithinTolTC(BaseWithinTolTC):
                  testCellIndex=0,
                  times=None,
                  orthogonalError=False,
+                 logx=False, logy=False,
                  enforceLogic=True ):
         BaseWithinTolTC.__init__(self,
                                  fieldsToTest=fieldsToTest,
@@ -267,6 +270,8 @@ class HistoryWithinTolTC(BaseWithinTolTC):
         self.testCellIndex = testCellIndex
         self.times = times
         self.orthogonalError = orthogonalError
+        self.logx = logx
+        self.logy = logy
 
         # avoid doing stupid comparison (raise exception)
         # - analytical always use result times (NO times allowed)
@@ -316,7 +321,8 @@ class HistoryWithinTolTC(BaseWithinTolTC):
         if self.orthogonalError:
             errors = calc_dist_errors(expected_times, expected,
                                       result_times, result,
-                                      self.absoluteErrorTol)
+                                      self.absoluteErrorTol,
+                                      self.logx, self.logy)
         else:
             # expected/result needs to have the same length here (self.times)
             expected = numpy.interp(self.times, expected_times, expected)
