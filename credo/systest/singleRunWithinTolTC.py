@@ -23,13 +23,21 @@ def calc_errors(data1, data2, abs_err_tol=1.0e-9):
     rdiff[iz] = numpy.abs(diff[iz])
     return rdiff
 
-def non_dimensionalise(x1, x2, abs_err_tol=1.0):
+def non_dimensionalise(x1, x2, abs_err_tol=1.0, logscale=False):
     """ Given two lists of numeric values, scales elements of both lists to be
     between 0.0 and 1.0.  If the range of values is smaller than abs_err_tol,
     typically 1.0, the data sets will be shifted down to 0.0, but scale remains.
     """
     xmin = min(min(x1), min(x2))
     xmax = max(max(x1), max(x2))
+    if logscale:
+        from math import log10
+        xmin0 = xmin
+        def log_transform(x): return log10(x - xmin0 + 1.)
+        x1 = [log_transform(x) for x in x1]
+        x2 = [log_transform(x) for x in x2]
+        xmin = log_transform(xmin)
+        xmax = log_transform(xmax)
     xd = xmax - xmin
     if xd < abs_err_tol:
         x1 = [x - xmin for x in x1]
@@ -39,7 +47,8 @@ def non_dimensionalise(x1, x2, abs_err_tol=1.0):
     xx2 = [(x - xmin)/xd for x in x2]
     return xx1, xx2
 
-def calc_dist_errors(ptx, pty, linex, liney, abs_err_tol=1.0):
+def calc_dist_errors(ptx, pty, linex, liney, abs_err_tol=1.0,
+                     logx=False, logy=False):
     """ Calculates non-dimensionalised distance (errors) of points to a polyline
     (curve).
 
@@ -50,8 +59,8 @@ def calc_dist_errors(ptx, pty, linex, liney, abs_err_tol=1.0):
     """
     from shapely.geometry import Point, LineString
     # non-dimensionalise both data sets
-    ptxx, linexx = non_dimensionalise(ptx, linex, abs_err_tol)
-    ptyy, lineyy = non_dimensionalise(pty, liney, abs_err_tol)
+    ptxx, linexx = non_dimensionalise(ptx, linex, abs_err_tol, logx)
+    ptyy, lineyy = non_dimensionalise(pty, liney, abs_err_tol, logy)
     line = LineString([(x,y) for x,y in zip(linexx, lineyy)])
     return [Point(x,y).distance(line) for x,y in zip(ptxx, ptyy)]
 
