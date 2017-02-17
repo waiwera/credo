@@ -222,7 +222,25 @@ class ModelResult(object):
         outFile.close()
         return fullPath
 
+class HistoryDataResult(ModelResult):
+    """History data results for specified fields and cell indices.
 
+    Attribute _data is a dictionary of rank-2 numpy arrays, each with
+    a column for time and a column for history values. The keys of the
+    dictionary are tuples of (field name, cell index).
+
+    """
+    def __init__(self, modelName, data, ordering_map=None,
+                 fieldname_map=None):
+        from os.path import dirname
+        super(HistoryDataResult, self).__init__(modelName, '',
+                                            ordering_map=ordering_map,
+                                            fieldname_map=fieldname_map)
+        self._data = data
+    def _getFieldHistoryAtCell(self, field, cellIndex):
+        t = self._data[field, cellIndex][:,0]
+        val = self._data[field, cellIndex][:,1]
+        return t, val
 
 class UnderworldModelResult(ModelResult):
     """A class to keep records about the results of a StgDomain/Underworld
