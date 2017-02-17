@@ -129,7 +129,7 @@ class ModelResult(object):
             return self._getFieldHistoryAtCell_(field, cellIndex)
 
     def _getFieldHistoryAtCell_(self, field, cellIndex):
-        """ Returns history value of specified field at one of the model's
+        """ Returns times and history values of specified field at one of the model's
         element/cell.  Note the cellIndex will be mapped if self.ordering_map is
         specified at the construction of the model result.
 
@@ -141,11 +141,8 @@ class ModelResult(object):
         if self.ordering_map is None:
             return self._getFieldHistoryAtCell(field, cellIndex)
         else:
-            orig = self._getFieldHistoryAtCell(field, self.ordering_map[cellIndex])
-            if type(orig) == np.ndarray:
-                return orig
-            else:
-                return np.array(orig)
+            t, val = self._getFieldHistoryAtCell(field, self.ordering_map[cellIndex])
+            return np.array(t), np.array(val)
 
     def _getFieldHistoryAtCell(self, field, cellIndex):
         """ Returns history value of specified field at one of the model's

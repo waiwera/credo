@@ -44,7 +44,7 @@ class TestWaiweraModelResult(unittest.TestCase):
         expected = [101350.0, 1.0525784029355975E7]
         expected_times = [0.0, 1.0E15]
 
-        phist = self.mres.getFieldHistoryAtCell('fluid_pressure', 800)
+        t, phist = self.mres.getFieldHistoryAtCell('fluid_pressure', 800)
         for p,pe in zip(phist, expected):
             self.assertAlmostEqual(p, pe, places=7)
 
@@ -121,9 +121,8 @@ class TestAUT2Model(unittest.TestCase):
     def test_gethistory(self):
         ele = self.lst.element.row_name[-1]
         expected_times, expected = self.lst.history(('e', ele, 'Pressure'))
-        phist = self.mres.getFieldHistoryAtCell('Pressure', 1679)
-        phist_map = self.mres_map.getFieldHistoryAtCell('Pressure', 1599)
-        times = self.mres.getTimes()
+        times, phist = self.mres.getFieldHistoryAtCell('Pressure', 1679)
+        times, phist_map = self.mres_map.getFieldHistoryAtCell('Pressure', 1599)
 
         self.assertEqual(type(phist), numpy.ndarray)
         self.assertEqual(type(expected), numpy.ndarray)
@@ -159,7 +158,8 @@ class TestCustomField(unittest.TestCase):
             return mResult.getFieldAtOutputIndex('pressu', index) / 1.0e5
 
         def calc_p_hist_in_bar(mResult, index):
-            return mResult.getFieldHistoryAtCell('pressu', index) / 1.0e5
+            t, phist = mResult.getFieldHistoryAtCell('pressu', index)
+            return t, phist / 1.0e5
 
         # then pass the function into the ModelResult (or ModelRun) as part of
         # the field name map
@@ -184,8 +184,10 @@ class TestCustomField(unittest.TestCase):
         ele = self.lst.element.row_name[30]
         ph_f = self.lst.history(('e', ele, 'Pressure'), short=False)[1]
         bh_f = ph_f / 1.0e5
-        self.assertEqual(mres.getFieldHistoryAtCell('pressu', 30)[1], ph_f[1])
-        self.assertEqual(mres.getFieldHistoryAtCell('p_hist_in_bar', 30)[1], bh_f[1])
+        t, phist = mres.getFieldHistoryAtCell('pressu', 30)
+        self.assertEqual(phist[1], ph_f[1])
+        t, phist = mres.getFieldHistoryAtCell('p_hist_in_bar', 30)
+        self.assertEqual(phist[1], bh_f[1])
 
 
 if __name__ == '__main__':

@@ -102,10 +102,8 @@ class TestHistoryWithinTolTC(unittest.TestCase):
         SHOW_PLOT = False
 
         def check_history(result, expected, field, tol, abs_err_tol=1.0):
-            p1 = result.getFieldHistoryAtCell(field, 4)
-            t1 = result.getTimes()
-            p2 = expected.getFieldHistoryAtCell(field, 4)
-            t2 = expected.getTimes()
+            t1, p1 = result.getFieldHistoryAtCell(field, 4)
+            t2, p2 = expected.getFieldHistoryAtCell(field, 4)
             tc = HistoryWithinTolTC(fieldsToTest=[field],
                                     defFieldTol=tol,
                                     fieldTols=None,

@@ -302,8 +302,7 @@ class HistoryWithinTolTC(BaseWithinTolTC):
         accepts the positions returned by (ModelResult.getPositions()[I], time).
         """
         fieldTol = self._getTolForField(field)
-        result = mResult.getFieldHistoryAtCell(field, self.testCellIndex)
-        result_times = mResult.getTimes()
+        result_times, result = mResult.getFieldHistoryAtCell(field, self.testCellIndex)
 
         if callable(self.expected):
             # analytic, calls func with position
@@ -313,8 +312,8 @@ class HistoryWithinTolTC(BaseWithinTolTC):
             expected = numpy.array([self.expected(pos, t) for t in self.times])
             expected_times = self.times
         else:
-            expected = self.expected.getFieldHistoryAtCell(field, self.testCellIndex)
-            expected_times = self.expected.getTimes()
+            expected_times, expected = self.expected.\
+                                       getFieldHistoryAtCell(field, self.testCellIndex)
             if self.times is None:
                 self.times = expected_times
 

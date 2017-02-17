@@ -207,8 +207,8 @@ class T2ModelResult(ModelResult):
 
     def _getFieldHistoryAtCell(self, field, cellIndex):
         ele = self._lst.element.row_name[cellIndex]
-        hist = self._lst.history(('e', ele, field), short=False)
-        return hist[1]
+        t, hist = self._lst.history(('e', ele, field), short=False)
+        return t, hist
 
     def _getPositions(self):
         return [self._geo.block_centre(self._geo.layer_name(b), self._geo.column_name(b)) for b in self._geo.block_name_list]
