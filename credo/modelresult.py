@@ -242,6 +242,24 @@ class HistoryDataResult(ModelResult):
         val = self._data[field, cellIndex][:,1]
         return t, val
 
+class DigitisedRadialFieldResult(ModelResult):
+    """Digitised radial results for a field at a given time."""
+    def __init__(self, modelName, fileName, field, outputIndex, ordering_map=None,
+                 fieldname_map=None):
+        from os.path import dirname
+        super(DigitisedRadialFieldResult, self).__init__(modelName, dirname(fileName),
+                                            ordering_map=ordering_map,
+                                            fieldname_map=fieldname_map)
+        self.field = field
+        self.outputIndex = outputIndex
+        self.data = np.loadtxt(fileName)
+    def getRadii(self):
+        return self.data[:, 0]
+    def _getFieldAtOutputIndex(self, field, outputIndex):
+        if field == self.field and outputIndex == self.outputIndex:
+            return self.data[:, 1]
+        else: return None
+
 class UnderworldModelResult(ModelResult):
     """A class to keep records about the results of a StgDomain/Underworld
      model run. These are normally produced as a result of running a

@@ -73,6 +73,7 @@ from .sciBenchmarkTest import SciBenchmarkTest
 from .fieldCvgWithScaleTC import FieldCvgWithScaleTC
 from .singleRunWithinTolTC import FieldWithinTolTC
 from .singleRunWithinTolTC import HistoryWithinTolTC
+from .singleRunWithinTolTC import RadialSolutionWithinTolTC
 from .outputWithinRangeTC import OutputWithinRangeTC
 
 from .singleRunWithinTolTC import BaseWithinTolTC, calc_errors, calc_dist_errors

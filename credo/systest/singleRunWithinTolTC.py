@@ -339,6 +339,49 @@ class HistoryWithinTolTC(BaseWithinTolTC):
             value=str(self.testCellIndex))
         BaseWithinTolTC._writeXMLCustomSpec(self, specNode)
 
+class RadialSolutionWithinTolTC(BaseWithinTolTC):
+    """
+    For testing against radial solution results.
+    """
+
+    def __init__(self,
+                 fieldsToTest = None,
+                 defFieldTol = 0.01,
+                 fieldTols = None,
+                 expected = None,
+                 absoluteErrorTol = 1.0,
+                 testOutputIndex = -1,
+                 maxRadius = None):
+        BaseWithinTolTC.__init__(self,
+                                 fieldsToTest = fieldsToTest,
+                                 defFieldTol = defFieldTol,
+                                 fieldTols = fieldTols,
+                                 expected = expected,
+                                 absoluteErrorTol = absoluteErrorTol)
+        self.testOutputIndex = testOutputIndex
+        self.maxRadius = maxRadius
+
+    def _checkFieldWithinTol(self, field, mResult):
+        fieldTol = self._getTolForField(field)
+        r_result = numpy.array([pos[0] for pos in mResult.getPositions()])
+        result = mResult.getFieldAtOutputIndex(field, self.testOutputIndex)
+        if self.maxRadius:
+            ir = numpy.where(r_result <= self.maxRadius)
+            r_result = r_result[ir]
+            result = result[ir]
+        r_expected = self.expected.getRadii()
+        expected = self.expected.getFieldAtOutputIndex(field, self.testOutputIndex)
+        errors = calc_dist_errors(r_result, result,
+                                  r_expected, expected,
+                                  self.absoluteErrorTol, logx = True)
+        fieldResult = all(e <= fieldTol for e in errors)
+        return fieldResult, errors
+
+    def _writeXMLCustomSpec(self, specNode):
+        etree.SubElement(specNode, 'testOutputIndex',
+            value = str(self.testOutputIndex))
+        BaseWithinTolTC._writeXMLCustomSpec(self, specNode)
+
 class FieldWithinTolTC(BaseWithinTolTC):
     """
     Additional arguments compared to the base class:
