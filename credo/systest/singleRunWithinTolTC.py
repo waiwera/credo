@@ -339,9 +339,13 @@ class HistoryWithinTolTC(BaseWithinTolTC):
             value=str(self.testCellIndex))
         BaseWithinTolTC._writeXMLCustomSpec(self, specNode)
 
-class RadialSolutionWithinTolTC(BaseWithinTolTC):
-    """
-    For testing against radial solution results.
+class OneDSolutionWithinTolTC(BaseWithinTolTC):
+    """For testing against 1-D solution results.  The coordinateIndex
+    parameter specifies the appropriate coordinate axis (0, 1, or 2)
+    of the model. The maxCoordinate parameter specifies the upper
+    limit of the coordinate range used for testing. The logCoordinate
+    parameter can be used to treat the coordinate axis logarithmically
+    (e.g. for radial models).
     """
 
     def __init__(self,
@@ -351,7 +355,9 @@ class RadialSolutionWithinTolTC(BaseWithinTolTC):
                  expected = None,
                  absoluteErrorTol = 1.0,
                  testOutputIndex = -1,
-                 maxRadius = None):
+                 coordinateIndex = 0,
+                 maxCoordinate = None,
+                 logCoordinate = False):
         BaseWithinTolTC.__init__(self,
                                  fieldsToTest = fieldsToTest,
                                  defFieldTol = defFieldTol,
@@ -359,21 +365,23 @@ class RadialSolutionWithinTolTC(BaseWithinTolTC):
                                  expected = expected,
                                  absoluteErrorTol = absoluteErrorTol)
         self.testOutputIndex = testOutputIndex
-        self.maxRadius = maxRadius
+        self.coordinateIndex = coordinateIndex
+        self.maxCoordinate = maxCoordinate
+        self.logCoordinate = logCoordinate
 
     def _checkFieldWithinTol(self, field, mResult):
         fieldTol = self._getTolForField(field)
-        r_result = numpy.array([pos[0] for pos in mResult.getPositions()])
+        coord_result = numpy.array([pos[self.coordinateIndex] for pos in mResult.getPositions()])
         result = mResult.getFieldAtOutputIndex(field, self.testOutputIndex)
-        if self.maxRadius:
-            ir = numpy.where(r_result <= self.maxRadius)
-            r_result = r_result[ir]
-            result = result[ir]
-        r_expected = self.expected.getRadii()
+        if self.maxCoordinate:
+            ic = numpy.where(coord_result <= self.maxCoordinate)
+            coord_result = coord_result[ic]
+            result = result[ic]
+        coord_expected = self.expected.getCoordinates()
         expected = self.expected.getFieldAtOutputIndex(field, self.testOutputIndex)
-        errors = calc_dist_errors(r_result, result,
-                                  r_expected, expected,
-                                  self.absoluteErrorTol, logx = True)
+        errors = calc_dist_errors(coord_result, result,
+                                  coord_expected, expected,
+                                  self.absoluteErrorTol, logx = self.logCoordinate)
         fieldResult = all(e <= fieldTol for e in errors)
         return fieldResult, errors
 
