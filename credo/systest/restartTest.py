@@ -28,7 +28,7 @@ from xml.etree import ElementTree as etree
 from credo.modelsuite import ModelSuite
 from credo.modelrun import SimParams
 from .api import SingleModelSysTest, CREDO_PASS, CREDO_FAIL
-from .fieldWithinTolTC import FieldWithinTolTC
+from .singleRunWithinTolTC import FieldWithinTolTC
 
 class RestartTest(SingleModelSysTest):
     '''A Restart System test.

@@ -26,7 +26,7 @@ from xml.etree import ElementTree as etree
 
 from credo.modelsuite import ModelSuite
 from .api import SingleModelSysTest, CREDO_PASS, CREDO_FAIL
-from .fieldWithinTolTC import FieldWithinTolTC
+from .singleRunWithinTolTC import FieldWithinTolTC
 
 class AnalyticTest(SingleModelSysTest):
     '''An Analytic System test.

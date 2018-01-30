@@ -30,7 +30,7 @@ from credo.modelsuite import ModelSuite
 from credo.modelrun import SimParams
 import credo.jobrunner
 from .api import SingleModelSysTest, CREDO_PASS, CREDO_FAIL, getStdTestNameBasic
-from .fieldWithinTolTC import FieldWithinTolTC
+from .singleRunWithinTolTC import FieldWithinTolTC
 
 class HighResReferenceTest(SingleModelSysTest):
     '''A High Res Reference System test.
