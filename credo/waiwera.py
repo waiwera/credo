@@ -106,7 +106,6 @@ class WaiweraModelResult(ModelResult):
         self._data = h5py.File(h5_filename, 'r')
         # obtain slicing arrays for converting values back to natural ordering
         self.cell_idx = self._data['cell_interior_index'][:,0] # cell_fields/*
-        self.geom_idx = self._data['cell_index'][:,0] # fields/cell_geometry
         self.num_cells = len(self.cell_idx)
 
         import json
@@ -143,7 +142,7 @@ class WaiweraModelResult(ModelResult):
                     v[i] = rock['permeability'][2]
             return v
         elif field is 'geom_volume':
-            return self._data['fields']['cell_geometry'][:,3][self.geom_idx]
+            return self._data['cell_fields']['cell_geometry_volume'][:][self.cell_idx]
         else:
             raise Exception
 
@@ -164,9 +163,7 @@ class WaiweraModelResult(ModelResult):
         return t, val
 
     def _getPositions(self):
-        # cannot do self._data['fields'][cell_geometry][self.geom_idx,:3]
-        # it would have to be in increasing order
-        return self._data['fields']['cell_geometry'][:,:3][self.geom_idx]
+        return self._data['cell_fields']['cell_geometry_centroid'][self.cell_idx,:]
 
     def _getTimes(self):
         return self._data['time'][:,0]
