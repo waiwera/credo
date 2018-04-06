@@ -105,7 +105,7 @@ class WaiweraModelResult(ModelResult):
         # have to keep it open, unless copy all data, which is not ideal.
         self._data = h5py.File(h5_filename, 'r')
         # obtain slicing arrays for converting values back to natural ordering
-        self.cell_idx = self._data['cell_interior_index'][:,0] # cell_fields/*
+        self.cell_idx = self._data['cell_index'][:,0] # cell_fields/*
         self.num_cells = len(self.cell_idx)
 
         import json
