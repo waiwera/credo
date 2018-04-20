@@ -283,7 +283,7 @@ class HistoryWithinTolTC(BaseWithinTolTC):
                 raise Exception("There is no need to specify times in common tests.")
             if callable(self.expected):
                 if self.orthogonalError is True:
-                    raise Exception("Comparison with analytic solution cannot use orthorgonal errors.")
+                    raise Exception("Comparison with analytic solution cannot use orthogonal errors.")
 
     def _checkFieldWithinTol(self, field, mResult):
         """ This is the core of the TC, checks a field from ModelResult against
