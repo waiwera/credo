@@ -106,6 +106,7 @@ class WaiweraModelResult(ModelResult):
         self._data = h5py.File(h5_filename, 'r')
         # obtain slicing arrays for converting values back to natural ordering
         self.cell_idx = self._data['cell_index'][:,0] # cell_fields/*
+        self.source_idx = self._data['source_index'][:,0]
         self.num_cells = len(self.cell_idx)
 
         import json
@@ -160,6 +161,11 @@ class WaiweraModelResult(ModelResult):
     def _getFieldHistoryAtCell(self, field, cellIndex):
         t = self._data['time'][:,0]
         val = self._data['cell_fields'][field][:,self.cell_idx[cellIndex]]
+        return t, val
+
+    def _getFieldHistoryAtSource(self, field, sourceIndex):
+        t = self._data['time'][:,0]
+        val = self._data['source_fields'][field][:,self.source_idx[sourceIndex]]
         return t, val
 
     def _getPositions(self):

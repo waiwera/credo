@@ -151,6 +151,23 @@ class ModelResult(object):
         """
         raise NotImplementedError("._getFieldHistoryAtCell()")
 
+    def getFieldHistoryAtSource(self, field, sourceIndex):
+        try:
+            field = self.fieldname_map[field]
+        except KeyError:
+            pass
+        if callable(field):
+            return field(self, sourceIndex)
+        else:
+            return self._getFieldHistoryAtSource(field, sourceIndex)
+
+    def _getFieldHistoryAtSource(self, field, sourceIndex):
+        """ Returns history value of specified field at one of the model's
+        sources.  The returned values are preferred to be in the form of
+        NumPy array.
+        """
+        raise NotImplementedError("._getFieldHistoryAtSource()")
+
     def getPositions(self):
         """ Returns a list of positions of all model's elements in order.
 
@@ -223,11 +240,12 @@ class ModelResult(object):
         return fullPath
 
 class HistoryDataResult(ModelResult):
-    """History data results for specified fields and cell indices.
+    """History data results for specified fields and cell or source indices.
 
     Attribute _data is a dictionary of rank-2 numpy arrays, each with
     a column for time and a column for history values. The keys of the
-    dictionary are tuples of (field name, cell index).
+    dictionary are tuples of (field name, cell index) or
+    (field name, source index).
 
     """
     def __init__(self, modelName, data, ordering_map=None,
@@ -237,9 +255,15 @@ class HistoryDataResult(ModelResult):
                                             ordering_map=ordering_map,
                                             fieldname_map=fieldname_map)
         self._data = data
+
     def _getFieldHistoryAtCell(self, field, cellIndex):
         t = self._data[field, cellIndex][:,0]
         val = self._data[field, cellIndex][:,1]
+        return t, val
+
+    def _getFieldHistoryAtSource(self, field, sourceIndex):
+        t = self._data[field, sourceIndex][:,0]
+        val = self._data[field, sourceIndex][:,1]
         return t, val
 
 class DigitisedOneDFieldResult(ModelResult):

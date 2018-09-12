@@ -210,6 +210,11 @@ class T2ModelResult(ModelResult):
         t, hist = self._lst.history(('e', ele, field), short=False)
         return t, hist
 
+    def _getFieldHistoryAtSource(self, field, sourceIndex):
+        genkey = self._lst.generation.row_name[sourceIndex]
+        t, hist = self._lst.history(('g', genkey, field), short=False)
+        return t, hist
+
     def _getPositions(self):
         return [self._geo.block_centre(self._geo.layer_name(b), self._geo.column_name(b)) for b in self._geo.block_name_list]
 
