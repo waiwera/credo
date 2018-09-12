@@ -231,7 +231,10 @@ class HistoryWithinTolTC(BaseWithinTolTC):
     """
     Additional arguments compared to the base class:
 
-    * testCellIndex: Integer, the index of the model output that the
+    * testCellIndex: Integer, the index of the model output cell that the
+      comparison will occur at.
+
+    * testSourceIndex: Integer, the index of the model output source that the
       comparison will occur at.
 
     * times: A list of floats, times that the ModelResult will be interpolated
@@ -257,6 +260,7 @@ class HistoryWithinTolTC(BaseWithinTolTC):
                  expected=None,
                  absoluteErrorTol=1.0,
                  testCellIndex=0,
+                 testSourceIndex=None,
                  times=None,
                  orthogonalError=False,
                  logx=False, logy=False,
@@ -267,7 +271,11 @@ class HistoryWithinTolTC(BaseWithinTolTC):
                                  fieldTols=fieldTols,
                                  expected=expected,
                                  absoluteErrorTol=absoluteErrorTol )
-        self.testCellIndex = testCellIndex
+        self.testSourceIndex = testSourceIndex
+        if testSourceIndex is None:
+            self.testCellIndex = testCellIndex
+        else:
+            self.testCellIndex = None
         self.times = times
         self.orthogonalError = orthogonalError
         self.logx = logx
@@ -302,18 +310,27 @@ class HistoryWithinTolTC(BaseWithinTolTC):
         accepts the positions returned by (ModelResult.getPositions()[I], time).
         """
         fieldTol = self._getTolForField(field)
-        result_times, result = mResult.getFieldHistoryAtCell(field, self.testCellIndex)
+        if self.testSourceIndex is None:
+            result_times, result = mResult.getFieldHistoryAtCell(field, self.testCellIndex)
+        else:
+            result_times, result = mResult.getFieldHistoryAtSource(field, self.testSourceIndex)
 
         if callable(self.expected):
             # analytic, calls func with position
             if self.times is None:
                 self.times = result_times
-            pos = mResult.getPositions()[self.testCellIndex]
+            if self.testSourceIndex is None:
+                pos = mResult.getPositions()[self.testCellIndex]
+            else: pos = None
             expected = numpy.array([self.expected(pos, t) for t in self.times])
             expected_times = self.times
         else:
-            expected_times, expected = self.expected.\
-                                       getFieldHistoryAtCell(field, self.testCellIndex)
+            if self.testSourceIndex is None:
+                expected_times, expected = self.expected.\
+                                           getFieldHistoryAtCell(field, self.testCellIndex)
+            else:
+                expected_times, expected = self.expected.\
+                                           getFieldHistoryAtSource(field, self.testSourceIndex)
             if self.times is None:
                 self.times = expected_times
 
