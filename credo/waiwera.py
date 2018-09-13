@@ -106,9 +106,11 @@ class WaiweraModelResult(ModelResult):
         self._data = h5py.File(h5_filename, 'r')
         # obtain slicing arrays for converting values back to natural ordering
         self.cell_idx = self._data['cell_index'][:,0] # cell_fields/*
-        self.source_idx = self._data['source_index'][:,0]
+        if 'source_index' in self._data:
+            self.source_idx = self._data['source_index'][:,0]
+        else:
+            self.source_idx = None
         self.num_cells = len(self.cell_idx)
-
         import json
         self._input = {}
         if input_filename is not None:
@@ -164,9 +166,12 @@ class WaiweraModelResult(ModelResult):
         return t, val
 
     def _getFieldHistoryAtSource(self, field, sourceIndex):
-        t = self._data['time'][:,0]
-        val = self._data['source_fields'][field][:,self.source_idx[sourceIndex]]
-        return t, val
+        if self.source_idx is not None:
+            t = self._data['time'][:,0]
+            val = self._data['source_fields'][field][:,self.source_idx[sourceIndex]]
+            return t, val
+        else:
+            raise Exception('No sources in model %s' % (self.name))
 
     def _getPositions(self):
         return self._data['cell_fields']['cell_geometry_centroid'][self.cell_idx,:]
