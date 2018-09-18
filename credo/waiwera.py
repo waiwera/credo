@@ -174,7 +174,7 @@ class WaiweraModelResult(ModelResult):
             raise Exception('No sources in model %s' % (self.name))
 
     def _getPositions(self):
-        return self._data['cell_fields']['cell_geometry_centroid'][self.cell_idx,:]
+        return self._data['cell_fields']['cell_geometry_centroid'][:][self.cell_idx]
 
     def _getTimes(self):
         return self._data['time'][:,0]
