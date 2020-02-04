@@ -1,8 +1,8 @@
 ##  Copyright (C), 2010, Monash University
 ##  Copyright (C), 2010, Victorian Partnership for Advanced Computing (VPAC)
-##  
+##
 ##  This file is part of the CREDO library.
-##  Developed as part of the Simulation, Analysis, Modelling program of 
+##  Developed as part of the Simulation, Analysis, Modelling program of
 ##  AuScope Limited, and funded by the Australian Federal Government's
 ##  National Collaborative Research Infrastructure Strategy (NCRIS) program.
 ##
@@ -26,7 +26,7 @@ from xml.etree import ElementTree as etree
 
 from credo.modelsuite import ModelSuite
 from .api import SingleModelSysTest, CREDO_PASS, CREDO_FAIL
-from .fieldWithinTolTC import FieldWithinTolTC
+from .singleRunWithinTolTC import FieldWithinTolTC
 
 class AnalyticTest(SingleModelSysTest):
     '''An Analytic System test.
@@ -36,7 +36,7 @@ class AnalyticTest(SingleModelSysTest):
        the expected tolerance. Uses a
        :class:`~credo.systest.fieldWithinTolTC.FieldWithinTolTC`
        test component to perform the check.
-       
+
        Optional constructor keywords:
 
        * defFieldTol: The default tolerance to be applied when comparing fields of
@@ -44,9 +44,9 @@ class AnalyticTest(SingleModelSysTest):
          See also the FieldWithinTolTC's
          :attr:`~credo.systest.fieldWithinTolTC.FieldWithinTolTC.defFieldTol`.
        * fieldTols: a dictionary of tolerances to use when testing particular
-         fields, rather than the default tolerance defined by 
+         fields, rather than the default tolerance defined by
          the defFieldTol argument.
-          
+
        .. attribute:: fTestName
 
           Standard name to use for this test's field comparison TestComponent
@@ -63,7 +63,7 @@ class AnalyticTest(SingleModelSysTest):
 
     def __init__(self, inputFiles, outputPathBase,
             basePath=None, nproc=1, timeout=None,
-            paramOverrides=None, solverOpts=None, nameSuffix=None, 
+            paramOverrides=None, solverOpts=None, nameSuffix=None,
             defFieldTol=3e-2, fieldTols=None):
         SingleModelSysTest.__init__(self, "Analytic",
             inputFiles, outputPathBase,

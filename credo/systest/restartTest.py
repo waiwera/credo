@@ -1,8 +1,8 @@
 ##  Copyright (C), 2010, Monash University
 ##  Copyright (C), 2010, Victorian Partnership for Advanced Computing (VPAC)
-##  
+##
 ##  This file is part of the CREDO library.
-##  Developed as part of the Simulation, Analysis, Modelling program of 
+##  Developed as part of the Simulation, Analysis, Modelling program of
 ##  AuScope Limited, and funded by the Australian Federal Government's
 ##  National Collaborative Research Infrastructure Strategy (NCRIS) program.
 ##
@@ -28,13 +28,13 @@ from xml.etree import ElementTree as etree
 from credo.modelsuite import ModelSuite
 from credo.modelrun import SimParams
 from .api import SingleModelSysTest, CREDO_PASS, CREDO_FAIL
-from .fieldWithinTolTC import FieldWithinTolTC
+from .singleRunWithinTolTC import FieldWithinTolTC
 
 class RestartTest(SingleModelSysTest):
     '''A Restart System test.
        This case simply runs a given model for set number of steps,
        then restarts half-way through, and checks the same result is
-       obtained. (Thus it's largely a regression test to ensure 
+       obtained. (Thus it's largely a regression test to ensure
        checkpoint-restarting works for various types of models).
        Uses a :class:`~credo.systest.fieldWithinTolTC.FieldWithinTolTC`
        test component to perform the check.
@@ -50,13 +50,13 @@ class RestartTest(SingleModelSysTest):
          See also the FieldWithinTolTC's
          :attr:`~credo.systest.fieldWithinTolTC.FieldWithinTolTC.defFieldTol`.
        * fieldTols: a dictionary of tolerances to use when testing particular
-         fields, rather than the default tolerance defined by 
+         fields, rather than the default tolerance defined by
          the defFieldTol argument.
-          
+
        .. attribute:: fTestName
 
           Standard name to use for this test's field comparison TestComponent
-          in the :attr:`~credo.systest.api.SysTest.testComponents` list.  
+          in the :attr:`~credo.systest.api.SysTest.testComponents` list.
         '''
 
     fTestName = 'Restart compared with original'
@@ -72,7 +72,7 @@ class RestartTest(SingleModelSysTest):
 
     def __init__(self, inputFiles, outputPathBase,
             basePath=None, nproc=1, timeout=None,
-            paramOverrides=None, solverOpts=None, nameSuffix=None, 
+            paramOverrides=None, solverOpts=None, nameSuffix=None,
             fieldsToTest = ['VelocityField','PressureField'], fullRunSteps=20,
             defFieldTol=1e-5, fieldTols=None):
         SingleModelSysTest.__init__(self, "Restart",
@@ -94,7 +94,7 @@ class RestartTest(SingleModelSysTest):
             testTimestep=self.fullRunSteps)
 
     def updateOutputPaths(self, newOutputPathBase):
-        """See base class 
+        """See base class
         :meth:`~credo.systest.api.SysTest.updateOutputPaths`."""
         SingleModelSysTest.updateOutputPaths(self, newOutputPathBase)
         self.initialOutputPath = os.path.join(newOutputPathBase,
@@ -124,7 +124,7 @@ class RestartTest(SingleModelSysTest):
             self.restartOutputPath)
         resRun.simParams = SimParams(nsteps=self.fullRunSteps/2,
             cpevery=0, dumpevery=0, restartstep=self.fullRunSteps/2)
-        resRun.cpReadPath = self.initialOutputPath    
+        resRun.cpReadPath = self.initialOutputPath
         self.resRunI = self.mSuite.addRun(resRun,
             "Do the restart run and check results at end match initial.")
 
@@ -149,4 +149,4 @@ class RestartTest(SingleModelSysTest):
         for fieldName in self.fieldsToTest:
             fieldsNode = etree.SubElement(fieldsToTestNode, 'field',
                 name=fieldName)
-            
+

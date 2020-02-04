@@ -1,8 +1,8 @@
 ##  Copyright (C), 2010, Monash University
 ##  Copyright (C), 2010, Victorian Partnership for Advanced Computing (VPAC)
-##  
+##
 ##  This file is part of the CREDO library.
-##  Developed as part of the Simulation, Analysis, Modelling program of 
+##  Developed as part of the Simulation, Analysis, Modelling program of
 ##  AuScope Limited, and funded by the Australian Federal Government's
 ##  National Collaborative Research Infrastructure Strategy (NCRIS) program.
 ##
@@ -21,7 +21,7 @@
 ##  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 ##  MA  02110-1301  USA
 
-'''A Module for dealing with StGermain "Convergence" files, i.e. records of 
+'''A Module for dealing with StGermain "Convergence" files, i.e. records of
 comparison between a set of Fields and either reference or Analytic solutions,
 produced by the FieldTester Component.
 
@@ -29,7 +29,7 @@ The module is not fully object-oriented, and in the current design allows for
 the possibility of a set of cvg files in one path that should all be referenced.
 (e.g. the see function :func:`genConvergenceFileIndex`).
 
-It provides a similar, though not identical, interface to the 
+It provides a similar, though not identical, interface to the
 :mod:`credo.io.stgfreq` module.
 
 The format of CVG files is space-separated, of the form:
@@ -66,18 +66,18 @@ class CVGReadError(IOError):
 
 
 class CvgFileInfo:
-    '''A simple class to store info about what fields map to what 
+    '''A simple class to store info about what fields map to what
      convergence files. Currently implicit is the name of the Field,
      this is usually handled by storing CvgFileInfos in a dictionary,
      with the keys being Field names.
-     
+
      .. attribute:: filename
 
         The filename (as a string) that the cvg info is stored in.
 
      .. attribute:: dofColMap
 
-        A dictionary mapping for each degree of freedom of a field, the 
+        A dictionary mapping for each degree of freedom of a field, the
         column number it is stored in in the cvg file.
      '''
 
@@ -87,9 +87,9 @@ class CvgFileInfo:
 
 
 def genConvergenceFileIndex(path):
-    '''Returns a dictionary relating field names to :class:`CvgFileInfo` 
+    '''Returns a dictionary relating field names to :class:`CvgFileInfo`
     classes, after reading all .cvg files in the given path.'''
-    
+
     # get list of all convergence files
     cvgFiles=glob.glob(os.path.join(path, "*."+CVG_EXT))
 
@@ -131,7 +131,7 @@ def getCheckStepsRange(cvgFile, steps):
 
     "steps" can be of the format:
 
-    * The string "all", meaning a list from 0 to the last step number will 
+    * The string "all", meaning a list from 0 to the last step number will
       be returned;
     * The string "last", meaning that a list containing only the last step
       number in the cvgFile will be returned;
@@ -153,7 +153,7 @@ def getCheckStepsRange(cvgFile, steps):
         if len(steps) != 2 or type(steps[0]) != int or type(steps[1]) != int:
             raise TypeError("If arg 'steps' is a tuple, should be only two"\
                 " numbers.")
-                
+
         start,end = steps
 
         if start < 0:
@@ -168,7 +168,7 @@ def getCheckStepsRange(cvgFile, steps):
         raise TypeError("arg 'steps' must be either 'all', 'last', or a tuple"\
             " of start and ending numbers")
 
-    return stepRange        
+    return stepRange
 
 def _getLineValues(cvgFilename, stepNum):
     """Get all the values in the given step number in the filename given by
@@ -177,7 +177,7 @@ def _getLineValues(cvgFilename, stepNum):
     lineNum = stepNum*2+1
     # The linecache.getline function indexes file lines from 1, hence
     # adjustment below
-    line = linecache.getline(cvgFilename, lineNum+1) 
+    line = linecache.getline(cvgFilename, lineNum+1)
     if line == "":
         raise IOError("Couldn't read step %d (line %d) from '%s'" %
             (stepNum, lineNum, cvgFilename))
@@ -209,7 +209,7 @@ def getDofErrorsForStep(cvgFileInfo, stepNum):
                 % (colIndex, cvgFileInfo.filename))
         else:
             dofErrorsForStep.append(dofError)
-    
+
     return dofErrorsForStep
 
 
@@ -229,7 +229,7 @@ def getRes(cvgFilename, steps='all'):
         for stepNum in stepRange:
             res = _getLineValues(cvgFilename, stepNum)[0]
             resResult.append(res)
-            
+
     cvgFile.close()
     return resResult
 
@@ -259,13 +259,13 @@ def getDofErrors_ByDof(cvgFileInfo, steps='all'):
             dofErrorsStep = getDofErrorsForStep(cvgFileInfo, stepNum)
             for dofI in range(numDofs):
                 dofErrors[dofI].append(dofErrorsStep[dofI])
-            
+
     cvgFile.close()
     return dofErrors
 
 
 def getDofErrors_ByStep(cvgFileInfo, steps='all'):
-    """For a given :class:`CvgFileInfo`, return the errors in the 
+    """For a given :class:`CvgFileInfo`, return the errors in the
     cvgFileInfo's specified file - for the timestep range specified by
     `steps`, indexed primarily by Timestep.
     The `steps` arg can be either 'all' (for all timesteps), 'last',
@@ -286,6 +286,6 @@ def getDofErrors_ByStep(cvgFileInfo, steps='all'):
         for stepNum in stepRange:
             dofErrorsStep = getDofErrorsForStep(cvgFileInfo, stepNum)
             dofErrors.append(dofErrorsStep)
-            
+
     cvgFile.close()
     return dofErrors

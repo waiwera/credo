@@ -1,8 +1,8 @@
 ##  Copyright (C), 2010, Monash University
 ##  Copyright (C), 2010, Victorian Partnership for Advanced Computing (VPAC)
-##  
+##
 ##  This file is part of the CREDO library.
-##  Developed as part of the Simulation, Analysis, Modelling program of 
+##  Developed as part of the Simulation, Analysis, Modelling program of
 ##  AuScope Limited, and funded by the Australian Federal Government's
 ##  National Collaborative Research Infrastructure Strategy (NCRIS) program.
 ##
@@ -33,20 +33,20 @@ from .imageCompTC import ImageCompTC
 
 class ImageReferenceTest(api.SingleModelSysTest):
     '''An image comparison against Reference System test.
-    To do this, creates a set of several 
+    To do this, creates a set of several
     :class:`~credo.systest.imageCompTC.ImageCompTC` Test Components for
     each image you wish to test.
 
     Optional contructor keywords:
-    
+
     * runSteps: Number of steps the model should be run for.
     * compareEvery: Number of steps the model should be run for before
        comparing images.
     * defImageTol: Default tolerance to use when comparing images (as a tuple
        as required by :func:`credo.analysis.images.compare`).
-    * imageTols: If provided, must be a dictionary mapping image names to 
+    * imageTols: If provided, must be a dictionary mapping image names to
        tolerances to use when checking.
-    * expPathPrefix: Directory to look for expected image file runs.   
+    * expPathPrefix: Directory to look for expected image file runs.
     '''
 
     description = '''Runs a Model for a set number of timesteps,
@@ -59,7 +59,7 @@ class ImageReferenceTest(api.SingleModelSysTest):
     def __init__(self, inputFiles, outputPathBase,
             imagesToTest,
             basePath=None, nproc=1, timeout=None,
-            paramOverrides=None, solverOpts=None, nameSuffix=None, 
+            paramOverrides=None, solverOpts=None, nameSuffix=None,
             imageTols=None, expPathPrefix="expected",
             runSteps=20, compareEvery=1, defImageTol=(1e-1, 5e-2)):
         api.SingleModelSysTest.__init__(self,"ImageReference",
@@ -122,14 +122,14 @@ class ImageReferenceTest(api.SingleModelSysTest):
 
         For this test, just a single model run is needed, to run
         the model and compare against the reference solution."""
-        mRun = self._createDefaultModelRun(self.testName, 
+        mRun = self._createDefaultModelRun(self.testName,
             os.path.join(self.outputPathBase, "testRun"))
         mRun.simParams = SimParams(nsteps=self.runSteps,
             cpevery=0, dumpevery=self.compareEvery)
         self.mSuite.addRun(mRun, "Run the model, and check images against "\
             "previously generated reference images.")
 
-    def configureTestComps(self):    
+    def configureTestComps(self):
         assert len(self.mSuite.runs) == 1
         self.setupEmptyTestCompsList()
         self.testComps[0] = self.imageComps

@@ -1,8 +1,8 @@
 ##  Copyright (C), 2010, Monash University
 ##  Copyright (C), 2010, Victorian Partnership for Advanced Computing (VPAC)
-##  
+##
 ##  This file is part of the CREDO library.
-##  Developed as part of the Simulation, Analysis, Modelling program of 
+##  Developed as part of the Simulation, Analysis, Modelling program of
 ##  AuScope Limited, and funded by the Australian Federal Government's
 ##  National Collaborative Research Infrastructure Strategy (NCRIS) program.
 ##
@@ -54,7 +54,182 @@ DEF_NPROC = 1
 DEF_MAX_RUN_TIME = None
 DEF_POLL_INTERVAL = 1
 
-class ModelRun:
+class ModelRun(object):
+    """ An abstract class that defines the common interface of various model
+    runs (for different simultors).
+
+    JobRunner only uses the following attributes:
+        .name .basePath .outputPath .jobParams .logPath
+        .getModelRunCommand() .getStdOutFilename() .getStdErrFilename()
+        .checkValidRunConfig() .preRunPreparation() .postRunCleanup()
+        .createModelResult()
+
+
+    Key attributes:
+
+    .. attribute:: name
+
+       name of the modelRun.
+
+    .. attribute:: basePath
+
+       The path from which all paths to model input files (on the local machine)
+       are specified relative to, and which the job will run in (if running
+       on local machine).
+
+    .. attribute:: outputPath
+
+       Output path that all model results will be saved to (is passed
+       through to StGermain).
+
+    .. attribute:: logPath
+
+       Path that log files of the run will be saved to.
+
+    .. attribute:: jobParams
+
+       A :class:`.JobParams` class, to record options needed to define
+       how the model should be actually run (eg number of procs to use).
+
+    """
+    def __init__(self, name, basePath=None, outputPath=None, logPath=None):
+        self.name = name
+        if basePath is None:
+            # Default to the path of the calling script
+            self.basePath = credo.utils.getCallingPath(1)
+        else:
+            self.basePath = basePath
+        self.basePath = os.path.abspath(self.basePath)
+        if outputPath is None:
+            # Sensible default is output/name
+            self.outputPath = os.path.join("output", name)
+        else:
+            self.outputPath = outputPath
+        if logPath is None:
+            self.logPath = self.outputPath
+        else:
+            self.logPath = logPath
+        self.jobParams = JobParams()
+
+    def getModelRunCommand(self, extraCmdLineOpts=None):
+        """ Construct the command needed to run that model, and return as a
+        string. This is mainly called by JobRunner.
+
+        :keyword extraCmdLineOpts: any extra command line options, to be
+          passed straight through to the model.
+
+        JobRunner may add mpiexec or profiler related commands in the front.
+        JobRunner may also pass additional commandline options that belongs to
+        the simulator.
+
+        NOTE: This command is executed by using subprocess.Popen(), with
+        shell=False. (shell=True has security risk and does not work with
+        mpiexec in cygwin etc.) Therefore shell features such as redirection "<"
+        etc. cannot be used. If required, user can write a file with name
+        .getStdInFilename(), and it will be piped in as stdin with Popen().
+        """
+        raise NotImplementedError(".getModelRunCommand()")
+
+    def getStdInFilename(self):
+        """ If the simulator needs input while executing, user (Implemented in
+        ModelRun, often .preRunPreparation) can choose to write a file that
+        provides input.  This file is in the .basePath because it's part of the
+        model's input.
+
+        TODO: think again, currently ModelRun obj does not really know if it
+        uses the StdIn or not.  Only during .submitRun() it would check if the
+        file exists, if so use it as stdin.
+        """
+        return os.path.join(self.basePath, "%s.stdin" % self.name)
+
+    def getStdOutFilename(self):
+        """Get the name of the file this Model's stdout needs to/has been
+        saved to."""
+        return os.path.join(self.outputPath, "%s.stdout" % self.name)
+
+    def getStdErrFilename(self):
+        """Get the name of the file this Model's stderr needs to/has been
+        saved to."""
+        return os.path.join(self.outputPath, "%s.stderr" % self.name)
+
+    def checkValidRunConfig(self):
+        pass
+
+    def preRunPreparation(self):
+        pass
+
+    def postRunCleanup(self):
+        pass
+
+    def createModelResult(self):
+        """ This is to be called by JobRunner to generate ModelResult.  It
+        returns a ModelResult object that matches the ModelRun object.
+        """
+        raise NotImplementedError(".createModelResult()")
+
+    def writeInfoXML(self, writePath="", filename="", update=False,
+            prettyPrint=True):
+        """Writes an XML recording the key details of this ModelRun, in CREDO
+        format - useful for benchmarking etc.
+
+        `writePath` and `filename` can be specified, if not they will use
+        default values (the outputPath of the model, and the value returned by
+        :attr:`defaultModelRunFilename()`, respectively)."""
+        def defaultModelRunFilename():
+            """Calculates and returns a default filename for the ModelRun's XML
+            record filename."""
+            return 'ModelRun-'+self.name+'.xml'
+
+        if filename == "":
+            filename = defaultModelRunFilename()
+        if writePath == "":
+            writePath=os.path.join(self.basePath, self.outputPath)
+        writePath+=os.sep
+
+        # create XML document
+        # TODO: [Refactor] modified this from 'StgModelRun', check if okay
+        root = etree.Element(self.__class__.__name__)
+        xmlDoc = etree.ElementTree(root)
+        # Write key entries:
+        # Model description (grab from XML file perhaps)
+        name = etree.SubElement(root, 'name')
+        name.text = self.name
+        # filesList = etree.SubElement(root, 'modelInputFiles')
+        # for xmlFilename in self.modelInputFiles:
+        #     modFile = etree.SubElement(filesList, 'inputFile')
+        #     modFile.text = xmlFilename
+        etree.SubElement(root, 'basePath').text = self.basePath
+        etree.SubElement(root, 'outputPath').text = self.outputPath
+        # if self.cpReadPath:
+        #     etree.SubElement(root, 'cpReadPath').text = self.cpReadPath
+        self.jobParams.writeInfoXML(root)
+        # if not self.simParams:
+        #     # In this case:
+        #     # We will write a copy of the simParams read from actual model
+        #     # XMLs, plus the over-ride parameters)
+        #     simParams = self.getSimParams()
+        #     simParams.writeInfoXML(root)
+        # else:
+        #     self.simParams.writeInfoXML(root)
+
+        # writeParamOverridesInfoXML(self.paramOverrides, root)
+        # writeSolverOptsInfoXML(self.solverOpts, root)
+
+        # analysisNode = etree.SubElement(root, 'analysisOps')
+        # for opName, analysisOp in self.analysisOps.iteritems():
+        #     analysisOp.writeInfoXML(analysisNode)
+        # TODO : write info on cpFields?
+        # Write the file
+        if not os.path.exists(writePath):
+            os.makedirs(writePath)
+        outFile = open(writePath+filename, 'w')
+        writeXMLDoc(xmlDoc, outFile, prettyPrint)
+        outFile.close()
+        return writePath+filename
+
+
+
+class UnderworldModelRun(ModelRun):
     """A class to keep records about a StgDomain/Underworld Model Run,
     including access to the underlying XML of the actual model.
 
@@ -63,23 +238,23 @@ class ModelRun:
 
     The basic usage pattern of this class is that a ModelRun needs to be
     constructed and configured to specify the basic XML files defining
-    a StGermain Model, but also any customisations and 
+    a StGermain Model, but also any customisations and
     :class:`credo.analysis.api.AnalysisOperation` classes attached to be
     performed.
 
-    After the model is run (see :mod:`credo.jobrunner`), 
+    After the model is run (see :mod:`credo.jobrunner`),
     a :class:`~credo.modelresult.ModelResult` will be produced as a record of
     the run and for further analysis.
 
     Examples of using the ModelRun are documented in CREDO, see
     :ref:`credo-examples-analysis`.
-    
+
     Key attributes:
-    
+
     .. attribute:: name
-    
+
        name of the modelRun.
-       
+
     .. attribute:: basePath
 
        The path from which all paths to model input files (on the local machine)
@@ -91,20 +266,21 @@ class ModelRun:
        'Input files' that comprise the XML model that will be run.
 
     .. attribute:: outputPath
-    
+
        Output path that all model results will be saved to (is passed
        through to StGermain).
 
     .. attribute:: cpReadPath
-    
+    # TODO:[ Refactor] remove, StGermain specific (maybe)
+
        Path that checkpoints are read from (is passed through to StGermain).
 
     .. attribute:: logPath
-    
+
        Path that log files of the run will be saved to.
 
     .. attribute:: jobParams
-    
+
        A :class:`.JobParams` class, to record options needed to define
        how the model should be actually run (eg number of procs to use).
 
@@ -121,16 +297,16 @@ class ModelRun:
           :attr:`.paramOverrides` list. At both construction-time and
           just before the model is run, a check is performed that this
           has not occurred.
-    
+
     .. attribute:: solverOpts
 
-       The name of the file storing options passed through to the 
+       The name of the file storing options passed through to the
        `PETSc <http://www.mcs.anl.gov/petsc>`_
        numerical solver framework. Depending on the Model being solver,
        these can have
        an important role determining the performance and numerical
        approach taken. See the 'System Routines' section of
-       `PETSc 2.0.16 Changes log 
+       `PETSc 2.0.16 Changes log
        <http://www.mcs.anl.gov/petsc/petsc-2/documentation/changes/2016.html>`_.
        This option file is separate to the :attr:`~paramOverrides` attribute,
        although the options passed through to PETSc may be used to further
@@ -159,19 +335,22 @@ class ModelRun:
           list. In future this approach may be refactored.
 
     .. attribute:: analysisOps
+    # TODO:[ Refactor] remove, StGermain specific
 
        A list of :class:`credo.analysis.api.AnalysisOperation` that are
-       associated with this ModelRun, and will be applied when the 
+       associated with this ModelRun, and will be applied when the
        model is actually run (which involves writing and submitting
        additional StGermain XML).
 
     .. attribute:: analysisXML
+    # TODO:[ Refactor] remove, StGermain specific
 
        Initally `None`, this will be populated with the filename of the
        additional XML document written containing parameter overrides,
        and requested analysis operations.
 
     .. attribute:: cpFields
+    # TODO:[ Refactor] remove, StGermain specific
 
        A list of fields that the user wishes to checkpoint in the run.
        Defaults to [], in which case the list (if any) in the model
@@ -201,11 +380,11 @@ class ModelRun:
             self.basePath = credo.utils.getCallingPath(1)
         else:
             self.basePath = basePath
-        self.basePath = os.path.abspath(self.basePath)    
+        self.basePath = os.path.abspath(self.basePath)
         self.cpReadPath = self.setPath(cpReadPath)
         if logPath is None:
             self.logPath = self.outputPath
-        else:    
+        else:
             self.logPath = self.setPath(logPath)
         self.jobParams = JobParams(nproc=nproc)
         self.simParams = simParams
@@ -247,7 +426,7 @@ class ModelRun:
                 " exist relative to base path %s." % \
                 (self.solverOpts, self.basePath))
 
-    def preRunPreparation(self):    
+    def preRunPreparation(self):
         """Do any preparation necessary before the run itself proceeds."""
         # Do necessary pathing preparation
         self.prepareOutputLogDirs()
@@ -263,8 +442,8 @@ class ModelRun:
             absXMLPaths=False):
         """Given a model run, construct the command needed to run that model,
         and return as a string.
-        
-        :keyword extraCmdLineOpts: any extra command line options, to be 
+
+        :keyword extraCmdLineOpts: any extra command line options, to be
           passed straight through to the model.
         :keyword absXMLPaths: if True, converts any Model XML input files to
           absolute paths first in cmd line."""
@@ -280,7 +459,7 @@ class ModelRun:
         if self.analysisXML:
             if absXMLPaths == False:
                 stgRunStr += " " + self.analysisXML
-            else:    
+            else:
                 stgRunStr += " " + os.path.abspath(self.analysisXML)
 
         stgRunStr += " " + credo.modelrun.getParamOverridesAsStr(
@@ -293,14 +472,14 @@ class ModelRun:
 
     def postRunCleanup(self):
         """function designed to be run after a modelRun has completed, and will
-        do any post-run cleanup to get ready for analysis - e.g. moving files 
+        do any post-run cleanup to get ready for analysis - e.g. moving files
         into the output directory that were created to configure the run and
         need to be kept."""
         absOutputPath = os.path.join(self.basePath, self.outputPath)
         if not os.path.exists(absOutputPath):
             os.makedirs(absOutputPath)
 
-        shutil.move(self.analysisXML, 
+        shutil.move(self.analysisXML,
             os.path.join(absOutputPath, self.analysisXML))
 
         # Keep a record of any solver options used.
@@ -310,9 +489,9 @@ class ModelRun:
             shutil.copy(self.solverOpts, soCopyPath)
 
         # Allow all analysis operators to do any post-run cleanup
-        for opName, analysisOp in self.analysisOps.iteritems(): 
+        for opName, analysisOp in self.analysisOps.iteritems():
             analysisOp.postRun(self, self.basePath)
-    
+
         try:
             self.customPostRunCleanup(self)
         except AttributeError:
@@ -334,7 +513,7 @@ class ModelRun:
         absLogPath = os.path.join(self.basePath, self.logPath)
         if not os.path.exists(absLogPath):
             os.makedirs(absLogPath)
-    
+
     def getStdOutFilename(self):
         """Get the name of the file this Model's stdout needs to/has been
         saved to."""
@@ -370,10 +549,10 @@ class ModelRun:
             prettyPrint=True):
         """Writes an XML recording the key details of this ModelRun, in CREDO
         format - useful for benchmarking etc.
-        
+
         `writePath` and `filename` can be specified, if not they will use
         default values (the outputPath of the model, and the value returned by
-        :attr:`defaultModelRunFilename()`, respectively)."""    
+        :attr:`defaultModelRunFilename()`, respectively)."""
         if filename == "":
             filename = self.defaultModelRunFilename()
         if writePath == "":
@@ -404,7 +583,7 @@ class ModelRun:
             simParams.writeInfoXML(root)
         else:
             self.simParams.writeInfoXML(root)
-        
+
         writeParamOverridesInfoXML(self.paramOverrides, root)
         writeSolverOptsInfoXML(self.solverOpts, root)
 
@@ -430,7 +609,7 @@ class ModelRun:
         * Over-ridden simulation parameters that have been specified
           as members of the ModelRun itself, such as cpReadPath, and cpFields;
         * Over-ridden simulation parameters on this ModelRun's SimParams
-          attribute (if it exists);  
+          attribute (if it exists);
         * Requested analysis operations that've been added to the ModelRun,
           as specified in the self.analysisOps member list.
 
@@ -438,7 +617,7 @@ class ModelRun:
            Remember that as well as those overrides written to this XML,
            the user can over-ride particular parameters in the ModelRun via the
            command line by setting the self.paramOverrides member dictionary.
-        """ 
+        """
         xmlDoc, root = stgxml.createNewStgDataDoc()
         # Write key entries:
         stgxml.writeParam(root, 'outputPath', self.outputPath, mt='replace')
@@ -467,7 +646,7 @@ class ModelRun:
         stgxml.writeStgDataDocToFile(xmlDoc, filename)
         self.analysisXML = filename
         return filename
-    
+
     def genFlattenedXML(self, cmdLineOverrides=None, flatFilename=None):
         self.analysisXMLGen()
         xmls = self.modelInputFiles + [self.analysisXML]
@@ -482,7 +661,7 @@ class ModelRun:
 class JobParams(dict):
     """Small class, to record parameters that specify job control of a ModelRun,
     such as numbers of processors used.
-    
+
     All attributes are stored as regular dictionary parameters, to facilitate
     easy updating.
     """
@@ -507,7 +686,7 @@ class JobParams(dict):
         # for writing Python dicts to my preferred XML system
         jpNode = etree.SubElement(parentNode, 'jobParams')
         self._writeInfoXML_Recurse(jpNode, self)
-    
+
     def _writeInfoXML_Recurse(self, baseNode, paramDict):
         for kw, value in paramDict.iteritems():
             if isinstance(value, dict):
@@ -515,14 +694,14 @@ class JobParams(dict):
                 #Write a hierarchical sub-dict
                 dictNode = etree.SubElement(baseNode, kw)
                 self._writeInfoXML_Recurse(dictNode, subDict)
-            else:    
+            else:
                 etree.SubElement(baseNode, kw).text = str(value)
 
 
 class StgParamInfo:
     '''A simple Class that keeps track of the type of a StgParam, and it's full
     name.
-    
+
     .. attribute:: stgName
 
        The name of this parameter used in the StGermain dictionary and Model
@@ -531,7 +710,7 @@ class StgParamInfo:
     .. attribute:: pType
 
        Type of this parameter (will be used in casting etc).
-       
+
     .. attribute:: defVal
 
        Default value of the parameter.
@@ -563,9 +742,9 @@ class SimParams:
 
      After construction, it will make all these parameters directly available
      as attributes of the SimParams object.
-     
+
      .. attribute:: stgParamInfos
-     
+
         A dictionary of :class:`.StgParamInfo`, specifying which parameters
         are actually controlled by this class. The keys are the short-hand
         names which can be used to refer to them, as well as Stgermain names."""
@@ -588,25 +767,25 @@ class SimParams:
             if param in self.stgParamInfos.keys():
                 paramFound = True
                 self.setParam(param, val)
-            else:    
+            else:
                 for paramName, stgParamInfo in self.stgParamInfos.iteritems():
                     if param == stgParamInfo.stgName:
                         paramFound = True
                         self.setParam(paramName, val)
                         break
-                    
-            if paramFound == False:        
+
+            if paramFound == False:
                 valueErrorStr = "provided Sim Parameter '%s' not in allowed"\
                     " list of parameters to set, which is %s" %\
                     (param, self.stgParamInfos.keys())
                 raise ValueError(valueErrorStr)
 
-    def setParam(self, paramName, val):    
+    def setParam(self, paramName, val):
         assert paramName in self.stgParamInfos.keys()
         self.__dict__[paramName] = val
         self.stgParamInfos[paramName].checkType(val)
 
-    def getParam(self, paramName):    
+    def getParam(self, paramName):
         """Get the value of a parameter with given paramName."""
         return self.__dict__[paramName]
 
@@ -617,7 +796,7 @@ class SimParams:
             raise ValueError("neither nsteps nor stoptime set")
 
     def checkNoDuplicates(self, paramOverridesList):
-        """Function to check there are no duplicates between sim param 
+        """Function to check there are no duplicates between sim param
         overrides set, and cmd-line parameter overrides."""
 
         stgParamNamesSet = [simPInfo.stgName for simPInfo in \
@@ -646,7 +825,7 @@ class SimParams:
         for param in self.stgParamInfos:
             assert(param in self.__dict__)
             etree.SubElement(spNode, param).text = str(self.__dict__[param])
-    
+
     def writeStgDataXML(self, xmlNode):
         '''Writes the parameters of this class as parameters in a StGermain
          XML file'''
@@ -657,7 +836,7 @@ class SimParams:
                     mt='replace')
 
     def readFromStgXML(self, inputFilesList, basePath, cmdLineOverrides):
-        '''Reads all the parameters of this class from a given StGermain 
+        '''Reads all the parameters of this class from a given StGermain
         set of input files'''
         absInputFiles = stgpath.convertLocalXMLFilesToAbsPaths(
             inputFilesList, basePath)
@@ -705,8 +884,8 @@ def getParamOverridesAsStr(paramOverrides):
     return paramOverridesStr
 
 
-def writeParamOverridesInfoXML(paramOverrides, parentNode):    
-    """Writes a record, under the given parentNode, of all the 
+def writeParamOverridesInfoXML(paramOverrides, parentNode):
+    """Writes a record, under the given parentNode, of all the
     parameter overrides specified in the list paramOverrides."""
     paramOversNode = etree.SubElement(parentNode, 'paramOverrides')
     for modelPath, paramVal in paramOverrides.iteritems():
@@ -716,7 +895,7 @@ def writeParamOverridesInfoXML(paramOverrides, parentNode):
 
 #TODO: does this solverOpts stuff need to be a class?
 def writeSolverOptsInfoXML(solverOpts, parentNode):
-    """Writes a record, under the given parentNode, of the 
+    """Writes a record, under the given parentNode, of the
     solver options file used."""
     solverOptsNode = etree.SubElement(parentNode, 'solverOpts')
     if solverOpts is not None:

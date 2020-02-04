@@ -1,8 +1,8 @@
 ##  Copyright (C), 2010, Monash University
 ##  Copyright (C), 2010, Victorian Partnership for Advanced Computing (VPAC)
-##  
+##
 ##  This file is part of the CREDO library.
-##  Developed as part of the Simulation, Analysis, Modelling program of 
+##  Developed as part of the Simulation, Analysis, Modelling program of
 ##  AuScope Limited, and funded by the Australian Federal Government's
 ##  National Collaborative Research Infrastructure Strategy (NCRIS) program.
 ##
@@ -36,7 +36,7 @@ from credo.modelsuite import ModelSuite
 from credo.modelrun import SimParams
 import credo.jobrunner
 from .api import SingleModelSysTest, CREDO_PASS, CREDO_FAIL, getStdTestNameBasic
-from .fieldWithinTolTC import FieldWithinTolTC
+from .singleRunWithinTolTC import FieldWithinTolTC
 
 DEF_TEST_FIELDS = ['VelocityField','PressureField']
 
@@ -61,7 +61,7 @@ class ReferenceTest(SingleModelSysTest):
     * fieldTols: a dictionary of tolerances to use when testing particular
       fields, rather than the default tolerance as set in the defFieldTol
       argument.
-       
+
     .. attribute:: fTestName
 
        Standard name to use for this test's field comparison TestComponent
@@ -78,7 +78,7 @@ class ReferenceTest(SingleModelSysTest):
 
     def __init__(self, inputFiles, outputPathBase,
             basePath=None, nproc=1, timeout=None,
-            paramOverrides=None, solverOpts=None, nameSuffix=None, 
+            paramOverrides=None, solverOpts=None, nameSuffix=None,
             fieldsToTest = None, runSteps=20, defFieldTol=1e-2, fieldTols=None,
             expPathPrefix="expected"):
         SingleModelSysTest.__init__(self, "Reference",
@@ -91,7 +91,7 @@ class ReferenceTest(SingleModelSysTest):
         if fieldsToTest == None:
             # Set default fields to test.
             self.fieldsToTest = DEF_TEST_FIELDS
-        else:    
+        else:
             self.fieldsToTest = fieldsToTest
         self.runSteps = runSteps
         self.fTests = FieldWithinTolTC(fieldsToTest=self.fieldsToTest,
@@ -102,7 +102,10 @@ class ReferenceTest(SingleModelSysTest):
             testTimestep=self.runSteps)
 
     def regenerateFixture(self, jobRunner):
-        '''Do a run to create the reference solution to use.'''
+        '''Do a run to create the reference solution to use.
+
+        .. note:: by default, this will save checkpoint for the entire step,
+           not just fields to be checkpointed against.'''
 
         print "Running the model to create a reference solution after %d"\
             " steps, and saving in dir '%s'" % \
@@ -137,7 +140,7 @@ class ReferenceTest(SingleModelSysTest):
         self.testComps[0][self.fTestName] = self.fTests
 
     def checkModelResultsValid(self, resultsSet):
-        """See base class 
+        """See base class
         :meth:`~credo.systest.api.SysTest.checkModelResultsValid`."""
         # TODO check it's a result instance
         # check number of results is correct
@@ -152,4 +155,4 @@ class ReferenceTest(SingleModelSysTest):
         fieldsToTestNode = etree.SubElement(specNode, 'fieldsToTest')
         for fieldName in self.fieldsToTest:
             fieldsNode = etree.SubElement(fieldsToTestNode, 'field',
-                name=fieldName)    
+                name=fieldName)

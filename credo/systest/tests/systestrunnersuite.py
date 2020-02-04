@@ -1,8 +1,8 @@
 ##  Copyright (C), 2010, Monash University
 ##  Copyright (C), 2010, Victorian Partnership for Advanced Computing (VPAC)
-##  
+##
 ##  This file is part of the CREDO library.
-##  Developed as part of the Simulation, Analysis, Modelling program of 
+##  Developed as part of the Simulation, Analysis, Modelling program of
 ##  AuScope Limited, and funded by the Australian Federal Government's
 ##  National Collaborative Research Infrastructure Strategy (NCRIS) program.
 ##
@@ -62,18 +62,18 @@ class SysTestRunnerTestCase(unittest.TestCase):
         self.assertEqual(len(testResults), 2)
         self.assertEqual(testResults[0].statusStr, CREDO_PASS.statusStr)
         self.assertEqual(testResults[1].statusStr, CREDO_FAIL.statusStr)
-    
+
     def test_runSuite(self):
-        skelSuite = SysTestSuite("StgFEM", "RegressionTests", 
+        skelSuite = SysTestSuite("StgFEM", "RegressionTests",
             sysTests=[self.skelTest1, self.skelTest2])
-        testResults = self.stRunner.runSuite(skelSuite, 
+        testResults = self.stRunner.runSuite(skelSuite,
             outputSummaryDir="output/testRunSuite")
         self.assertEqual(len(testResults), 2)
         self.assertEqual(testResults[0].statusStr, CREDO_PASS.statusStr)
         self.assertEqual(testResults[1].statusStr, CREDO_FAIL.statusStr)
 
     def test_runSuite_withSubs(self):
-        skelSuite = SysTestSuite("StgFEM", "RegressionTests", 
+        skelSuite = SysTestSuite("StgFEM", "RegressionTests",
             sysTests=[self.skelTest1, self.skelTest2])
         subSuite = SysTestSuite("StgFEM", "RegressionTests-sub")
         skelSuite.addSubSuite(subSuite)
@@ -101,7 +101,7 @@ class SysTestRunnerTestCase(unittest.TestCase):
         self.assertEqual(testResults[3].statusStr, CREDO_ERROR.statusStr)
 
     def test_runSuites(self):
-        suite1 = SysTestSuite("StgFEM", "RegressionTests", 
+        suite1 = SysTestSuite("StgFEM", "RegressionTests",
             sysTests=[self.skelTest1, self.skelTest2])
         subSuite = SysTestSuite("StgFEM", "RegressionTests-sub")
         suite1.addSubSuite(subSuite)

@@ -1,8 +1,8 @@
 ##  Copyright (C), 2010, Monash University
 ##  Copyright (C), 2010, Victorian Partnership for Advanced Computing (VPAC)
-##  
+##
 ##  This file is part of the CREDO library.
-##  Developed as part of the Simulation, Analysis, Modelling program of 
+##  Developed as part of the Simulation, Analysis, Modelling program of
 ##  AuScope Limited, and funded by the Australian Federal Government's
 ##  National Collaborative Research Infrastructure Strategy (NCRIS) program.
 ##
@@ -27,7 +27,7 @@ import shutil
 import tempfile
 import unittest
 
-from credo.io import stgcvg 
+from credo.io import stgcvg
 from credo.io.stgcvg import CvgFileInfo
 
 class StgCVGTestCase(unittest.TestCase):

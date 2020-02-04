@@ -1,8 +1,8 @@
 ##  Copyright (C), 2010, Monash University
 ##  Copyright (C), 2010, Victorian Partnership for Advanced Computing (VPAC)
-##  
+##
 ##  This file is part of the CREDO library.
-##  Developed as part of the Simulation, Analysis, Modelling program of 
+##  Developed as part of the Simulation, Analysis, Modelling program of
 ##  AuScope Limited, and funded by the Australian Federal Government's
 ##  National Collaborative Research Infrastructure Strategy (NCRIS) program.
 ##
@@ -35,7 +35,7 @@ from credo.systest.api import *
 
 # Relevant to the XML Results. Designed to be compatible with the tags used
 #  by the Python unittest-xml-reporting package
-#  (http://pypi.python.org/pypi/unittest-xml-reporting), which are very 
+#  (http://pypi.python.org/pypi/unittest-xml-reporting), which are very
 #  similar to those used by Java's Ant.
 XML_RESULT_TAG_BASENODE = 'CREDO_SuiteResultSummary'
 XML_RESULT_TAG_SUITE = 'testsuite'
@@ -65,14 +65,14 @@ class SysTestRunner:
 
     def runSingleTest(self, sysTest, **kwargs):
         """Convenience function to setup and run a single SysTest.
-        .. note:: all keywords appopriate to 
+        .. note:: all keywords appopriate to
            :meth:`credo.systest.api.SysTest.runTest()` are passed
            through directly in the kwargs parameter.
-        """   
+        """
         sysTest.setupTest()
         jobRunner = credo.jobrunner.defaultRunner()
         testRes, mResults = sysTest.runTest(jobRunner, **kwargs)
-        return testRes   
+        return testRes
 
     def runTests(self, sysTests, projName=None, suiteName=None,
             printSummary=True, **kwargs):
@@ -81,10 +81,10 @@ class SysTestRunner:
 
         :keyword projName: the name of the 'project' to report these tests as
           belonging to.
-        :keyword suiteName: the name of the suite these tests should be 
+        :keyword suiteName: the name of the suite these tests should be
           reported as belonging to.
-        
-        .. note:: all keywords appopriate to 
+
+        .. note:: all keywords appopriate to
            :meth:`credo.systest.api.SysTest.runTest()` are passed
            through directly in the kwargs parameter.
         """
@@ -100,7 +100,7 @@ class SysTestRunner:
         if printSummary:
             self.printResultsSummary(sysTests, results, projName, suiteName)
         return results
-    
+
     def runSuite(self, suite,
         runSubSuites=True, subSuiteMode=False,
         outputSummaryDir="testLogs", **kwargs):
@@ -108,12 +108,12 @@ class SysTestRunner:
         The suite may contain sub-suites, which will also be run by default.
 
         :returns: a list of all results of the suite, and its sub-suites
-        
+
         .. note:: Currently, just returns a flat list of results, containing
            results of all tests and all sub-suites. Won't change this into
            a hierarchy of results by sub-suite, unless really necessary.
-        
-        .. note:: all keywords appopriate to 
+
+        .. note:: all keywords appopriate to
            :meth:`credo.systest.api.SysTest.runTest()` are passed
            through directly in the kwargs parameter.
         """
@@ -130,7 +130,7 @@ class SysTestRunner:
         suiteNode = self._createSuiteNode(suite)
         suiteXMLDoc = etree.ElementTree(suiteNode)
         if testTotal > 0:
-            results += self.runTests(suite.sysTests, 
+            results += self.runTests(suite.sysTests,
                 projName=suite.projectName,
                 suiteName=suite.suiteName, **kwargs)
         # Even if no results, call func below so we get at least empty totals.
@@ -155,7 +155,7 @@ class SysTestRunner:
             self.printSuiteTotalsShortSummary(results, suite.projectName,
                 suite.suiteName)
         return results
-    
+
     def runSuites(self, testSuites, outputSummaryDir="testLogs", **kwargs):
         """Runs a list of suites, and prints a big summary at the end.
 
@@ -165,8 +165,8 @@ class SysTestRunner:
 
         :returns: a list containing lists of results for each suite (results
           list in the same order as testSuites input argument).
-        
-        .. note:: all keywords appopriate to 
+
+        .. note:: all keywords appopriate to
            :meth:`credo.systest.api.SysTest.runTest()` are passed
            through directly in the kwargs parameter.
         """
@@ -178,7 +178,7 @@ class SysTestRunner:
         print "-"*80
         resultsLists = []
         for suite in testSuites:
-            suiteResults = self.runSuite(suite, 
+            suiteResults = self.runSuite(suite,
                 outputSummaryDir=outputSummaryDir,
                 **kwargs)
             resultsLists.append(suiteResults)
@@ -224,7 +224,7 @@ class SysTestRunner:
             self._addSysTestInfo(suiteNode, sysTest, suiteResults[testI])
         # Currently expect sub-suite results to be written to a separate
         #  file, that'll be called separately.
-    
+
     def _addSysTestInfo(self, parentNode, sysTest, sysTestResult):
         sysTestNode = etree.SubElement(parentNode, XML_RESULT_TAG_TESTCASE)
         sysTestNode.attrib[XML_TESTCASE_ATTR_NAME] = sysTest.testName
@@ -233,7 +233,7 @@ class SysTestRunner:
         sysTestNode.attrib[XML_TESTCASE_ATTR_RECORDFILE] = sysTestResult.getRecordFile()
 
     def printSuiteResultsByProject(self, testSuites, resultsLists):
-        """Utility function to print a set of suite results out, 
+        """Utility function to print a set of suite results out,
         categorised by project, in the order that the projects first
         appear in the results."""
         projOrder, projIndices = self._buildResultsProjectIndex(testSuites)
@@ -286,7 +286,7 @@ class SysTestRunner:
         projectsOrder = []
         projectIndices = {}
         for suiteI, suite in enumerate(testSuites):
-            projName = suite.projectName    
+            projName = suite.projectName
             if projName not in projectsOrder: projectsOrder.append(projName)
 
             if projName not in projectIndices:
@@ -305,7 +305,7 @@ class SysTestRunner:
         self._printResultsLine(sumsDict)
         print "-"*80
 
-    def printResultsSummary(self, sysTests, results, 
+    def printResultsSummary(self, sysTests, results,
             projName=None, suiteName=None):
         """Print a textual summary of the results of running a set of sys
         tests."""
@@ -320,7 +320,7 @@ class SysTestRunner:
         self.printResultsDetails(sysTests, results)
         print "-"*80
 
-    def printResultsDetails(self, sysTests, results):    
+    def printResultsDetails(self, sysTests, results):
         """Prints details of which tests failed in a sub-suite."""
         sumsDict, failIndices, errorIndices = self.getResultsTotals(results)
         self._printResultsLine(sumsDict)
@@ -347,7 +347,7 @@ class SysTestRunner:
             sums[result.statusStr] += 1
             if isinstance(result, CREDO_FAIL): failIndices.append(resI)
             if isinstance(result, CREDO_ERROR): errorIndices.append(resI)
-        return sums, failIndices, errorIndices    
+        return sums, failIndices, errorIndices
 
     def _printResultsLine(self, sumsDict):
         totalResults = sum(sumsDict.values())
@@ -387,22 +387,22 @@ def getSuitesFromModules(suiteModNames):
         except:
             print "Warning: failed to import module '%s' - not adding to set"\
                 " of suites." % (modName)
-            continue    
+            continue
         try:
             suite = mod.suite()
         except AttributeError:
             print "Warning: module %s doesn't define a 'suite()' interface"\
                 " function, thus isn't usable as a CREDO suite - skipping."\
                 % (modName)
-            continue    
+            continue
         suites.append(suite)
     return suites
 
 def runSuitesFromModules(suiteModNames, **kwargs):
-    """Runs a set of System test suites, where suiteModNames is a list of 
+    """Runs a set of System test suites, where suiteModNames is a list of
     suites to import and run.
 
-    .. note:: all keywords appopriate to 
+    .. note:: all keywords appopriate to
        :meth:`credo.systest.api.SysTest.runTest()` are passed
        through directly in the kwargs parameter.
     """

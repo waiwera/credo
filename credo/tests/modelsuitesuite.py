@@ -1,8 +1,8 @@
 ##  Copyright (C), 2010, Monash University
 ##  Copyright (C), 2010, Victorian Partnership for Advanced Computing (VPAC)
-##  
+##
 ##  This file is part of the CREDO library.
-##  Developed as part of the Simulation, Analysis, Modelling program of 
+##  Developed as part of the Simulation, Analysis, Modelling program of
 ##  AuScope Limited, and funded by the Australian Federal Government's
 ##  National Collaborative Research Infrastructure Strategy (NCRIS) program.
 ##
@@ -76,7 +76,7 @@ class ModelSuiteTestCase(unittest.TestCase):
         for ii, varDict in enumerate(varDicts):
             self.assertEqual(varDict['minY'], self.yRange[ii])
             self.assertEqual(varDict['maxZ'], self.zRange[ii])
-            
+
         indicesIt = msuite.getVariantIndicesIter(self.varDict,
             msuite.product)
         varDicts = msuite.getVariantParamPathDicts(self.varDict, indicesIt)
@@ -89,7 +89,7 @@ class ModelSuiteTestCase(unittest.TestCase):
                 self.assertEqual(varDict['minY'], self.yRange[ii])
                 self.assertEqual(varDict['maxZ'], self.zRange[jj])
 
-    def test_generateRuns_product(self):        
+    def test_generateRuns_product(self):
         mSuite = ModelSuite(os.path.join("output","genSuiteTest"),
             templateMRun = self.mRun1)
         #TODO: since currently mVariants implemented as a dict, the order
@@ -104,7 +104,7 @@ class ModelSuiteTestCase(unittest.TestCase):
         # TODO: below is an experimentally-determined order - bad!
         expIndices = list(msuite.product(
             range(len(self.procRange)),
-            range(len(self.yRange)), 
+            range(len(self.yRange)),
             range(len(self.zRange))
             ))
         for ii, expIndexTuple in enumerate(expIndices):
@@ -124,7 +124,7 @@ class ModelSuiteTestCase(unittest.TestCase):
         self.assertEqual(len(mSuite.runs),
             len(self.yRange) * len(self.zRange) * len(self.procRange))
 
-    def test_generateRuns_izip(self):        
+    def test_generateRuns_izip(self):
         mSuite = ModelSuite(os.path.join("output","genSuiteTest"),
             templateMRun = self.mRun1)
         mSuite.addVariant("depthVary", self.stgI1)
@@ -145,7 +145,7 @@ class ModelSuiteTestCase(unittest.TestCase):
                     mSuite.subOutputPathGenFunc(mSuite.runs[ii],
                     mSuite.modelVariants, expIndexTuple, ii)))
 
-    def test_generateRuns_customSubdirs(self):        
+    def test_generateRuns_customSubdirs(self):
         mSuite = ModelSuite(os.path.join("output","genSuiteTest"),
             templateMRun = self.mRun1)
         mSuite.addVariant("depthVary", self.stgI1)

@@ -1,8 +1,8 @@
 ##  Copyright (C), 2010, Monash University
 ##  Copyright (C), 2010, Victorian Partnership for Advanced Computing (VPAC)
-##  
+##
 ##  This file is part of the CREDO library.
-##  Developed as part of the Simulation, Analysis, Modelling program of 
+##  Developed as part of the Simulation, Analysis, Modelling program of
 ##  AuScope Limited, and funded by the Australian Federal Government's
 ##  National Collaborative Research Infrastructure Strategy (NCRIS) program.
 ##
@@ -23,7 +23,7 @@
 
 """Core API of the :mod:`credo.systest` module.
 
-This defines the two key classes of the model, :class:`.SysTest` and 
+This defines the two key classes of the model, :class:`.SysTest` and
 :class:`.TestComponent`, from which actual examples of System tests
 or Test components need to inherit.
 """
@@ -54,11 +54,11 @@ class SysTestResult:
     .. attribute:: statusStr
 
        One-word status string summarising test result (eg 'Pass').
-    
+
     .. attribute:: _absRecordFile
 
        The absolute path of where the system test was saved to.
-    """   
+    """
 
     detailMsg = None
     statusStr = None
@@ -66,7 +66,7 @@ class SysTestResult:
 
     def __str__(self):
         return self.statusStr
-    
+
     def printDetailMsg(self):
         if self.detailMsg:
             print self.detailMsg
@@ -74,7 +74,7 @@ class SysTestResult:
     def setRecordFile(self, recordFile):
         """Save the record file: as an absolute path."""
         self._absRecordFile = os.path.abspath(recordFile)
-    
+
     def getRecordFile(self):
         return self._absRecordFile
 
@@ -92,7 +92,7 @@ class CREDO_FAIL(SysTestResult):
     def __init__(self, failMsg):
         assert type(failMsg) == str
         self.detailMsg = failMsg
-        
+
 class CREDO_ERROR(SysTestResult):
     '''Simple class to represent an CREDO error'''
     statusStr = 'Error'
@@ -153,7 +153,7 @@ def getStdOutputPath(testClass, inputFiles, testOpts):
     solverOpts = testOpts['solverOpts'] if 'solverOpts' in testOpts\
         else None
 
-    testName = getStdTestName(classStr, inputFiles, nproc, 
+    testName = getStdTestName(classStr, inputFiles, nproc,
         paramOverrides, solverOpts, nameSuffix)
     outputPath = os.path.join('output', testName)
     return outputPath
@@ -162,22 +162,22 @@ class SysTest:
     """A class for managing SysTests in CREDO. This is an abstract base
     class: you must sub-class it to create actual system test types.
 
-    The SysTest is designed to interact with the 
+    The SysTest is designed to interact with the
     :class:`~credo.systest.systestrunner.SysTestRunner` class, primarily by
     creating a :class:`~credo.modelsuite.ModelSuite` on demand to run a set
     of ModelRuns required to do the test. It will then do a check that
     the results pass an expected metric:- generally by applying one or more
     :class:`~credo.systest.api.TestComponent` classes.
-    
+
     .. attribute:: testType
 
        records the "type" of the system test, as a string (e.g. "Analytic",
        or "SciBenchmark") - for printing purposes.
-    
+
     .. attribute:: testName
 
        The name of this test, generally auto-generated from other properties.
-       
+
     .. attribute:: basePath
 
        The base path of the System test, that runs will be done relative to.
@@ -187,7 +187,7 @@ class SysTest:
        The "base" output path to store results of the test in. Results from
        individual Model Runs performed as part of running the test may also
        be stored in that directory, or in subdirectories of it.
-    
+
     .. attribute:: mSuite
 
        The suite of Models that will be run as part of the test. Initially
@@ -195,7 +195,7 @@ class SysTest:
 
     .. attribute:: nproc
 
-       Number of processors to be used for the test. See 
+       Number of processors to be used for the test. See
        :attr:`credo.modelrun.ModelRun.nproc`.
 
     .. attribute:: timeout
@@ -221,20 +221,20 @@ class SysTest:
 
        A dictionaries of :class:`.MultiRunTestComponent` classes used as
        part of performing this system test.
-    
+
     .. attribute:: generatedReports
 
        A list of the file-names of all generated reports created based on
        this benchmark.
     """
-    def __init__(self, testType, testName, basePath, outputPathBase, 
+    def __init__(self, testType, testName, basePath, outputPathBase,
             nproc=1, timeout=None):
         self.testType = testType
         self.testName = testName
         self.basePath = basePath
-        self.basePath = os.path.abspath(self.basePath) 
+        self.basePath = os.path.abspath(self.basePath)
         self.outputPathBase = outputPathBase
-        self.nproc = nproc 
+        self.nproc = nproc
         self.timeout = timeout
         ##  The modelSuite used for system testing.
         self.mSuite = None
@@ -259,10 +259,10 @@ class SysTest:
     def setupTest(self):
         self.configureSuite()
         self.configureTestComps()
-    
+
     def runTest(self, jobRunner, postProcFromExisting=False,
             createReports=True):
-        """Run this sysTest, and return the 
+        """Run this sysTest, and return the
         :class:`~credo.systest.api.SysTestResult` it produces.
         Will also write an XML record of the System test, and each ModelRun
         and ModelResult in the suite that made up the test.
@@ -291,9 +291,9 @@ class SysTest:
                 assert mRun.outputPath != self.outputPathBase
             self.mSuite.preRunCleanup()
             try:
-                suiteResults = jobRunner.runSuite(self.mSuite, 
+                suiteResults = jobRunner.runSuite(self.mSuite,
                     maxRunTime=self.timeout, writeRecords=True)
-            except credo.jobrunner.ModelRunError, mre:
+            except Exception, mre:
                 suiteResults = None
                 sysTestResult = self.setErrorStatus(str(mre))
             else:
@@ -312,7 +312,7 @@ class SysTest:
                       % (e))
             print "Processing sys test result:"
             sysTestResult = self.getStatus(suiteResults)
-        
+
         # TODO: Do we need to allow any custom post-proc here?
         # Including custom getStatus?
         print "%s '%s' result: **%s**" % \
@@ -341,7 +341,7 @@ class SysTest:
         contains all models that need to be run to perform the test."""
         raise NotImplementedError("Error, base class abstract method.")
 
-    def setupEmptyTestCompsList(self):    
+    def setupEmptyTestCompsList(self):
         assert len(self.mSuite.runs) > 0
         # Zero test components here, now we know number of runs
         self.testComps = [{} for mRun in self.mSuite.runs]
@@ -350,7 +350,7 @@ class SysTest:
     def configureTestComps(self):
         raise NotImplementedError("Error, abstract base method - "\
             "please implement.")
-        
+
     def attachAllTestCompOps(self):
         """Useful in :meth:`.configureTestComps`.
         but default is to call 'attachOps' method of all testComps
@@ -366,7 +366,7 @@ class SysTest:
             mrTestComp.attachOps(self.mSuite.runs)
 
     def checkModelResultsValid(self, resultsSet):
-        """Check that the given result set is "valid", i.e. exists, has 
+        """Check that the given result set is "valid", i.e. exists, has
         the right number of model results, and model results have necessary
         analysis ops associated with them to allow aspects of test to
         evaluate properly."""
@@ -443,13 +443,13 @@ class SysTest:
         else:
             self.testStatus = CREDO_FAIL(self.failMsg)
         return self.testStatus
-    
-    def getTCRes(self, tcName, allowMissing=True): 
-        """Utility function for single run test components to get lists of 
+
+    def getTCRes(self, tcName, allowMissing=True):
+        """Utility function for single run test components to get lists of
         test components, and tc results, for each run of a given testComp
         (This can be done by list manipulation in Python, this function
         just makes it easier).
-        
+
         :keyword allowMissing: if True, runs that don't have a TC of givne
           name applied to them will have `None` placed in output array.
           if False, KeyError exception will be propagated.
@@ -502,7 +502,7 @@ class SysTest:
         """Write the SysTest XML with as much information before the run as
         is possible. This includes general info about the test, and detailed
         specificiation of appropriate parameters and test components.
-        
+
         :param outputPath: (opt) path the XML should be saved to.
         :param filename: (opt) filename within that path that should be used.
         :param prettyPrint: whether to indent the XML for better
@@ -516,16 +516,16 @@ class SysTest:
         xmlDoc = etree.ElementTree(baseNode)
         outFileName = self._writeXMLDocToFile(xmlDoc, outputPath, filename)
         return outFileName
-        
+
     def updateXMLWithResult(self, resultsSet, outputPath="", filename="",
             prettyPrint=True):
-        """Given resultsSet, a set of model results (list of 
+        """Given resultsSet, a set of model results (list of
         :class:`~credo.modelresult.ModelResult`), updates a Sys Test XML with
         the results of the test.
         If the XML file has the standard name, as defined by
         :meth:`.defaultSysTestFilename`, then it should be found automatically.
 
-        Other arguments and return value same as for 
+        Other arguments and return value same as for
         :meth:`.writePreRunXML`."""
         baseNode, xmlDoc = self._getXMLBaseNodeFromFile(outputPath, filename)
         baseNode.attrib['status'] = str(self.testStatus)
@@ -544,7 +544,7 @@ class SysTest:
         If the XML file has the standard name, as defined by
         :meth:`.defaultSysTestFilename`, then it should be found automatically.
 
-        Other arguments and return value same as for 
+        Other arguments and return value same as for
         :meth:`.writePreRunXML`."""
         baseNode, xmlDoc = self._getXMLBaseNodeFromFile(outputPath, filename)
         repsNode = etree.SubElement(baseNode, 'generatedReports')
@@ -562,7 +562,7 @@ class SysTest:
         baseNode.attrib['name'] = self.testName
         return baseNode
 
-    def _resolveXMLOutputPathFilename(self, outputPath="", filename=""):   
+    def _resolveXMLOutputPathFilename(self, outputPath="", filename=""):
         if filename == "":
             filename = self.defaultSysTestFilename()
         if outputPath == "":
@@ -606,9 +606,9 @@ class SysTest:
 
     def _writeXMLSpecification(self, baseNode):
         """Function to write the test specification to baseNode (xml.etree).
-        
+
         .. note: any "infrastructure" sub-classes should over-ride this method
-           appropriately. For user-level sub-classes, use the 
+           appropriately. For user-level sub-classes, use the
            _writeXMLCustomSpec function.
         """
         specNode = self._createXMLSpecNode(baseNode)
@@ -620,7 +620,7 @@ class SysTest:
                 " _writeXMLCustomSpec()"\
                 " method for your SysTest subclass: %s" % ae )
             raise ae
-    
+
     def _createXMLSpecNode(self, baseNode):
         """Utility function to create a specification XML node with
          standard name."""
@@ -637,14 +637,14 @@ class SysTest:
         else:
             timeOutStr = "None"
         etree.SubElement(specNode, "timeout").text = timeOutStr
-    
+
     def _writeXMLCustomSpec(self, specNode):
         """Function to write the custom specification for a particular test
         type. Virtual method, to be implemented by sub-classes."""
         raise NotImplementedError("Abstract base class.")
 
     def _writeXMLTestComponentPreRuns(self, baseNode):
-        """Write necessary info for all test components used by this 
+        """Write necessary info for all test components used by this
         system test before a run (eg their specification info."""
         tcBaseNode = etree.SubElement(baseNode, 'testComponents')
         runsNode = etree.SubElement(tcBaseNode, 'singleRunTestComponents')
@@ -695,12 +695,12 @@ class SysTest:
         resNode.attrib['status'] = str(self.testStatus)
         statusMsgNode = etree.SubElement(resNode, 'statusMsg')
         statusMsgNode.text = self.testStatus.detailMsg
-    
+
     def createReports(self, mResults):
         """Create any custom reports, then update record XML"""
         if self.customReporting is not None:
             try:
-                # Remember customReports is an attribute function, not a 
+                # Remember customReports is an attribute function, not a
                 # bound method currently - see comment in setCustomReporting()
                 self.customReporting(self, mResults)
             except Exception, e:
@@ -726,9 +726,9 @@ class SingleModelSysTest(SysTest):
     creating new model runs based on these standard parameters.
 
     Constructor keywords not in member attribute list:
-    
+
     * nameSuffix: if specified, this defines the suffix that
-      will be added to the test's name, output path, 
+      will be added to the test's name, output path,
       and log path (where the test's result and stderr/out will be saved
       respectively) - Overriding the default one based on params used.
 
@@ -740,7 +740,7 @@ class SingleModelSysTest(SysTest):
 
        Any model parameter overrides to be passed to ModelRuns performed
        as part of running the test - see
-       :attr:`credo.modelrun.ModelRun.paramOverrides`. Thus allow 
+       :attr:`credo.modelrun.ModelRun.paramOverrides`. Thus allow
        customisation of the test properties.
 
     .. attribute:: solverOpts
@@ -770,11 +770,11 @@ class SingleModelSysTest(SysTest):
         self.solverOpts = solverOpts
 
     def updateOutputPaths(self, newOutputPathBase):
-        """Function useful for when modifying suites, and you wish to 
+        """Function useful for when modifying suites, and you wish to
         change the output Path the suite reports are saved in. Necessary
-        because suites with multiple runs will use different sub-dirs 
+        because suites with multiple runs will use different sub-dirs
         for each run.
-        
+
         .. note:: in current design, _don't_ also update expected/reference
            soln paths, just output-related paths."""
         if self.mSuite is not None:
@@ -792,7 +792,7 @@ class SingleModelSysTest(SysTest):
             self.inputFiles, outputPath, basePath=self.basePath,
             nproc=self.nproc, paramOverrides=copy.copy(self.paramOverrides),
             solverOpts=copy.copy(self.solverOpts))
-    
+
     def _writeXMLSpecification(self, baseNode):
         specNode = self._createXMLSpecNode(baseNode)
         self._writeXMLSysTestBasicSpecification(specNode)
@@ -809,23 +809,23 @@ class SingleModelSysTest(SysTest):
             raise NotImplementedError("Please implement a "\
                 " _writeXMLCustomSpec()"\
                 " method for your SysTest subclass: %s" % ae )
-            raise ae        
+            raise ae
 
 class TestComponent:
     '''A class for TestComponents that make up an CREDO System test/benchmark.
-    Generally they will form part a list contained by a 
+    Generally they will form part a list contained by a
     :class:`.SysTest`.
 
     This is an abstract base class, individual test components must subclass
     from this interface.
-    
+
     .. attribute:: tcStatus
-    
+
        Status of this test component. Initially None, will be updated after
        the test component is evaluated to a :class:`.SysTestResult`.
-       
+
     .. attribute:: tcType
-    
+
        Type of the test component, as a (single world descriptive) string.'''
 
     def __init__(self, tcType):
@@ -839,28 +839,28 @@ class TestComponent:
             self.tcStatus = CREDO_FAIL(statusMsg)
         else:
             self.tcStatus = CREDO_PASS(statusMsg)
-    
+
     def writePreRunXML(self, parentNode, name):
         '''Function to write out info about the test component to an XML file,
         as a sub-tree of parentNode.'''
         tcNode = self._createBaseXMLNode(parentNode, name)
         self._writeXMLSpecification(tcNode)
-    
+
     def _createBaseXMLNode(self, parentNode, name):
-        '''Utility function when writing out info, should be called by 
+        '''Utility function when writing out info, should be called by
         sub-classes at start of writeInfoXML definitions to follow
         convention of naming of XML node.'''
         tcNode = etree.SubElement(parentNode, 'testComponent')
         tcNode.attrib['name'] = name
         tcNode.attrib['type'] = self.tcType
         return tcNode
-    
+
     def _writeXMLSpecification(self, tcNode):
         specNode = etree.SubElement(tcNode, 'specification')
         #Not currently any specification for all testComponents ... though may
         # be a fromXML param in future for example.
         self._writeXMLCustomSpec(specNode)
-    
+
     def _writeXMLCustomSpec(self, specNode):
         raise NotImplementedError("Abstract base class.")
 
@@ -877,6 +877,7 @@ class SingleRunTestComponent(TestComponent):
         TestComponent.__init__(self, tcType)
 
     def attachOps(self, modelRun):
+        # TODO: [Refactor] interface to remove or changed to pre-run blah.
         '''Provided a modelRun (:class:`credo.modelrun.ModelRun`)
         attaches any necessary analysis operations
         to that run in order to produce the results needed for the test.
@@ -895,24 +896,25 @@ class SingleRunTestComponent(TestComponent):
         statusMsgNode = etree.SubElement(resNode, 'statusMsg')
         statusMsgNode.text = self.tcStatus.detailMsg
         self._writeXMLCustomResult(resNode, mResult)
-    
+
     def _writeXMLCustomResult(self, resNode, mResult):
         raise NotImplementedError("Abstract method.")
 
 
 class MultiRunTestComponent(TestComponent):
-    """A type of component designed to operate and report on multiple 
+    """A type of component designed to operate and report on multiple
     modelRuns (e.g., analysing they converge or overall meet some
     requirement.
-    
+
     Unlike the SingleRunTestComponent, this class's :meth:`attachOps` and
     :meth:`check` methods operate on a list of modelRuns and modelResults,
     not just a single one."""
 
     def __init__(self, tcType):
         TestComponent.__init__(self, tcType)
-        
+
     def attachOps(self, modelRuns):
+        # TODO: [Refactor] interface to remove or changed to pre-run blah.
         '''Provided a list of modelRuns (:class:`credo.modelrun.ModelRun`)
         attaches any necessary analysis operations
         to each run needed for the test.
@@ -933,7 +935,7 @@ class MultiRunTestComponent(TestComponent):
         statusMsgNode = etree.SubElement(resNode, 'statusMsg')
         statusMsgNode.text = self.tcStatus.detailMsg
         self._writeXMLCustomResult(resNode, mResults)
-    
+
     def _writeXMLCustomResult(self, resNode, mResults):
         raise NotImplementedError("Abstract method.")
 

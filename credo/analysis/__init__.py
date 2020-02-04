@@ -1,8 +1,8 @@
 ##  Copyright (C), 2010, Monash University
 ##  Copyright (C), 2010, Victorian Partnership for Advanced Computing (VPAC)
-##  
+##
 ##  This file is part of the CREDO library.
-##  Developed as part of the Simulation, Analysis, Modelling program of 
+##  Developed as part of the Simulation, Analysis, Modelling program of
 ##  AuScope Limited, and funded by the Australian Federal Government's
 ##  National Collaborative Research Infrastructure Strategy (NCRIS) program.
 ##
@@ -35,7 +35,7 @@ There are also several functions
 that can be used to access and post-process Underworld results in a more direct
 manner, using the :mod:`credo.io` interface.
 
-For examples of using the analysis operations with models, see the 
+For examples of using the analysis operations with models, see the
 :ref:`credo-examples-analysis` section of the documentation.
 """
 

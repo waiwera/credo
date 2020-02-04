@@ -1,8 +1,8 @@
 ##  Copyright (C), 2010, Monash University
 ##  Copyright (C), 2010, Victorian Partnership for Advanced Computing (VPAC)
-##  
+##
 ##  This file is part of the CREDO library.
-##  Developed as part of the Simulation, Analysis, Modelling program of 
+##  Developed as part of the Simulation, Analysis, Modelling program of
 ##  AuScope Limited, and funded by the Australian Federal Government's
 ##  National Collaborative Research Infrastructure Strategy (NCRIS) program.
 ##
@@ -55,7 +55,7 @@ fCompRes = fCompOp.getResult()
 
 # Operate on result?
 status = fCompRes.checkWithinTol( 0.1, "last" )
-fCompRes.plotOverTime() 
+fCompRes.plotOverTime()
 fComp.writeInfoXML()
 fCompRes.writeInfoXML()
 

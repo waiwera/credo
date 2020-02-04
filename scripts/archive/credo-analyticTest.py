@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 ##  Copyright (C), 2010, Monash University
 ##  Copyright (C), 2010, Victorian Partnership for Advanced Computing (VPAC)
-##  
+##
 ##  This file is part of the CREDO library.
-##  Developed as part of the Simulation, Analysis, Modelling program of 
+##  Developed as part of the Simulation, Analysis, Modelling program of
 ##  AuScope Limited, and funded by the Australian Federal Government's
 ##  National Collaborative Research Infrastructure Strategy (NCRIS) program.
 ##
@@ -36,7 +36,7 @@ defaultFieldTol = 3e-2
 #process input args
 
 #modelName, options = credo.processInput(argv, argc)
-# Keep allowing options file for now in default scripts:- though for a 
+# Keep allowing options file for now in default scripts:- though for a
 # custom script, user could easily write their own
 #credo.processOptionsFile(options, "./options.dat")
 

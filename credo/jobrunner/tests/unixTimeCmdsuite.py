@@ -6,4 +6,4 @@ for timeElap in testTimes:
     timeSecs = mps.parseUnixTimeElapsed(timeElap)
     print "%s converted to %f seconds." % (timeElap, timeSecs)
 
-    
+

@@ -1,8 +1,8 @@
 ##  Copyright (C), 2010, Monash University
 ##  Copyright (C), 2010, Victorian Partnership for Advanced Computing (VPAC)
-##  
+##
 ##  This file is part of the CREDO library.
-##  Developed as part of the Simulation, Analysis, Modelling program of 
+##  Developed as part of the Simulation, Analysis, Modelling program of
 ##  AuScope Limited, and funded by the Australian Federal Government's
 ##  National Collaborative Research Infrastructure Strategy (NCRIS) program.
 ##
@@ -52,7 +52,7 @@ class StgFreqTestCase(unittest.TestCase):
             self.assertEqual(records[ii][0], self.tSteps[ii])
             self.assertAlmostEqual(records[ii][1], self.timeVals[ii])
             self.assertAlmostEqual(records[ii][2], self.VRMSVals[ii])
-    
+
     def test_getValueAtStep(self):
         self.stgFreq.populateFromFile()
         tI = 2
@@ -61,7 +61,7 @@ class StgFreqTestCase(unittest.TestCase):
         self.assertAlmostEqual(time4, self.timeVals[tI])
         VRMS2 = self.stgFreq.getValueAtStep("VRMS", tStep)
         self.assertAlmostEqual(VRMS2, self.VRMSVals[tI])
-    
+
     def test_getRecordDictAtStep(self):
         self.stgFreq.populateFromFile()
         tI = 2
@@ -73,12 +73,12 @@ class StgFreqTestCase(unittest.TestCase):
 
     def test_finalStep(self):
         self.assertEqual(self.tSteps[-1], self.stgFreq.finalStep())
-    
+
     def test_getValuesArray(self):
         valArray = self.stgFreq.getValuesArray('Time')
         for ii, val in enumerate(valArray):
             self.assertAlmostEqual(val, self.timeVals[ii])
-    
+
     def test_getTimeStepsArray(self):
         timeStepsArray = self.stgFreq.getTimeStepsArray()
         self.assertEqual(self.tSteps, timeStepsArray)
@@ -175,7 +175,7 @@ class StgFreqTestCase(unittest.TestCase):
     def test_plotOverTime(self):
         self.stgFreq.plotOverTime("Time", show=False, path="output/Plots")
         self.stgFreq.plotOverTime("VRMS", show=False, path="output/Plots")
-    
+
     def test_printAllMinMax(self):
         self.stgFreq.printAllMinMax()
 

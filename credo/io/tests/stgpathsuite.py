@@ -1,8 +1,8 @@
 ##  Copyright (C), 2010, Monash University
 ##  Copyright (C), 2010, Victorian Partnership for Advanced Computing (VPAC)
-##  
+##
 ##  This file is part of the CREDO library.
-##  Developed as part of the Simulation, Analysis, Modelling program of 
+##  Developed as part of the Simulation, Analysis, Modelling program of
 ##  AuScope Limited, and funded by the Australian Federal Government's
 ##  National Collaborative Research Infrastructure Strategy (NCRIS) program.
 ##
@@ -47,23 +47,23 @@ class StgPathTestCase(unittest.TestCase):
         except IOError:
             self.fail("Shouldn't produce IO error")
         self.assertRaises(IOError, stgpath.checkAllXMLInputFilesExist, ["boo"])
-    
+
     def test_convertLocalXMLFilesToAbsPaths(self):
         sampleXMLsOrig = glob.glob(os.path.join(
-            "sampleData", "stgXML", "*.xml")) 
+            "sampleData", "stgXML", "*.xml"))
         sampleXMLsUp = stgpath.convertLocalXMLFilesToAbsPaths(sampleXMLsOrig,
             "Underworld/SysTests")
-        self.assertEqual(sampleXMLsOrig, sampleXMLsUp)   
+        self.assertEqual(sampleXMLsOrig, sampleXMLsUp)
 
     def test_convertLocalXMLFilesToAbsPaths_ConvertNeeded(self):
         testCallingPath = "Underworld/SysTests"
         sampleXMLsOrig = glob.glob(os.path.join(
             "sampleData", "stgXML", "*.xml"))
-        sampleXMLsOrig.append(os.path.join("rel","notExist.xml"))    
+        sampleXMLsOrig.append(os.path.join("rel","notExist.xml"))
         sampleXMLsUp = stgpath.convertLocalXMLFilesToAbsPaths(sampleXMLsOrig,
             testCallingPath)
-        self.assertEqual(sampleXMLsOrig[:-1], sampleXMLsUp[:-1])   
-        self.assertEqual(sampleXMLsUp[-1], 
+        self.assertEqual(sampleXMLsOrig[:-1], sampleXMLsUp[:-1])
+        self.assertEqual(sampleXMLsUp[-1],
             os.path.join(testCallingPath, "rel", "notExist.xml"))
 
 # TODO: more tests required!

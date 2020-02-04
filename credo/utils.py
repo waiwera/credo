@@ -1,8 +1,8 @@
 ##  Copyright (C), 2010, Monash University
 ##  Copyright (C), 2010, Victorian Partnership for Advanced Computing (VPAC)
-##  
+##
 ##  This file is part of the CREDO library.
-##  Developed as part of the Simulation, Analysis, Modelling program of 
+##  Developed as part of the Simulation, Analysis, Modelling program of
 ##  AuScope Limited, and funded by the Australian Federal Government's
 ##  National Collaborative Research Infrastructure Strategy (NCRIS) program.
 ##
@@ -29,12 +29,12 @@ import inspect
 
 def getCallingPath(stackNum):
     """Get the path of the calling stack at stackNum levels higher."""
-    # We need to add +1 to the stackNum calculation below because 
+    # We need to add +1 to the stackNum calculation below because
     #  of the getCallingPath() function call itself.
     callingFile = inspect.stack()[stackNum+1][1]
     if callingFile == '<stdin>':
         callingPath = os.getcwd()
-    else:    
+    else:
         callingPath = os.path.dirname(callingFile)
     return callingPath
 
@@ -56,7 +56,7 @@ def dictAsPrettyStr(inDict):
     by getting the str() of each item in a dict, not
     the repr(). Useful for floating points for example to be 'prettier'
     (less zeros after the number).
-    
+
     .. note:: No effort has been made to ensure this is super-efficient for
        large dictionaries, it's suited to small lists of parameters"""
     strings = []

@@ -1,8 +1,8 @@
 ##  Copyright (C), 2010, Monash University
 ##  Copyright (C), 2010, Victorian Partnership for Advanced Computing (VPAC)
-##  
+##
 ##  This file is part of the CREDO library.
-##  Developed as part of the Simulation, Analysis, Modelling program of 
+##  Developed as part of the Simulation, Analysis, Modelling program of
 ##  AuScope Limited, and funded by the Australian Federal Government's
 ##  National Collaborative Research Infrastructure Strategy (NCRIS) program.
 ##
@@ -110,7 +110,7 @@ class StgXMLTestCase(unittest.TestCase):
         # Try to get non-existent
         noneVal = stgxml.getParamValue(self.flatXMLRoot, "voodoo", int)
         self.assertEqual(noneVal, None)
-        # Try to get a struct 
+        # Try to get a struct
         noneVal = stgxml.getParamValue(self.flatXMLRoot, "components", int)
         self.assertEqual(noneVal, None)
         noneVal = stgxml.getParamValue(self.flatXMLRoot, "temperatureBCs", int)
@@ -121,7 +121,7 @@ class StgXMLTestCase(unittest.TestCase):
         self.assertEqual(dimVal, 2)
         dimVal = stgxml.getParamValue(self.flatXMLRoot, "dim", str)
         self.assertEqual(dimVal, "2")
-    
+
     def test_getElementType(self):
         # Regular params syntax
         testNode = etree.Element(stgxml.STG_PARAM_TAG, name="dim")
@@ -209,7 +209,7 @@ class StgXMLTestCase(unittest.TestCase):
             #    xmlRoot, "[]")
             #self.assertRaises(ValueError, stgxml.getNodeFromStrSpec,
             #    xmlRoot, "[0]")
-            
+
             # Struct recursion - good cases
             node = stgxml.getNodeFromStrSpec(
                 xmlRoot, "velocityICs.type")
@@ -284,8 +284,8 @@ class StgXMLTestCase(unittest.TestCase):
                 xmlRoot, "temperatureBCs.vcList[0].variables[0].val")
             self.assertRaises(ValueError, stgxml.getNodeFromStrSpec,
                 xmlRoot, "temperatureBCs.vcList[0][0].val")
-            
-            # Getting components, plugins, import (special tags, that will be 
+
+            # Getting components, plugins, import (special tags, that will be
             # different in the flattened versus import.
             #import
             node = stgxml.getNodeFromStrSpec( xmlRoot, "import")
@@ -315,9 +315,9 @@ class StgXMLTestCase(unittest.TestCase):
             self.assertEqual(node.text.strip(), "FiniteElementContext")
             #NB: since the components list in the first XML is un-merged, we
             #can't access this entirely.
-    
+
     # TODO
-    #def test_insertItemAtStrSpec_CurrentCtx(self):    
+    #def test_insertItemAtStrSpec_CurrentCtx(self):
         #stgxml.insertItemAtStrSpec_CurrentCtx(resultNode, lastSpecStr, "2")
 
     def test_createNewDataDoc(self):

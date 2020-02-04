@@ -1,8 +1,8 @@
 ##  Copyright (C), 2010, Monash University
 ##  Copyright (C), 2010, Victorian Partnership for Advanced Computing (VPAC)
-##  
+##
 ##  This file is part of the CREDO library.
-##  Developed as part of the Simulation, Analysis, Modelling program of 
+##  Developed as part of the Simulation, Analysis, Modelling program of
 ##  AuScope Limited, and funded by the Australian Federal Government's
 ##  National Collaborative Research Infrastructure Strategy (NCRIS) program.
 ##
@@ -66,7 +66,7 @@ def _getStgPath(pathDescription, pathEnviroVarKey, keySubDir=None,
     if pathEnviroVarKey in os.environ:
         foundPath=os.environ[pathEnviroVarKey]
         fromKey = pathEnviroVarKey
-    elif keySubDir is not None and STG_BASEDIRKEY in os.environ:   
+    elif keySubDir is not None and STG_BASEDIRKEY in os.environ:
         stgBasePath = os.environ[STG_BASEDIRKEY]
         foundPath = os.path.join(stgBasePath, keySubDir)
         fromKey = STG_BASEDIRKEY
@@ -74,7 +74,7 @@ def _getStgPath(pathDescription, pathEnviroVarKey, keySubDir=None,
         if keySubDir:
             varsToUse = "either the %s or %s environment variable"\
                     % (pathEnviroVarKey, STG_BASEDIRKEY)
-        else:            
+        else:
             varsToUse = "the %s environment variable"\
                     % (pathEnviroVarKey)
 
@@ -98,8 +98,8 @@ def _getStgPath(pathDescription, pathEnviroVarKey, keySubDir=None,
 
 def getStgBinPath():
     """Get the path of StGermain binaries (given by env variable STG_BINDIR)."""
-    return _getStgPath("StGermain executables", STG_BINDIRKEY, 
-        keySubDir=STG_BIN_SUBDIR, testFile="StGermain") 
+    return _getStgPath("StGermain executables", STG_BINDIRKEY,
+        keySubDir=STG_BIN_SUBDIR, testFile="StGermain")
 
 def getStgStandardXMLPath():
     """Returns the path that StGermain standard XML files are stored in
@@ -125,12 +125,12 @@ def convertLocalXMLFilesToAbsPaths(inputFilesList, callingPath):
 
     return newInputFilesList
 
-def checkAllXMLInputFilesExist(inputFilesList):        
+def checkAllXMLInputFilesExist(inputFilesList):
     """Checks a whole set of XML input files exist, and raises an IOError if
     one of them doesn't. See :func:`.checkXMLInputFileExists`."""
     for iFile in inputFilesList:
         checkXMLInputFileExists(iFile)
-    return    
+    return
 
 def checkXMLInputFileExists(inputFile):
     """Check if an XML input file exists in either the standard
@@ -147,7 +147,7 @@ def checkXMLInputFileExists(inputFile):
 
 def xmlExistsInStdXMLPath(inputFile):
     stgStdXMLPath = getStgStandardXMLPath()
-    fileInStgPath = os.path.join(stgStdXMLPath, inputFile) 
+    fileInStgPath = os.path.join(stgStdXMLPath, inputFile)
     return os.path.exists(fileInStgPath)
 
 def moveAllToTargetPath(startPath, targetPath, fileExt):

@@ -1,8 +1,8 @@
 ##  Copyright (C), 2010, Monash University
 ##  Copyright (C), 2010, Victorian Partnership for Advanced Computing (VPAC)
-##  
+##
 ##  This file is part of the CREDO library.
-##  Developed as part of the Simulation, Analysis, Modelling program of 
+##  Developed as part of the Simulation, Analysis, Modelling program of
 ##  AuScope Limited, and funded by the Australian Federal Government's
 ##  National Collaborative Research Infrastructure Strategy (NCRIS) program.
 ##
@@ -38,12 +38,12 @@ defFieldScaleCvgCriterions = {
     'recoveredTauField':(1.6,0.99),
     'recoveredEpsDotField':(1.6,0.99) }
 
-def testAllCvgWithScale(lenScales, fieldErrorData, fieldCvgCriterions):    
-    """Given a lists of length scales, field error data (a dictionary 
+def testAllCvgWithScale(lenScales, fieldErrorData, fieldCvgCriterions):
+    """Given a lists of length scales, field error data (a dictionary
     mapping field names to dofError lists for that field), and field
     convergence criterions, returns a Bool specifying whether all
     the fields met their required convergence criterions.
-    
+
     The first two arguments can be created by running
     :func:`~credo.analysis.fields.getFieldScaleCvgData_SingleCvgFile`
     on a path containing a single cvg file."""
@@ -55,7 +55,7 @@ def testAllCvgWithScale(lenScales, fieldErrorData, fieldCvgCriterions):
             fieldCvgCriterions[fieldName])
         if meetsReq == False:
             overallResult = False
-    return overallResult    
+    return overallResult
 
 def printCvgResult(fieldName, fieldConvResults):
     for dofI, dofConv in enumerate(fieldConvResults):
@@ -64,10 +64,10 @@ def printCvgResult(fieldName, fieldConvResults):
             % (fieldName, dofI, cvgRate, corr)
 
 def testCvgWithScale(fieldName, fieldConvResults, fieldCvgCriterion):
-    '''Tests that for a given field, given a list of fieldConvResults 
+    '''Tests that for a given field, given a list of fieldConvResults
     (See :func:`credo.analysis.fields.calcFieldCvgWithScale`)
     - that they converge according to the given fieldCvgCriterion.
-    
+
     :returns: result of test (Bool)'''
 
     reqCvgRate, reqCorr = fieldCvgCriterion
@@ -81,7 +81,7 @@ def testCvgWithScale(fieldName, fieldConvResults, fieldCvgCriterion):
         #plt.show()
 
         dofTestStatus = True
-        if cvgRate < reqCvgRate: 
+        if cvgRate < reqCvgRate:
             dofTestStatus = False
             print "  -Bad! - cvg %6g less than req'd %6g for this field."\
                 % (cvgRate, reqCvgRate)
@@ -91,7 +91,7 @@ def testCvgWithScale(fieldName, fieldConvResults, fieldCvgCriterion):
                 % (corr, reqCorr)
         if dofTestStatus: print "  -Good"
         dofStatuses.append(dofTestStatus)
-    
+
     return all(dofStatuses)
 
 def getNumDofs(fComp, mResult):
@@ -121,8 +121,8 @@ def getDofErrorsByRun(fComp, resultsSet):
 class FieldCvgWithScaleTC(MultiRunTestComponent):
     """Checks whether, for a particular set of fields, the error
     between each field and an (analytic or reference) solution
-    reduces with increasing resolution at a required rate. 
-    Thus similar to 
+    reduces with increasing resolution at a required rate.
+    Thus similar to
     :class:`~credo.systest.fieldWithinTolTC.FieldWithinTolTC`,
     except tests accuracy of solution with increasing model resolution.
 
@@ -131,38 +131,38 @@ class FieldCvgWithScaleTC(MultiRunTestComponent):
     * :mod:`credo.analysis.fields` to specify the comparison operations
     * :mod:`credo.io.stgcvg` to analyse the "convergence" files containing
       comparison information produced by these operations.
-    
-    .. attribute:: fieldsToTest 
+
+    .. attribute:: fieldsToTest
 
        A list of strings containing the names of fields that should be tested-
        i.e. those that will be compared with an expected solution. If left
-       as `None` in constructor, this means the fieldsToTest list will be 
+       as `None` in constructor, this means the fieldsToTest list will be
        expected to be defined in the StGermain model XML files themselves.
-    
+
     .. attribute:: fieldCvgCrits
 
        List of Convergence criterions to be used when checking the fields.
-       Currently required to be in the form used by the convernce checking 
-       :func:`credo.analysis.fields.calcFieldCvgWithScale`, which requires 
+       Currently required to be in the form used by the convernce checking
+       :func:`credo.analysis.fields.calcFieldCvgWithScale`, which requires
        tuples of the form (cvg_rate, correlation).
 
        .. note:: if this list doesn't contain a cvg criterion for a field
-          that's tested, the behaviour is to skip the formal test of 
+          that's tested, the behaviour is to skip the formal test of
           this field, but print a warning (based on previous SYS test
           behaviour).
 
     .. attribute:: calcCvgFunc
 
        Function to use to calculate convergence of errors of a group
-       of runs - currently uses 
+       of runs - currently uses
        :func:`credo.analysis.fields.calcFieldCvgWithScale` by default.
-    
+
     .. attribute:: fComps
 
         A :class:`credo.analysis.fields.FieldComparisonList` used as an
         operator to attach to ModelRuns to be tested, and do the actual
         comparison between fields.
-    
+
     .. attribute:: fErrorsByRun
 
        Initially {}, after the test is completed will store a dictionary
@@ -174,17 +174,17 @@ class FieldCvgWithScaleTC(MultiRunTestComponent):
 
        Initially {}, after the test is completed will store a dictionary
        mapping each field name to a Bool recording whether the field error
-       converged acceptably as resolution increased, according to the 
+       converged acceptably as resolution increased, according to the
        convergence algorithm used.
 
     .. attribute:: fCvgResults
 
        Initially {}, after the test is completed will store a dictionary
        mapping each field name to a tuple containing information on
-       actual convergence rate. See the return value of 
+       actual convergence rate. See the return value of
        :func:`credo.analysis.fields.calcFieldCvgWithScale` for more.
 
-    """ 
+    """
     def __init__(self, fieldsToTest = None,
             calcCvgFunc = fields.calcFieldCvgWithScale,
             fieldCvgCrits = defFieldScaleCvgCriterions):
@@ -218,11 +218,11 @@ class FieldCvgWithScaleTC(MultiRunTestComponent):
     def check(self, resultsSet):
         """Implements base class
         :meth:`credo.systest.api.MultiRunTestComponent.check`.
-        
+
         As well as performing check, will save relevant into to attributes
         :attr:`.fErrorsByRun`, :attr:`.fCvgMeetsReq`, :attr:`.fCvgResults`."""
         # NB: could store this another way in model info?
-        lenScales = self._getLenScales(resultsSet)    
+        lenScales = self._getLenScales(resultsSet)
         self.fErrorsByRun = {}
         self.fCvgMeetsReq = {}
         self.fCvgResults = {}
@@ -277,13 +277,13 @@ class FieldCvgWithScaleTC(MultiRunTestComponent):
 
     def _writeXMLCustomResult(self, resNode, resultsSet):
         frNode = etree.SubElement(resNode, 'fieldResultDetails')
-        lenScales = self._getLenScales(resultsSet)    
+        lenScales = self._getLenScales(resultsSet)
         for fName, fComp in self.fComps.fields.iteritems():
             fieldNode = etree.SubElement(frNode, "field", name=fName)
             meetsReq = self.fCvgMeetsReq[fName]
             if meetsReq == None:
                 fieldNode.attrib['cvgMeetsReq'] = "N/A"
-            else:    
+            else:
                 fieldNode.attrib['cvgMeetsReq'] = str(meetsReq)
 
             for dofI, dofErrorsByRun in enumerate(self.fErrorsByRun[fName]):
@@ -318,6 +318,6 @@ class FieldCvgWithScaleTC(MultiRunTestComponent):
                         " Fields that had comparison info found for them"\
                         " in results were %s."\
                         % (self.fComps.fields.keys()[0], str(cvgIndex.keys())))
- 
-            lenScales.append(stgcvg.getRes(cvgInfo.filename))        
-        return lenScales    
+
+            lenScales.append(stgcvg.getRes(cvgInfo.filename))
+        return lenScales

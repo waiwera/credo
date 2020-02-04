@@ -1,8 +1,8 @@
 ##  Copyright (C), 2010, Monash University
 ##  Copyright (C), 2010, Victorian Partnership for Advanced Computing (VPAC)
-##  
+##
 ##  This file is part of the CREDO library.
-##  Developed as part of the Simulation, Analysis, Modelling program of 
+##  Developed as part of the Simulation, Analysis, Modelling program of
 ##  AuScope Limited, and funded by the Australian Federal Government's
 ##  National Collaborative Research Infrastructure Strategy (NCRIS) program.
 ##
@@ -45,7 +45,7 @@ class ImageCompTC(SingleRunTestComponent):
        Tolerance tuple that the resultant image compared to the reference
        image must be within. In form required by
        :func:`credo.analysis.images.compare` .
-    
+
     .. attribute:: refPath
 
        Path to look for reference images.
@@ -103,15 +103,23 @@ class ImageCompTC(SingleRunTestComponent):
         statusMsg = ""
         overallResult = True
         refImageFname = os.path.join(self.refPath, self.imageFilename)
-        #print refImageFname
-        assert os.path.exists(refImageFname)
+        if not os.path.exists(refImageFname):
+            statusMsg += "Reference image '%s' not found!\n" % refImageFname
+            print statusMsg
+            self._setStatus(False, statusMsg)
+            return False
+
         if self.genPath is not None:
             genPath = self.genPath
         else:
             genPath = mResult.outputPath
         genImageFname = os.path.join(genPath, self.imageFilename)
-        #print genImageFname
-        assert os.path.exists(genImageFname)
+        if not os.path.exists(genImageFname):
+            statusMsg += "Generated image '%s' not found!\n" % genImageFname
+            print statusMsg
+            self._setStatus(False, statusMsg)
+            return False
+
         self.imageErrors = imageAnalysis.compare(refImageFname, genImageFname)
         self.imageResults = []
         for diff, tol in zip(self.imageErrors, self.tol):

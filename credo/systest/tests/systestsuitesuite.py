@@ -1,8 +1,8 @@
 ##  Copyright (C), 2010, Monash University
 ##  Copyright (C), 2010, Victorian Partnership for Advanced Computing (VPAC)
-##  
+##
 ##  This file is part of the CREDO library.
-##  Developed as part of the Simulation, Analysis, Modelling program of 
+##  Developed as part of the Simulation, Analysis, Modelling program of
 ##  AuScope Limited, and funded by the Australian Federal Government's
 ##  National Collaborative Research Infrastructure Strategy (NCRIS) program.
 ##
@@ -42,7 +42,7 @@ class SysTestSuiteTestCase(unittest.TestCase):
         shutil.rmtree(self.basedir)
 
     def test_addStdTest(self):
-        self.stSuite.addStdTest(SkeletonSingleModelSysTest, self.inputFiles, 
+        self.stSuite.addStdTest(SkeletonSingleModelSysTest, self.inputFiles,
             statusToReturn=CREDO_PASS("testPass"), nproc=1)
         sysTestsList = self.stSuite.sysTests
         self.assertEqual(len(self.stSuite.sysTests), 1)
@@ -51,7 +51,7 @@ class SysTestSuiteTestCase(unittest.TestCase):
         self.assertEqual(addedTest.testType, "SkeletonSingleModelSysTest")
         self.assertEqual(addedTest.inputFiles, self.inputFiles)
         self.assertEqual(addedTest.testStatus, None)
-        self.stSuite.addStdTest(SkeletonSingleModelSysTest, self.inputFiles, 
+        self.stSuite.addStdTest(SkeletonSingleModelSysTest, self.inputFiles,
             statusToReturn=CREDO_FAIL("testFail"), nproc=1)
         self.assertEqual(len(self.stSuite.sysTests), 2)
         secondTest = sysTestsList[1]
@@ -59,7 +59,7 @@ class SysTestSuiteTestCase(unittest.TestCase):
         self.assertEqual(addedTest.testType, "SkeletonSingleModelSysTest")
         self.assertEqual(addedTest.inputFiles, self.inputFiles)
         self.assertEqual(addedTest.testStatus, None)
-    
+
     def test_addSubSuite(self):
         subSuite1 = SysTestSuite("StgFEM", "RegressionTests-sub1")
         subSuite2 = SysTestSuite("StgFEM", "RegressionTests-sub2")
@@ -89,9 +89,9 @@ class SysTestSuiteTestCase(unittest.TestCase):
         self.assertEqual(self.stSuite.subSuites[0], subSuite1)
         self.assertEqual(self.stSuite.subSuites[1], subSuite2)
         # Now try add some tests to these suites
-        self.stSuite.addStdTest(SkeletonSingleModelSysTest, self.inputFiles, 
+        self.stSuite.addStdTest(SkeletonSingleModelSysTest, self.inputFiles,
             statusToReturn=CREDO_FAIL("testFail"), nproc=1)
-        subSuite2.addStdTest(SkeletonSingleModelSysTest, self.inputFiles, 
+        subSuite2.addStdTest(SkeletonSingleModelSysTest, self.inputFiles,
             statusToReturn=CREDO_PASS("testPass"), nproc=1)
         self.assertEqual(len(self.stSuite.sysTests), 1)
         self.assertEqual(len(self.stSuite.subSuites[0].sysTests), 0)

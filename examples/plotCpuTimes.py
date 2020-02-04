@@ -3,7 +3,7 @@
 """Some useful scripts related to plotting CPU time for each timestep of
 a series of ModelRuns.
 
-If run from the command line, 1st argument should be the output path of 
+If run from the command line, 1st argument should be the output path of
 a ModelResult."""
 
 import sys, math
@@ -18,7 +18,7 @@ def getPerStepCPU_Times(freqOutput):
     cpuTimes[0] = cpuIncTimes[0]
     for ii, t in enumerate(cpuIncTimes[1:]):
         cpuTimes[ii+1] = t - cpuIncTimes[ii]
-    return cpuTimes    
+    return cpuTimes
 
 def plot(cpuTimes, modelDir):
     """Given array of cpu times per timestep, and a model dir, draws an

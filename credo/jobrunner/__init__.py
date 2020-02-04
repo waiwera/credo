@@ -1,8 +1,8 @@
 ##  Copyright (C), 2010, Monash University
 ##  Copyright (C), 2010, Victorian Partnership for Advanced Computing (VPAC)
-##  
+##
 ##  This file is part of the CREDO library.
-##  Developed as part of the Simulation, Analysis, Modelling program of 
+##  Developed as part of the Simulation, Analysis, Modelling program of
 ##  AuScope Limited, and funded by the Australian Federal Government's
 ##  National Collaborative Research Infrastructure Strategy (NCRIS) program.
 ##
@@ -24,11 +24,11 @@
 """This module allows running CREDO jobs using various approaches - e.g. via
 MPI locally, via PBS scripts in a queueing system, or via grid submission."""
 
-from credo.jobrunner.mpijobrunner import MPIJobRunner, MPIJobMetaInfo
+from credo.jobrunner.simplejobrunner import SimpleJobRunner, SimpleJobMetaInfo
 from credo.jobrunner.pbsjobrunner import PBSJobMetaInfo
 
 jobMetaInfoMapping = {
-    "MPI": MPIJobMetaInfo,
+    "Simple": SimpleJobMetaInfo,
     "PBS": PBSJobMetaInfo}
 
 def jobMetaInfoFactoryCreate(runTypeStr):
@@ -37,11 +37,11 @@ def jobMetaInfoFactoryCreate(runTypeStr):
     return jobMetaInfo
 
 def defaultRunner():
-    defRunner = MPIJobRunner()
+    defRunner = SimpleJobRunner()
     return defRunner
 
 def readJobMetaInfoFromXMLNode(jmiNode):
     runTypeStr = jmiNode.find('runType').text
     jobMetaInfo = jobMetaInfoFactoryCreate(runTypeStr)
     jobMetaInfo.readFromXMLNode(jmiNode)
-    return jobMetaInfo   
+    return jobMetaInfo

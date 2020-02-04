@@ -1,8 +1,8 @@
 ##  Copyright (C), 2010, Monash University
 ##  Copyright (C), 2010, Victorian Partnership for Advanced Computing (VPAC)
-##  
+##
 ##  This file is part of the CREDO library.
-##  Developed as part of the Simulation, Analysis, Modelling program of 
+##  Developed as part of the Simulation, Analysis, Modelling program of
 ##  AuScope Limited, and funded by the Australian Federal Government's
 ##  National Collaborative Research Infrastructure Strategy (NCRIS) program.
 ##
@@ -33,25 +33,35 @@ from credo.io import stgpath
 class PerformanceProfiler:
     """Class to use to attach to :class:`JobRunner` instances, which will then
     profile performance of each ModelRun ran by given JobRunner.
-    
+
     This is an abstract base class, user code will have to select a concrete
-    instantiation."""
+    instantiation.
+
+    .startTimer() and .stopTimer() are optional for most profilers, it s really
+    only designed for a dumb profiler implemented using pure Python.
+    """
     def __init__(self, typeStr):
         self.typeStr = typeStr
 
     def setup(self, modelName, modelBasePath, modelOutputPath, jobMetaInfo):
         """Do any necessary setup functions."""
         raise NotImplementedError("Error, virtual func on base class")
-    
+
     def modifyRun(self, modelRun, modelRunCommand, jobMetaInfo):
         raise NotImplementedError("Error, virtual func on base class")
 
+    def startTimer(self):
+        pass
+
+    def stopTimer(self):
+        pass
+
     def attachPerformanceInfo(self, jobMetaInfo, modelResult):
-        #Open result filename    
+        #Open result filename
         #getResDict(filename)
         #Save this resDict on the jobMetaInfo (in a subdirectory)
         raise NotImplementedError("Error, virtual func on base class")
- 
+
 
 class JobMetaInfo:
     '''A simple class for recording meta info about a job, such as walltime,
@@ -71,7 +81,7 @@ class JobMetaInfo:
         self.performance = {}
         if simtime is None:
             self.simtime = "unknown"
-        else:     
+        else:
             self.simtime = float(simtime)
         # Will be used if you pass handlers around.
         self.profilerHandles = {}
@@ -95,13 +105,13 @@ class JobMetaInfo:
             for kw, val in subDict.iteritems():
                 #TODO: good to save units here as an attrib?
                 etree.SubElement(perfProfNode, kw).text = str(val)
-    
+
     def verbPlatformString(self):
         '''Returns a useful string about the platform, for printing.'''
         return "Node '%s', of type %s, running %s (%s)" \
             % tuple([self.platform[kw] for kw in 'node', 'machine', 'system',
                 'release'])
-    
+
     def readFromXMLNode(self, xmlNode):
         self.simtime = float(xmlNode.find('simtime').text)
         #TODO: how to convert ...
@@ -124,7 +134,7 @@ class JobRunner:
     class, user code will need to choose a concrete implementation.
     Is designed to allow both serial, and parallel non-blocking job
     submission and reporting.
-    
+
     .. attribute:: runSuiteNonBlockingDefault
 
        Determines that for a given job runner, whether suites should be run
@@ -137,7 +147,7 @@ class JobRunner:
 
     .. attribute:: defaultProfiler
 
-       Profiler that will be used to provide "default" results in the 
+       Profiler that will be used to provide "default" results in the
        JobMetaInfo.
     """
     def __init__(self):
@@ -147,7 +157,7 @@ class JobRunner:
 
     def setup(self):
         """Does any necessary setup checks to run models.
-        
+
         By default, does nothing - sub-classes need to override."""
         pass
 
@@ -202,12 +212,12 @@ class JobRunner:
                 modelSuite.writeAllModelRunXMLs()
             customOpts = modelSuite.getCustomOpts(runI, extraCmdLineOpts)
             jobMetaInfo = self.submitRun(modelRun, prefixStr, customOpts,
-                dryRun, maxRunTime)    
+                dryRun, maxRunTime)
             if jobMetaInfo:
                 jobMetaInfos.append(jobMetaInfo)
         return jobMetaInfos
-        
-    def blockSuite(self, modelSuite, jobMetaInfos):    
+
+    def blockSuite(self, modelSuite, jobMetaInfos):
         """Blocks on each ModelRun in a Suite, given a list of
         JobMetaInfos for each run."""
         modelSuite.resultsList = []
@@ -220,22 +230,22 @@ class JobRunner:
             assert isinstance(result, credo.modelresult.ModelResult)
             modelSuite.resultsList.append(result)
         return modelSuite.resultsList
-    
+
     def runSuite(self, modelSuite, prefixStr=None, extraCmdLineOpts=None,
             dryRun=False, maxRunTime=None, runSuiteNonBlocking=None,
             writeRecords=True):
         """Run each ModelRun in the suite - with optional extra cmd line opts.
-        Will also write XML records of each ModelRun and ModelResult in the 
+        Will also write XML records of each ModelRun and ModelResult in the
         suite.
 
         Input arguments same as for :meth:`.runModel`, except those listed
         below:
 
-        :keyword runSuiteNonBlocking: controls whether the suite will be 
+        :keyword runSuiteNonBlocking: controls whether the suite will be
            run "non-blocking", i.e. all modelRuns submitted initially, then
            a separate phase to block until they're all completed.
 
-        :keyword writeRecords: sets whether you want each ModelRun in the 
+        :keyword writeRecords: sets whether you want each ModelRun in the
            suite, and each ModelResult generated, to automatically write
            an XML record of itself in default location as it is run/produced.
 
@@ -244,7 +254,7 @@ class JobRunner:
 
         print "Running the %d modelRuns specified in the suite" % \
             (len(modelSuite.runs))
-    
+
         if runSuiteNonBlocking is None:
             runSuiteNonBlocking = self.runSuiteNonBlockingDefault
 
@@ -282,17 +292,17 @@ class JobRunner:
 
         return modelSuite.resultsList
 
-    def attachPlatformInfo(self, jobMI):    
+    def attachPlatformInfo(self, jobMI):
         """Attach provenance info relevant to the platform used to run the
         job to the JobMetaInfo object."""
         jobMI.platform = {}
-        platInfo = ['system', 'version', 'release', 'machine', 'node'] 
+        platInfo = ['system', 'version', 'release', 'machine', 'node']
         aGetter = operator.attrgetter(*platInfo)
         pFuncs = aGetter(platform)
         for prop, pFunc in zip(platInfo, pFuncs):
             jobMI.platform[prop] = pFunc()
-            
-    def attachPerformanceInfo(self, jobMI):    
+
+    def attachPerformanceInfo(self, jobMI):
         """Attach relevant performance information to the jobMI
         (:class:`~JobMetaInfo`), such as time use,
         memory use, etc"""
@@ -331,16 +341,16 @@ class ModelRunRegularError(ModelRunError):
             "Std out and error logs saved to files %s and %s, "\
             "Std error msg was:\n%s\nLast %d lines of std out msg was:\n%s"\
             % (self.modelName, self.retCode,
-                self.stdOutFilename, self.stdErrFilename, 
+                self.stdOutFilename, self.stdErrFilename,
                 self.stdErrMsg, self.tailLen,
                 "".join(self.stdOutFileTail))
 
 
 class ModelRunTimeoutError(ModelRunRegularError):
     """An Exception for when Models fail to run due to timing out.
-    
+
     .. attribute:: maxRunTime
-    
+
        maximum time to run that the model exceeded, in seconds.
     """
     def __init__(self, modelName, stdOutFilename, stdErrFilename,
@@ -348,30 +358,30 @@ class ModelRunTimeoutError(ModelRunRegularError):
         ModelRunRegularError.__init__(self, modelName, None, stdOutFilename,
             stdErrFilename)
         self.maxRunTime = maxRunTime
-    
+
     def __str__(self):
         return "Failed to run model '%s' due to timeout, max time was"\
             " %s\n"\
             "Std out and error logs saved to files %s and %s, "\
             "Std error msg was:\n%s\nLast %d lines of std out msg was:\n%s"\
             % (self.modelName, str(timedelta(seconds=self.maxRunTime)),
-                self.stdOutFilename, self.stdErrFilename, 
+                self.stdOutFilename, self.stdErrFilename,
                 self.stdErrMsg, self.tailLen,
                 "".join(self.stdOutFileTail))
 
 class ModelRunLaunchError(ModelRunError):
     """An Exception for when Models fail to run due to being unable to launch
     the run process in some way.
-    
+
     .. attribute:: runExecCmd
-    
+
        command used to launch the job.
     """
     def __init__(self, modelName, runExecCmd, launchHint=None):
         ModelRunError.__init__(self, modelName)
         self.runExecCmd = runExecCmd
         self.launchHint = launchHint
-    
+
     def __str__(self):
         retStr = "Failed to run model '%s' due to being unable to launch"\
             " run with command '%s'.\n"\
