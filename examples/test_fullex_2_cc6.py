@@ -50,7 +50,7 @@ def t2_to_waiwera(geofilename, datfilename, basepath=None):
     not always true.
     """
     from mulgrids import mulgrid
-    from t2data_json import t2data_export_json
+    from t2data import t2data
     from os import getcwd, chdir
     from os.path import splitext, basename
     import json
@@ -63,7 +63,7 @@ def t2_to_waiwera(geofilename, datfilename, basepath=None):
         os.chdir(basepath)
 
     geo = mulgrid(geofilename)
-    dat = t2data_export_json(datfilename)
+    dat = t2data(datfilename)
 
     geobase, ext = splitext(basename(geofilename))
     datbase, ext = splitext(basename(datfilename))
