@@ -11,6 +11,9 @@ http://www.underworldcode.org.
 For more details about the design of CREDO and how to run it, see the
 documentation in the doc sub-directory.
 
+This fork of CREDO was developed at the University of Auckland for
+benchmarking the Waiwera geothermal flow simulator.
+
 License and authors
 -------------------
 
@@ -25,6 +28,11 @@ The main contributors to CREDO's coding, design and development thus far are:
  * Owen Kaluza 
  * Louis Moresi
  * Steve Quenette
+
+The University of Auckland fork of CREDO was developed by:
+
+* Angus Yeh
+* Adrian Croucher
 
 Acknowledgements
 ----------------
