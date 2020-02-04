@@ -1,2 +1,14 @@
+*~
 *.pyc
 .*.sw*
+
+doc/_build/*
+doc/temp
+sampledoc_tut*
+credo/io/tests/output
+credo/systest/tests/output
+credo/tests/output/*
+
+build/
+dist/
+waiwera_credo.egg-info/
