@@ -30,7 +30,7 @@ The main contributors to CREDO's coding, design and development thus far are:
  * Louis Moresi
  * Steve Quenette
 
-The University of Auckland fork of CREDO was developed by:
+The Waiwera fork of CREDO was developed by:
 
  * Angus Yeh
  * Adrian Croucher
@@ -54,8 +54,17 @@ For a list of changes that occurred in each release, see the files in the
 Basic Installation instructions
 -------------------------------
 
-(For more detailed installation instructions, see the "Installation & setup
-quickstart instructions" section of the CREDO documentation.)
+The Waiwera fork of CREDO can be installed from `PyPI
+<https://pypi.org/project/waiwera-credo>`_ using ``pip``, e.g. ``pip
+install waiwera-credo`` (or ``pip install --user waiwera-credo`` to
+install locally, e.g. if you don't have permissions to install
+system-wide Python packages).
+
+The installation instructions for the original CREDO toolkit are below.
+
+(For more detailed
+installation instructions, see the "Installation & setup quickstart
+instructions" section of the CREDO documentation.)
 
 To run CREDO scripts directly from the command line, you need to set up several
 environment variables. These are:
