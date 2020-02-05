@@ -1,12 +1,11 @@
 import setuptools
-import re
 
 with open("README.rst", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
     name="waiwera-credo",
-    version="2.0.0",
+    version="2.0.1",
     author="Waiwera Project",
     author_email="waiwera.project@gmail.com",
     description="Fork of CREDO computational model benchmarking toolkit, for use with the Waiwera geothermal flow simulator",
@@ -19,5 +18,6 @@ setuptools.setup(
         "License :: OSI Approved :: GNU Lesser General Public License v2 (LGPLv2)",
         "Operating System :: OS Independent",
     ],
-    python_requires='>=2.7'
+    python_requires='>=2.7',
+    install_requires=['matplotlib', 'Pillow', 'h5py', 'Shapely', 'docutils', 'reportlab']
 )
