@@ -261,7 +261,7 @@ class SysTest:
         self.configureTestComps()
 
     def runTest(self, jobRunner, postProcFromExisting=False,
-            createReports=True):
+                createReports=True, extraCmdLineOpts=None):
         """Run this sysTest, and return the
         :class:`~credo.systest.api.SysTestResult` it produces.
         Will also write an XML record of the System test, and each ModelRun
@@ -292,6 +292,7 @@ class SysTest:
             self.mSuite.preRunCleanup()
             try:
                 suiteResults = jobRunner.runSuite(self.mSuite,
+                    extraCmdLineOpts=extraCmdLineOpts,
                     maxRunTime=self.timeout, writeRecords=True)
             except Exception, mre:
                 suiteResults = None
