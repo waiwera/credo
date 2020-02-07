@@ -61,9 +61,12 @@ class WaiweraModelRun(ModelRun):
     def getModelRunCommand(self, extraCmdLineOpts=None):
         """ Note: this is called AFTER .preRunPreparation() """
         if self._input_filename:
-            return " ".join([self._simulator, self._input_filename])
+            cmd = " ".join([self._simulator, self._input_filename])
         else:
-            return self._simulator
+            cmd = self._simulator
+        if extraCmdLineOpts:
+            cmd += " " + extraCmdLineOpts
+        return cmd
 
     def createModelResult(self):
         """ Note: this is called AFTER .postRunCleanup() """
