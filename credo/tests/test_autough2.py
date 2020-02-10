@@ -1,73 +1,13 @@
-""" different ModelResults for different simulators """
+""" test ModelResult for AUTOUGH2 """
 
 import unittest
 import os, sys
 
-import numpy
+import numpy as np
 
-from credo.waiwera import WaiweraModelResult
 from credo.t2model import T2ModelResult
 
 THIS_DIR = os.path.dirname(os.path.realpath(__file__))
-
-class TestWaiweraModelResult(unittest.TestCase):
-    def setUp(self):
-        self.mres = WaiweraModelResult('test_waiwera',
-                                outputPath=THIS_DIR,
-                                h5_filename='mres_waiwera_1.h5')
-
-        self.mres2 = WaiweraModelResult('test_waiwera_2',
-                                outputPath=THIS_DIR,
-                                h5_filename='problem6.h5',
-                                input_filename='problem6.json')
-
-    def tearDown(self):
-        pass
-
-    def test_getfield(self):
-        p = self.mres.getFieldAtOutputIndex('fluid_pressure', -1)
-        self.assertEqual(len(p), 1600)
-        self.assertAlmostEqual(p[800], 1.0525784029355975E7, places=7)
-
-        p = self.mres.getFieldAtOutputIndex('fluid_pressure', 0)
-        self.assertEqual(p[0], 101350.0)
-
-    def test_getposition(self):
-        p = self.mres.getPositions()
-        self.assertEqual(len(p), 1600)
-
-        expected = [249.99999999999997, 249.99999999999997, -99.99999999999999]
-        for i in range(3):
-            self.assertAlmostEqual(p[800][i], expected[i], places=7)
-
-    def test_gethistory(self):
-        expected = [101350.0, 1.0525784029355975E7]
-        expected_times = [0.0, 1.0E15]
-
-        t, phist = self.mres.getFieldHistoryAtCell('fluid_pressure', 800)
-        for p,pe in zip(phist, expected):
-            self.assertAlmostEqual(p, pe, places=7)
-
-        times = self.mres.getTimes()
-        for t,te in zip(times, expected_times):
-            self.assertAlmostEqual(t, te, places=7)
-
-    def test_getothers(self):
-        # other non h5 data, these can be easily checked in 'problem6.dat'
-        v = self.mres2.getFieldAtOutputIndex('geom_volume', 1234)
-        self.assertListEqual(list(v[:100]), [2.4e8]*100)
-        self.assertListEqual(list(v[100:125]), [4.8e8]*25)
-
-        v = self.mres2.getFieldAtOutputIndex('rock_porosity', 1234)
-        self.assertListEqual(list(v[:25]), [0.2]*25) # rck 1
-        self.assertListEqual(list(v[25:100]), [0.25]*75) # rck 2
-        self.assertListEqual(list(v[100:]), [0.2]*25) # rck 1
-
-        v = self.mres2.getFieldAtOutputIndex('rock_permeability1', 1234)
-        self.assertListEqual(list(v[:25]), [1.0e-13]*25) # rck 1
-        self.assertListEqual(list(v[25:100]), [2.0e-13]*75) # rck 2
-        self.assertListEqual(list(v[100:]), [1.0e-13]*25) # rck 1
-
 
 class TestAUT2Model(unittest.TestCase):
     def setUp(self):
@@ -124,8 +64,8 @@ class TestAUT2Model(unittest.TestCase):
         times, phist = self.mres.getFieldHistoryAtCell('Pressure', 1679)
         times, phist_map = self.mres_map.getFieldHistoryAtCell('Pressure', 1599)
 
-        self.assertEqual(type(phist), numpy.ndarray)
-        self.assertEqual(type(expected), numpy.ndarray)
+        self.assertEqual(type(phist), np.ndarray)
+        self.assertEqual(type(expected), np.ndarray)
 
         for p,pmap,pe in zip(phist, phist_map, expected):
             self.assertEqual(p, pe)
@@ -189,7 +129,5 @@ class TestCustomField(unittest.TestCase):
         t, phist = mres.getFieldHistoryAtCell('p_hist_in_bar', 30)
         self.assertEqual(phist[1], bh_f[1])
 
-
 if __name__ == '__main__':
     unittest.main()
-
