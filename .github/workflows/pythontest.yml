@@ -1,0 +1,36 @@
+name: Unit tests
+
+on:
+  push:
+    branches:
+    - '*'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [2.6, 2.7]
+    steps:
+    - uses: actions/checkout@v1
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v1
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install matplotlib scipy Pillow h5py Shapely docutils reportlab
+        mkdir pytough
+        cd pytough
+        git clone https://github.com/acroucher/PyTOUGH.git .
+        pip install .
+        cd ..
+    - name: Unit tests
+      env:
+        TWINE_USERNAME: __token__
+        TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+      run: |
+        cd credo/tests
+        python -c "import sys; print(sys.version)"
+        python testAll.py
