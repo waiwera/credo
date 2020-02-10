@@ -1,18 +1,20 @@
 CREDO
 =====
 
+![Unit tests](https://github.com/waiwera/credo/workflows/Unit%20tests/badge.svg?branch=testing)
+
 CREDO is a toolkit for running, analysing and benchmarking computational models.
 
 CREDO was originally developed to support better benchmarking and profiling
 of the Underworld Geophysics modelling application, based on the StGermain
-framework. For more on Underworld (and StGermain), see
-http://www.underworldcode.org.
+framework. For more on Underworld (and StGermain), see the Underworld
+[website](http://www.underworldcode.org).
 
 For more details about the design of CREDO and how to run it, see the
 documentation in the doc sub-directory.
 
 This fork of CREDO was developed at the University of Auckland for
-benchmarking the `Waiwera <https://waiwera.github.io/>`_ geothermal
+benchmarking the [Waiwera](https://waiwera.github.io/) geothermal
 flow simulator.
 
 License and authors
@@ -54,11 +56,11 @@ For a list of changes that occurred in each release, see the files in the
 Basic Installation instructions
 -------------------------------
 
-The Waiwera fork of CREDO can be installed from `PyPI
-<https://pypi.org/project/waiwera-credo>`_ using ``pip``, e.g. ``pip
-install waiwera-credo`` (or ``pip install --user waiwera-credo`` to
-install locally, e.g. if you don't have permissions to install
-system-wide Python packages).
+The Waiwera fork of CREDO can be installed from
+[PyPI](https://pypi.org/project/waiwera-credo) using ``pip``,
+e.g. ``pip install waiwera-credo`` (or ``pip install --user
+waiwera-credo`` to install locally, e.g. if you don't have permissions
+to install system-wide Python packages).
 
 The installation instructions for the original CREDO toolkit are below.
 
