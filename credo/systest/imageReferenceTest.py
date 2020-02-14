@@ -1,3 +1,4 @@
+from __future__ import print_function
 from builtins import str
 ##  Copyright (C), 2010, Monash University
 ##  Copyright (C), 2010, Victorian Partnership for Advanced Computing (VPAC)
@@ -92,9 +93,9 @@ class ImageReferenceTest(api.SingleModelSysTest):
     def regenerateFixture(self, jobRunner):
         '''Do a run to create the reference images to use.'''
 
-        print "Running the model for % steps creating reference images every %d"\
+        print("Running the model for % steps creating reference images every %d"\
             " steps, and saving in dir '%s'" % \
-            (self.runSteps, self.compareEvery, self.expectedSolnPath)
+            (self.runSteps, self.compareEvery, self.expectedSolnPath))
         mRun = self._createDefaultModelRun(self.testName+"-createReference",
             self.expectedSolnPath)
         mRun.simParams = SimParams(nsteps=self.runSteps, cpevery=0,

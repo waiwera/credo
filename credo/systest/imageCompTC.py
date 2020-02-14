@@ -1,3 +1,4 @@
+from __future__ import print_function
 from builtins import zip
 from builtins import str
 ##  Copyright (C), 2010, Monash University
@@ -107,7 +108,7 @@ class ImageCompTC(SingleRunTestComponent):
         refImageFname = os.path.join(self.refPath, self.imageFilename)
         if not os.path.exists(refImageFname):
             statusMsg += "Reference image '%s' not found!\n" % refImageFname
-            print statusMsg
+            print(statusMsg)
             self._setStatus(False, statusMsg)
             return False
 
@@ -118,7 +119,7 @@ class ImageCompTC(SingleRunTestComponent):
         genImageFname = os.path.join(genPath, self.imageFilename)
         if not os.path.exists(genImageFname):
             statusMsg += "Generated image '%s' not found!\n" % genImageFname
-            print statusMsg
+            print(statusMsg)
             self._setStatus(False, statusMsg)
             return False
 
@@ -136,7 +137,7 @@ class ImageCompTC(SingleRunTestComponent):
             statusMsg = "Image comp error within tolerances %s"\
                 " of ref image.\n"\
                 % (floatsToStr(self.tol))
-        print statusMsg
+        print(statusMsg)
         self._setStatus(overallResult, statusMsg)
         return overallResult
 

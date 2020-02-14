@@ -1,3 +1,4 @@
+from __future__ import print_function
 from builtins import str
 ##  Copyright (C), 2010, Monash University
 ##  Copyright (C), 2010, Victorian Partnership for Advanced Computing (VPAC)
@@ -110,10 +111,10 @@ class HighResReferenceTest(SingleModelSysTest):
         os.remove(ffile)
         highRes = [int(self.highResRatio * res) for res in origRes]
 
-        print "Running the model to create a high-res reference solution "\
+        print("Running the model to create a high-res reference solution "\
             " after %d steps and with res %g times the original, "\
             " and saving in dir '%s'" % \
-            (self.runSteps, self.highResRatio, self.expectedSolnPath)
+            (self.runSteps, self.highResRatio, self.expectedSolnPath))
         mRun = self._createDefaultModelRun(self.testName+"-createReference",
             self.expectedSolnPath)
         mRun.simParams = SimParams(nsteps=self.runSteps, cpevery=self.runSteps,

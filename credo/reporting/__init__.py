@@ -24,6 +24,7 @@
 """This module allows reporting on CREDO's major objects
 :class:`credo.systest.api.SysTest` and potentially others like Suites
 and Experiments."""
+from __future__ import print_function
 
 # This maps acronyms usable in factory method below to modules to use
 GenNameToModuleMaps = {
@@ -45,9 +46,9 @@ def getGenerators(genNames, *args, **kwargs):
             fullName = "credo.reporting.%s" % modName
             imp = __import__(fullName)
             mod = sys.modules[fullName]
-        except ImportError, e:
-            print "failed to import and create a generator of type '%s', msg"\
-                " was: %s" % (genName, e)
+        except ImportError as e:
+            print("failed to import and create a generator of type '%s', msg"\
+                " was: %s" % (genName, e))
             continue
         generators.append(mod.generator(*args, **kwargs))
     return generators

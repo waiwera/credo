@@ -25,6 +25,7 @@
 """Collection of utility functions for plotting interesting aspects of models
 """
 from __future__ import division
+from __future__ import print_function
 from builtins import zip
 from past.utils import old_div
 
@@ -40,8 +41,8 @@ try:
     matplotlib.use('Agg')
     import matplotlib.pyplot as plt
 except ImportError:
-    print "Error, to use CREDO built-in plot functions, please "\
-        " install the matplotlib python library."
+    print("Error, to use CREDO built-in plot functions, please "\
+        " install the matplotlib python library.")
 
 def getValsFromAllRuns(mResults, outputName):
     resVals = [mRes.freqOutput.getValuesArray(outputName) for mRes in mResults]

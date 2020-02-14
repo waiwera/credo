@@ -1,3 +1,4 @@
+from __future__ import print_function
 from builtins import str
 from builtins import range
 ##  Copyright (C), 2010, Monash University
@@ -62,8 +63,8 @@ def testAllCvgWithScale(lenScales, fieldErrorData, fieldCvgCriterions):
 def printCvgResult(fieldName, fieldConvResults):
     for dofI, dofConv in enumerate(fieldConvResults):
         cvgRate, corr = dofConv
-        print "Field %s, dof %d - cvg rate %6g, corr %6f" \
-            % (fieldName, dofI, cvgRate, corr)
+        print("Field %s, dof %d - cvg rate %6g, corr %6f" \
+            % (fieldName, dofI, cvgRate, corr))
 
 def testCvgWithScale(fieldName, fieldConvResults, fieldCvgCriterion):
     '''Tests that for a given field, given a list of fieldConvResults
@@ -77,21 +78,21 @@ def testCvgWithScale(fieldName, fieldConvResults, fieldCvgCriterion):
 
     for dofI, dofConv in enumerate(fieldConvResults):
         cvgRate, corr = dofConv
-        print "Field %s, dof %d - cvg rate %6g, corr %6f" \
-            % (fieldName, dofI, cvgRate, corr)
+        print("Field %s, dof %d - cvg rate %6g, corr %6f" \
+            % (fieldName, dofI, cvgRate, corr))
         #plt.plot(resLogs, errLogs)
         #plt.show()
 
         dofTestStatus = True
         if cvgRate < reqCvgRate:
             dofTestStatus = False
-            print "  -Bad! - cvg %6g less than req'd %6g for this field."\
-                % (cvgRate, reqCvgRate)
+            print("  -Bad! - cvg %6g less than req'd %6g for this field."\
+                % (cvgRate, reqCvgRate))
         if corr < reqCorr:
             dofTestStatus = False
-            print "  -Bad! - corr %6g less than req'd %6g for this field."\
-                % (corr, reqCorr)
-        if dofTestStatus: print "  -Good"
+            print("  -Bad! - corr %6g less than req'd %6g for this field."\
+                % (corr, reqCorr))
+        if dofTestStatus: print("  -Good")
         dofStatuses.append(dofTestStatus)
 
     return all(dofStatuses)
@@ -240,9 +241,9 @@ class FieldCvgWithScaleTC(MultiRunTestComponent):
                 self.fCvgMeetsReq[fName] = fResult
             else:
                 printCvgResult(fName, fieldConv)
-                print "  -Warning: Field specified for comparison, '%s',"\
+                print("  -Warning: Field specified for comparison, '%s',"\
                     " doesn't have convergence criteria provided - thus"\
-                    " not checking." % fName
+                    " not checking." % fName)
                 self.fCvgMeetsReq[fName] = None
 
         overallResult = all(self.fCvgResults.values())

@@ -48,7 +48,7 @@ def linreg(X, Y):
     & field errors, to calculate convergence info, such as
     :func:`credo.analysis.fields.calcFieldCvgWithScale`.
     """
-    if len(X) != len(Y):  raise ValueError, 'unequal length'
+    if len(X) != len(Y):  raise ValueError('unequal length')
     N = len(X)
     Sx = Sy = Sxx = Syy = Sxy = 0.0
     for x, y in zip(X, Y):

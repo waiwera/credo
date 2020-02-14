@@ -1,3 +1,4 @@
+from __future__ import print_function
 from builtins import object
 import os, sys
 import subprocess, shlex
@@ -95,8 +96,8 @@ def getResDict(resFName, fmtSpec=TIME_FMT_SPEC, fmtSep=TIME_FMT_SEP):
         try:
             name, val = infoSpec.split(fmtSpec)
         except ValueError:
-            print "Bad performance info spec '%s' - splits into too many"\
-                " entries" % (infoSpec)
+            print("Bad performance info spec '%s' - splits into too many"\
+                " entries" % (infoSpec))
             pass
         else:
             #NB: assuming all values here are floats.
@@ -141,11 +142,11 @@ if __name__ == "__main__":
     #runJobCmd = "./Underworld RayleighTaylorBenchmark.xml --maxTimeSteps=1"
     runJobCmd = " ".join(sys.argv[1:])
     if runJobCmd.strip() == "":
-        print "You need to supply a command to time as an argument."
+        print("You need to supply a command to time as an argument.")
         sys.exit()
 
-    print "*" * 60
-    print "for command '%s'" % runJobCmd
+    print("*" * 60)
+    print("for command '%s'" % runJobCmd)
 
     fmtEls = [("real", "E"), ("pageFaults", "F"), ("avgMem(KB)", "K"),
         ("maxMem(KB)", "M")]
@@ -164,4 +165,4 @@ if __name__ == "__main__":
 
     # Now parse resulting perf info into a dict
     resDict = getResDict(resFName)
-    print "performance info is %s" % resDict
+    print("performance info is %s" % resDict)

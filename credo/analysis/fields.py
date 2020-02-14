@@ -37,6 +37,7 @@ across multiple runs, e.g. :func:`~calcFieldCvgWithScale`.
    In future it's planned to add functions that load a checkpointed field result
    into Python for further analysis, but this feature is not yet implemented.
 """
+from __future__ import print_function
 from builtins import str
 from builtins import map
 from builtins import range
@@ -172,8 +173,8 @@ class FieldComparisonResult(object):
             matplotlib.use('Agg')
             import matplotlib.pyplot as plt
         except ImportError:
-            print "Error, to use CREDO built-in plot functions, please "\
-                " install the matplotlib python library."
+            print("Error, to use CREDO built-in plot functions, please "\
+                " install the matplotlib python library.")
             return
 
         assert self.cvgFileInfo

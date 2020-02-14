@@ -1,3 +1,4 @@
+from __future__ import print_function
 from builtins import str
 from builtins import range
 ##  Copyright (C), 2010, Monash University
@@ -78,8 +79,8 @@ class PBSJobRunner(JobRunner):
         # Navigate to the model's base directory
         startDir = os.getcwd()
         if modelRun.basePath != startDir:
-            print "Changing to ModelRun's specified base path '%s'" % \
-                (modelRun.basePath)
+            print("Changing to ModelRun's specified base path '%s'" % \
+                (modelRun.basePath))
             os.chdir(modelRun.basePath)
 
         # For PBS runs, want to ensure the output path is an abs path:-
@@ -107,9 +108,9 @@ class PBSJobRunner(JobRunner):
         pbsSubCmd = "%s %s %s" % (PBS_SUB_COMMAND, pbsQueueStr, pbsFilename)
 
         # Run the run command, sending stdout and stderr to defined log paths
-        print "Running model '%s' via PBS, submitted filename %s"\
+        print("Running model '%s' via PBS, submitted filename %s"\
             " with command '%s', with underlying MPI command '%s' ..."\
-            % (modelRun.name, pbsFilename, PBS_SUB_COMMAND, runCommand)
+            % (modelRun.name, pbsFilename, PBS_SUB_COMMAND, runCommand))
 
         # If we're only doing a dry run, return here.
         if dryRun == True:
@@ -125,7 +126,7 @@ class PBSJobRunner(JobRunner):
             qsubStdErr = open("%s.stderr" % pbsFilename, "w+")
             retCode = subprocess.call(pbsSubArgs, shell=False,
                 stdout=qsubStdOut, stderr=qsubStdErr)
-        except OSError, ose:
+        except OSError as ose:
             raise ModelRunLaunchError(modelRun.name, pbsSubCmd,
                 "Check qsub working properly, OSError was %s" % (ose))
 
@@ -140,14 +141,14 @@ class PBSJobRunner(JobRunner):
         qsubStdErr.close()
         # TODO: delete the qsub files if successful?
         if modelRun.basePath != startDir:
-            print "Restoring initial path '%s'" % (startDir)
+            print("Restoring initial path '%s'" % (startDir))
             os.chdir(startDir)
         return jobMetaInfo
 
     def _parseQSubOutput(self, qsubStdOut, qsubStdErr):
         #TODO
-        print "Going to parse qsub output '%s', stderr '%s'" % \
-            (qsubStdOut, qsubStdErr)
+        print("Going to parse qsub output '%s', stderr '%s'" % \
+            (qsubStdOut, qsubStdErr))
         jobId = qsubStdOut
         return jobId
 
@@ -211,8 +212,8 @@ class PBSJobRunner(JobRunner):
         # via self.runType = "PBS"
         startDir = os.getcwd()
         if modelRun.basePath != startDir:
-            print "Changing to ModelRun's specified base path '%s'" % \
-                (modelRun.basePath)
+            print("Changing to ModelRun's specified base path '%s'" % \
+                (modelRun.basePath))
             os.chdir(modelRun.basePath)
         jobID = jobMetaInfo.jobId
         pollInterval = modelRun.jobParams['pollInterval']
@@ -245,18 +246,18 @@ class PBSJobRunner(JobRunner):
             #jobName and modelName MUST be THE SAME
             for ii in range(len(qstatus)):
                 if qstatus[ii] == "Unknown":
-                    print "job has already run\n"
+                    print("job has already run\n")
                     gotResult = True
                 elif qstatus[ii] == "R":
-                    print "job is still running\n"
+                    print("job is still running\n")
                 elif qstatus[ii] == "Q":
-                    print "job is queued\n"
+                    print("job is queued\n")
                 elif qstatus[ii] == "C":
-                    print "job is cancelled\n"
+                    print("job is cancelled\n")
                     gotResult = True
                     pbsError = True
                 elif qstatus[ii] == "E":
-                    print "job has ended\n"
+                    print("job has ended\n")
                     gotResult = True
 
         # Check status of run (eg error status)
@@ -282,13 +283,13 @@ class PBSJobRunner(JobRunner):
             f = open(fileName, 'r')
             lines = f.read()
             if lines == "":
-                print "error in file no output obtained\n"
+                print("error in file no output obtained\n")
                 raise ModelRunRegularError(modelRun.name, retCode,
                     stdOutFilename, stdErrFilename)
             else:
-                print "Model ran successfully (output saved to %s, std out"\
-                " & std error to %s." % (absOutPath, absLogPath)
-        print "Doing post-run tidyup:"
+                print("Model ran successfully (output saved to %s, std out"\
+                " & std error to %s." % (absOutPath, absLogPath))
+        print("Doing post-run tidyup:")
         modelRun.postRunCleanup()
 
         # Construct a modelResult
@@ -309,6 +310,6 @@ class PBSJobRunner(JobRunner):
         mResult.jobMetaInfo = jobMetaInfo
         # Navigate to the model's base directory
         if modelRun.basePath != startDir:
-            print "Restoring initial path '%s'" % (startDir)
+            print("Restoring initial path '%s'" % (startDir))
             os.chdir(startDir)
         return mResult

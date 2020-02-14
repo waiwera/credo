@@ -1,3 +1,4 @@
+from __future__ import print_function
 ##  Copyright (C), 2010, Monash University
 ##  Copyright (C), 2010, Victorian Partnership for Advanced Computing (VPAC)
 ##
@@ -36,15 +37,15 @@ class SkeletonModelRun(ModelRun):
         self.jobParams = None
 
     def writeInfoXML(self):
-        print "writeInfoXML() called for ModelRun %s." % self.name
+        print("writeInfoXML() called for ModelRun %s." % self.name)
 
 class SkeletonModelResult(ModelResult):
     def __init__(self, modelName):
         self.modelName = modelName
 
     def writeRecordXML(self):
-        print "%s() called for ModelResult of model %s." \
-            % (inspect.stack()[0][3], self.modelName)
+        print("%s() called for ModelResult of model %s." \
+            % (inspect.stack()[0][3], self.modelName))
 
 class SkeletonModelSuite(ModelSuite):
     def __init__(self):

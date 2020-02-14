@@ -27,6 +27,7 @@ This defines the two key classes of the model, :class:`.SysTest` and
 :class:`.TestComponent`, from which actual examples of System tests
 or Test components need to inherit.
 """
+from __future__ import print_function
 from builtins import zip
 from builtins import str
 from builtins import range
@@ -73,7 +74,7 @@ class SysTestResult(object):
 
     def printDetailMsg(self):
         if self.detailMsg:
-            print self.detailMsg
+            print(self.detailMsg)
 
     def setRecordFile(self, recordFile):
         """Save the record file: as an absolute path."""
@@ -278,12 +279,12 @@ class SysTest(object):
         :returns: SysTestResult, and list of ModelResults
            (since latter may be useful for further post-processing)"""
 
-        print "Running '%s' system test (%s):" % (self.testName, self.testType)
+        print("Running '%s' system test (%s):" % (self.testName, self.testType))
         startDir = os.getcwd()
         os.chdir(self.basePath)
-        print "Attaching test component analysis ops to suite ModelRuns"
+        print("Attaching test component analysis ops to suite ModelRuns")
         self.attachAllTestCompOps()
-        print "Writing pre-test info to XML"
+        print("Writing pre-test info to XML")
         self.writePreRunXML()
         if postProcFromExisting == False:
             if len(self.mSuite.runs) < 1:
@@ -298,34 +299,34 @@ class SysTest(object):
                 suiteResults = jobRunner.runSuite(self.mSuite,
                     extraCmdLineOpts=extraCmdLineOpts,
                     maxRunTime=self.timeout, writeRecords=True)
-            except Exception, mre:
+            except Exception as mre:
                 suiteResults = None
                 sysTestResult = self.setErrorStatus(str(mre))
             else:
-                print "Processing sys test result:"
+                print("Processing sys test result:")
                 sysTestResult = self.getStatus(suiteResults)
         else:
-            print "(Reading existing results from %s)" % \
-                (os.path.join(self.basePath, self.outputPathBase))
+            print("(Reading existing results from %s)" % \
+                (os.path.join(self.basePath, self.outputPathBase)))
             try:
                 suiteResults = self.mSuite.readResultsFromPath(self.basePath,
                     overrideOutputPath=self.outputPathBase)
-            except msuite.ModelResultNotExistError, e:
+            except msuite.ModelResultNotExistError as e:
                 raise ValueError("%s (Do you need to generate"\
                     " results first by running this method with" \
                     " postProcFromExisting=False?)" \
                       % (e))
-            print "Processing sys test result:"
+            print("Processing sys test result:")
             sysTestResult = self.getStatus(suiteResults)
 
         # TODO: Do we need to allow any custom post-proc here?
         # Including custom getStatus?
-        print "%s '%s' result: **%s**" % \
-            (self.testType, self.testName, sysTestResult)
+        print("%s '%s' result: **%s**" % \
+            (self.testType, self.testName, sysTestResult))
         if isinstance(sysTestResult, CREDO_ERROR):
-            print "Error msg: %s" % (sysTestResult.detailMsg)
+            print("Error msg: %s" % (sysTestResult.detailMsg))
         outFilePath = self.updateXMLWithResult(suiteResults)
-        print "Saved test result to %s" % (outFilePath)
+        print("Saved test result to %s" % (outFilePath))
         # Don't assume reporting functions know how to handle error runs.
         if createReports and not isinstance(sysTestResult, CREDO_ERROR):
             self.createReports(suiteResults)
@@ -413,26 +414,26 @@ class SysTest(object):
                 inIter)
         for runI, modelResult in enumerate(resultsSet):
             if len(self.testComps[runI]) > 0:
-                print "Testing single-run T.C.s for model result %d" % (runI)
+                print("Testing single-run T.C.s for model result %d" % (runI))
                 if self.mSuite.iterGen is not None:
-                    print "(var-generated, with variants applied of:\n%s)"\
-                        % varDicts[runI]
+                    print("(var-generated, with variants applied of:\n%s)"\
+                        % varDicts[runI])
             for tcName, tComp in self.testComps[runI].items():
                 tcResult = tComp.check(modelResult)
                 self.tcResults[runI][tcName] = tcResult
             runPassed[runI] = all(self.tcResults[runI].values())
             if len(self.testComps[runI]) > 0:
                 if runPassed[runI]:
-                    print "All single run test components for"\
-                        " run %d passed." % runI
+                    print("All single run test components for"\
+                        " run %d passed." % runI)
                 else:
                     #Do not break - we want to do all checks for sys tests
-                    print "at least one single run test component for"\
-                       " run %d failed." % runI
+                    print("at least one single run test component for"\
+                       " run %d failed." % runI)
         self.allsrPassed = all(runPassed)
         #Now do the Multi-run test components
         if len(self.multiRunTestComps) > 0:
-            print "Testing multi-run test components:"
+            print("Testing multi-run test components:")
         self.mrtcResults = {}
         for tcName, mrtComp in self.multiRunTestComps.items():
             tcResult = mrtComp.check(resultsSet)
@@ -440,9 +441,9 @@ class SysTest(object):
         self.allmrPassed = all(self.mrtcResults.values())
         if len(self.multiRunTestComps) > 0:
             if self.allmrPassed:
-                print "All multi-run test components passed."
+                print("All multi-run test components passed.")
             else:
-                print "at least one multi-run test component failed."
+                print("at least one multi-run test component failed.")
         if self.allsrPassed and self.allmrPassed:
             self.testStatus = CREDO_PASS(self.passMsg)
         else:
@@ -470,7 +471,7 @@ class SysTest(object):
             try:
                 tcByRun[runI] = self.testComps[runI][tcName]
                 tcRes[runI] = self.tcResults[runI][tcName]
-            except KeyError, e:
+            except KeyError as e:
                 if allowMissing:
                     tcByRun[runI] = None
                     tcRes[runI] = None
@@ -620,7 +621,7 @@ class SysTest(object):
         self._writeXMLSysTestBasicSpecification(specNode)
         try:
             self._writeXMLCustomSpec(specNode)
-        except AttributeError, ae:
+        except AttributeError as ae:
             raise NotImplementedError("Please implement a "\
                 " _writeXMLCustomSpec()"\
                 " method for your SysTest subclass: %s" % ae )
@@ -708,9 +709,9 @@ class SysTest(object):
                 # Remember customReports is an attribute function, not a
                 # bound method currently - see comment in setCustomReporting()
                 self.customReporting(self, mResults)
-            except Exception, e:
-                print "Failed to create report for SysTest %s, exception msg"\
-                    " was: %s" % (self.testName, e)
+            except Exception as e:
+                print("Failed to create report for SysTest %s, exception msg"\
+                    " was: %s" % (self.testName, e))
 
         self.updateXMLWithReports()
 
@@ -810,7 +811,7 @@ class SingleModelSysTest(SysTest):
         mrun.writeSolverOptsInfoXML(self.solverOpts, specNode)
         try:
             self._writeXMLCustomSpec(specNode)
-        except AttributeError, ae:
+        except AttributeError as ae:
             raise NotImplementedError("Please implement a "\
                 " _writeXMLCustomSpec()"\
                 " method for your SysTest subclass: %s" % ae )

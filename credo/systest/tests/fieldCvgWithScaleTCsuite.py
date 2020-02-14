@@ -1,3 +1,4 @@
+from __future__ import print_function
 ##  Copyright (C), 2010, Monash University
 ##  Copyright (C), 2010, Victorian Partnership for Advanced Computing (VPAC)
 ##
@@ -28,7 +29,7 @@ import credo.analysis.fields as fields
 
 # Convergence checker
 # StgFEM case
-print "\n** Results from real StgFEM data - from a Convergence file**"
+print("\n** Results from real StgFEM data - from a Convergence file**")
 cvgFilePath = "./output/cvgTest"
 lenScales, fErrorData = fields.getFieldScaleCvgData_SingleCvgFile(cvgFilePath)
 overallRes = testAllCvgWithScale(lenScales, fErrorData,

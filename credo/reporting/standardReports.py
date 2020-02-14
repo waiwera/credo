@@ -1,4 +1,5 @@
 from __future__ import division
+from __future__ import print_function
 from builtins import range
 from past.utils import old_div
 import os, math
@@ -122,7 +123,7 @@ def makeSuiteReport(mSuite, mResults, rGen, outName, imgPerRow=3):
         elements.extend(modelImagesDisplay(mSuite, rGen, level+1,
             imgPerRow=imgPerRow))
     rGen.makeDoc(elements, title, outName)
-    print "Saved report at %s (%s type)." % (outName, rGen.rType)
+    print("Saved report at %s (%s type)." % (outName, rGen.rType))
 
 
 def makeSciBenchReport(sciBTest, mResults, rGen, outName, imgPerRow=3):
@@ -182,6 +183,6 @@ def makeSciBenchReport(sciBTest, mResults, rGen, outName, imgPerRow=3):
         elements.extend(modelImagesDisplay(sciBTest.mSuite, rGen, level+1,
             imgPerRow=imgPerRow))
     rGen.makeDoc(elements, title, outName)
-    print "Saved report at %s (%s type)." % (outName, rGen.rType)
+    print("Saved report at %s (%s type)." % (outName, rGen.rType))
     # Update the list of generated reports
     sciBTest.generatedReports.append(outName)

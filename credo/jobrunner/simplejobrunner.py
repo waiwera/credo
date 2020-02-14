@@ -1,3 +1,4 @@
+from __future__ import print_function
 from builtins import str
 ##  Copyright (C), 2010, Monash University
 ##  Copyright (C), 2010, Victorian Partnership for Advanced Computing (VPAC)
@@ -88,8 +89,8 @@ class SimpleJobRunner(JobRunner):
         # Navigate to the model's base directory
         startDir = os.getcwd()
         if modelRun.basePath != startDir:
-            print "Changing to ModelRun's specified base path '%s'" % \
-                (modelRun.basePath)
+            print("Changing to ModelRun's specified base path '%s'" % \
+                (modelRun.basePath))
             os.chdir(modelRun.basePath)
 
         modelRun.checkValidRunConfig()
@@ -98,8 +99,8 @@ class SimpleJobRunner(JobRunner):
             extraCmdLineOpts)
 
         # Run the run command, sending stdout and stderr to defined log paths
-        print "Model: \"%s\"" % (modelRun.name)
-        print "Command: \"%s\"" % (runCommand)
+        print("Model: \"%s\"" % (modelRun.name))
+        print("Command: \"%s\"" % (runCommand))
 
         # If we're only doing a dry run, return here.
         if dryRun == True:
@@ -148,8 +149,8 @@ class SimpleJobRunner(JobRunner):
         # TODO: record extra info in "provenance" dict of jobMI,
         #  eg hostname, run command used, prefix, etc...
         if modelRun.basePath != startDir:
-            print "Restoring initial path '%s'" % \
-                (startDir)
+            print("Restoring initial path '%s'" % \
+                (startDir))
             os.chdir(startDir)
         self.attachPlatformInfo(jobMI)
         return jobMI
@@ -185,8 +186,8 @@ class SimpleJobRunner(JobRunner):
         # Navigate to the model's base directory
         startDir = os.getcwd()
         if modelRun.basePath != startDir:
-            print "Changing to ModelRun's specified base path '%s'" % \
-                (modelRun.basePath)
+            print("Changing to ModelRun's specified base path '%s'" % \
+                (modelRun.basePath))
             os.chdir(modelRun.basePath)
 
         if maxRunTime == None or maxRunTime <= 0:
@@ -210,8 +211,8 @@ class SimpleJobRunner(JobRunner):
             if timeOut:
                 # At this point, we know the process has run too long.
                 # From Python 2.6, change this to procHandle.kill()
-                print "Error: passed timeout of %s, sending quit signal." % \
-                    (str(timedelta(seconds=maxRunTime)))
+                print("Error: passed timeout of %s, sending quit signal." % \
+                    (str(timedelta(seconds=maxRunTime))))
                 os.kill(procHandle.pid, signal.SIGQUIT)
         # TODO: set finishTime
         for profiler in self.profilers:
@@ -231,16 +232,16 @@ class SimpleJobRunner(JobRunner):
             #  over-ride later absolute paths.
             absOutPath = os.path.join(modelRun.basePath, modelRun.outputPath)
             absLogPath = os.path.join(modelRun.basePath, modelRun.logPath)
-            print "Model ran successfully (output saved to path %s" %\
-                (absOutPath),
+            print("Model ran successfully (output saved to path %s" %\
+                (absOutPath), end=' ')
             if absLogPath != absOutPath:
-                print ", std out & std error to %s" % (absLogPath),
-            print ")."
+                print(", std out & std error to %s" % (absLogPath), end=' ')
+            print(").")
 
         # Now tidy things up after the run.
         jobMI.stdOutFile.close()
         jobMI.stdErrFile.close()
-        print "Doing post-run tidyup:"
+        print("Doing post-run tidyup:")
         modelRun.postRunCleanup()
 
         # Construct a modelResult
@@ -257,8 +258,8 @@ class SimpleJobRunner(JobRunner):
             profiler.attachPerformanceInfo(jobMI, mResult)
 
         if modelRun.basePath != startDir:
-            print "Restoring initial path '%s'" % \
-                (startDir)
+            print("Restoring initial path '%s'" % \
+                (startDir))
             os.chdir(startDir)
         return mResult
 
@@ -273,7 +274,7 @@ class SimpleJobRunner(JobRunner):
         f.write(runCommand+"\n")
         f.close()
         #Set as executable
-        os.chmod(fName, 0770)
+        os.chmod(fName, 0o770)
 
     def attachPlatformInfo(self, jobMI):
         JobRunner.attachPlatformInfo(self, jobMI)

@@ -51,6 +51,7 @@ see :ref:`credo-examples-systesting`.
    :class:`.api.TestComponent` implementations, you should `import
    credo.systest.api` to access the base classes of these.
 """
+from __future__ import print_function
 
 # NB: Python 2.5 doesn't allow "from .X import *" (import * with relative
 #  import syntax). So removed the previous "from .api import *" that was here
@@ -83,5 +84,5 @@ try:
     from .imageReferenceTest import ImageReferenceTest
     from .imageCompTC import ImageCompTC
 except ImportError:
-    print "Warning, cannot import the ImageReferenceTest for"\
-        " use since you don't have required libraries (PIL) installed."
+    print("Warning, cannot import the ImageReferenceTest for"\
+        " use since you don't have required libraries (PIL) installed.")

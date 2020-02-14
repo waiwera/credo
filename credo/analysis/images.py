@@ -25,6 +25,7 @@
 Original image test comparison scripts contributed by Owen Kaluza.
 You will need the Python Imaging Library (PIL) installed to use."""
 from __future__ import division
+from __future__ import print_function
 from builtins import zip
 from builtins import range
 from past.utils import old_div
@@ -164,11 +165,11 @@ def compare(imgFilename1, imgFilename2, verbose=False):
         return False
     #Colour comparison
     dist1 = colourDiff(img1, img2)
-    if verbose: print "Colour space difference: %f" % dist1
+    if verbose: print("Colour space difference: %f" % dist1)
     #Colour compare is not sensitive to flip/rotate so do
     #a simple pixel by pixel compare as well
     dist2 = pixelDiff20x20(img1, img2)
-    if verbose: print "Difference on 400 pixel subsample: %f" % dist2
+    if verbose: print("Difference on 400 pixel subsample: %f" % dist2)
     #Test fails if either value outside tolerance
     return dist1, dist2
 
@@ -176,4 +177,4 @@ def compare(imgFilename1, imgFilename2, verbose=False):
 if __name__ == "__main__":
     #Example usage, compare two images passed on command line
     diffs = compare(sys.argv[1], sys.argv[2])
-    print diffs
+    print(diffs)

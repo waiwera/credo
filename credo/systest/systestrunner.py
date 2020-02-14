@@ -23,6 +23,7 @@
 
 """Package for manipulation of a suite of system tests.
 Analogous to the role of the Pythun unittest TestRunner."""
+from __future__ import print_function
 from builtins import str
 from builtins import zip
 from builtins import object
@@ -96,8 +97,8 @@ class SysTestRunner(object):
         for testI, sysTest in enumerate(sysTests):
             sysTest.setupTest()
             jobRunner = credo.jobrunner.defaultRunner()
-            print "Running System test %d/%d, with name '%s':" \
-                % (testI+1, testTotal, sysTest.testName)
+            print("Running System test %d/%d, with name '%s':" \
+                % (testI+1, testTotal, sysTest.testName))
             testRes, mResults = sysTest.runTest(jobRunner, **kwargs)
             results.append(testRes)
         if printSummary:
@@ -125,10 +126,10 @@ class SysTestRunner(object):
         testTotal = len(suite.sysTests)
         subSuitesTotal = len(suite.subSuites)
         subText = "Sub-" if subSuiteMode else ""
-        print "Running System Test %sSuite for Project '%s', named '%s',"\
+        print("Running System Test %sSuite for Project '%s', named '%s',"\
             " containing %d direct tests and %d sub-suites:"\
             % (subText, suite.projectName, suite.suiteName, testTotal,
-             subSuitesTotal)
+             subSuitesTotal))
 
         suiteNode = self._createSuiteNode(suite)
         suiteXMLDoc = etree.ElementTree(suiteNode)
@@ -174,21 +175,21 @@ class SysTestRunner(object):
            through directly in the kwargs parameter.
         """
 
-        print "Running the following system test suites:"
+        print("Running the following system test suites:")
         for suite in testSuites:
-            print " Project '%s', suite '%s'" % (suite.projectName,
-                suite.suiteName)
-        print "-"*80
+            print(" Project '%s', suite '%s'" % (suite.projectName,
+                suite.suiteName))
+        print("-"*80)
         resultsLists = []
         for suite in testSuites:
             suiteResults = self.runSuite(suite,
                 outputSummaryDir=outputSummaryDir,
                 **kwargs)
             resultsLists.append(suiteResults)
-        print "-"*80
+        print("-"*80)
         self.printSuiteResultsByProject(testSuites, resultsLists)
         self._printXMLDirInfo(outputSummaryDir)
-        print "-"*80
+        print("-"*80)
         return resultsLists
 
     def getSuiteResultsFilename(self, suite):
@@ -241,46 +242,46 @@ class SysTestRunner(object):
         appear in the results."""
         projOrder, projIndices = self._buildResultsProjectIndex(testSuites)
         suitesResults = list(zip(testSuites, resultsLists))
-        print "CREDO System Tests summary for all project suites ran:"
-        print "------"
+        print("CREDO System Tests summary for all project suites ran:")
+        print("------")
         totalSumsDict = {"Pass":0, "Fail":0, "Error":0}
         for projName in projOrder:
-            print "Project '%s':" % projName
+            print("Project '%s':" % projName)
             projSumsDict = {"Pass":0, "Fail":0, "Error":0}
             for suiteI in projIndices[projName]:
                 suite = testSuites[suiteI]
-                print " Suite '%s':" % suite.suiteName,
+                print(" Suite '%s':" % suite.suiteName, end=' ')
                 suiteResults = resultsLists[suiteI]
                 sumsDict = self.getResultsTotals(suiteResults)[0]
                 self._printResultsLineShort(sumsDict)
                 for kw, sumVal in sumsDict.items():
                     projSumsDict[kw] += sumVal
             self._printResultsLineShort(projSumsDict)
-            print "------"
+            print("------")
             for kw, sumVal in projSumsDict.items():
                 totalSumsDict[kw] += sumVal
-        print "ALL Projects Total: ",
+        print("ALL Projects Total: ", end=' ')
         self._printResultsLineShort(totalSumsDict)
-        print "------"
+        print("------")
 
     def printSuiteResultsOrderFound(self, testSuites, resultsLists):
         """Utility function to print a set of results in the order they
         were entered (not sub-categorised by project)."""
-        print "-"*80
-        print "CREDO System Tests summary for all project suites ran:"
+        print("-"*80)
+        print("CREDO System Tests summary for all project suites ran:")
         totalSumsDict = {"Pass":0, "Fail":0, "Error":0}
         for ii, suite in enumerate(testSuites):
-            print "'%s', '%s': " % (suite.projectName, suite.suiteName),
+            print("'%s', '%s': " % (suite.projectName, suite.suiteName), end=' ')
             suiteResults = resultsLists[ii]
             sumsDict = self.getResultsTotals(suiteResults)[0]
             totalResults = sum(sumsDict.values())
             self._printResultsLineShort(sumsDict)
             for kw, sumVal in sumsDict.items():
                 totalSumsDict[kw] += sumVal
-        print "------"
-        print "TOTAL: ",
+        print("------")
+        print("TOTAL: ", end=' ')
         self._printResultsLineShort(totalSumsDict)
-        print "-"*80
+        print("-"*80)
 
     def _buildResultsProjectIndex(self, testSuites):
         """Build index of projects and their indices into testSuites.
@@ -301,27 +302,27 @@ class SysTestRunner(object):
 
     def printSuiteTotalsShortSummary(self, results, projName, suiteName):
         """Prints a short summary, useful for suites with sub-suites."""
-        print "-"*80
-        print "CREDO System Tests total for '%s' suite '%s' and sub-suites:"\
-            % (projName, suiteName)
+        print("-"*80)
+        print("CREDO System Tests total for '%s' suite '%s' and sub-suites:"\
+            % (projName, suiteName))
         sumsDict, failIndices, errorIndices = self.getResultsTotals(results)
         self._printResultsLine(sumsDict)
-        print "-"*80
+        print("-"*80)
 
     def printResultsSummary(self, sysTests, results,
             projName=None, suiteName=None):
         """Print a textual summary of the results of running a set of sys
         tests."""
         self._checkResultsSysTestsLength(sysTests, results)
-        print "-"*80
+        print("-"*80)
         headerDetail = ""
         if projName is not None:
             headerDetail += ", project '%s'" % projName
         if suiteName is not None:
             headerDetail += ", suite '%s'" % suiteName
-        print "CREDO System Tests results summary%s:" % headerDetail
+        print("CREDO System Tests results summary%s:" % headerDetail)
         self.printResultsDetails(sysTests, results)
-        print "-"*80
+        print("-"*80)
 
     def printResultsDetails(self, sysTests, results):
         """Prints details of which tests failed in a sub-suite."""
@@ -329,16 +330,16 @@ class SysTestRunner(object):
         self._printResultsLine(sumsDict)
 
         if len(failIndices) > 0:
-            print "Failures were:"
+            print("Failures were:")
             for fI in failIndices:
-                print " %s: %s" % (sysTests[fI].testName,
-                    results[fI].detailMsg)
+                print(" %s: %s" % (sysTests[fI].testName,
+                    results[fI].detailMsg))
 
         if len(errorIndices) > 0:
-            print "Errors were:"
+            print("Errors were:")
             for eI in errorIndices:
-                print " %s: %s" % (sysTests[eI].testName,
-                    results[eI].detailMsg)
+                print(" %s: %s" % (sysTests[eI].testName,
+                    results[eI].detailMsg))
 
     def getResultsTotals(self, results):
         """Gets the totals of a set of results, and returns, including
@@ -354,15 +355,15 @@ class SysTestRunner(object):
 
     def _printResultsLine(self, sumsDict):
         totalResults = sum(sumsDict.values())
-        print "Ran %d system tests," % (totalResults),
-        print "with %d passes, %d fails, and %d errors" \
-            % (sumsDict["Pass"], sumsDict["Fail"], sumsDict["Error"])
+        print("Ran %d system tests," % (totalResults), end=' ')
+        print("with %d passes, %d fails, and %d errors" \
+            % (sumsDict["Pass"], sumsDict["Fail"], sumsDict["Error"]))
 
     def _printResultsLineShort(self, sumsDict):
         totalResults = sum(sumsDict.values())
-        print "%d tests, %d/%d/%d passes/fails/errors" \
+        print("%d tests, %d/%d/%d passes/fails/errors" \
             % (totalResults, sumsDict["Pass"], sumsDict["Fail"],
-                sumsDict["Error"])
+                sumsDict["Error"]))
 
     def _checkResultsSysTestsLength(self, sysTests, results):
         if len(sysTests) != len(results):
@@ -371,10 +372,10 @@ class SysTestRunner(object):
                 " len %d" % (len(sysTests), len(results)))
 
     def _printXMLFileInfo(self, outputSummaryXML):
-        print "XML summary file saved to '%s'." % outputSummaryXML
+        print("XML summary file saved to '%s'." % outputSummaryXML)
 
     def _printXMLDirInfo(self, outputSummaryDir):
-        print "All XML summary files saved to dir '%s'." % outputSummaryDir
+        print("All XML summary files saved to dir '%s'." % outputSummaryDir)
 
 
 def getSuitesFromModules(suiteModNames):
@@ -382,21 +383,21 @@ def getSuitesFromModules(suiteModNames):
     suiteModNames."""
     suites = []
     for modName in suiteModNames:
-        print "Importing suite for %s:" % modName
+        print("Importing suite for %s:" % modName)
         # 2-stage process is needed, see Python docs on imp module
         try:
             imp = __import__(modName)
             mod = sys.modules[modName]
         except:
-            print "Warning: failed to import module '%s' - not adding to set"\
-                " of suites." % (modName)
+            print("Warning: failed to import module '%s' - not adding to set"\
+                " of suites." % (modName))
             continue
         try:
             suite = mod.suite()
         except AttributeError:
-            print "Warning: module %s doesn't define a 'suite()' interface"\
+            print("Warning: module %s doesn't define a 'suite()' interface"\
                 " function, thus isn't usable as a CREDO suite - skipping."\
-                % (modName)
+                % (modName))
             continue
         suites.append(suite)
     return suites

@@ -1,3 +1,4 @@
+from __future__ import print_function
 import unittest
 
 import unittest
@@ -45,8 +46,8 @@ class TestHistoryWithinTolTC(unittest.TestCase):
                                    ordering_map=range(1,11),
                                    fieldname_map=AUT2_FIELDMAP)
 
-        print 'waiwera n = ', len(self.mres3.getTimes())
-        print 'aut2 n = ', len(self.mres4.getTimes())
+        print('waiwera n = ', len(self.mres3.getTimes()))
+        print('aut2 n = ', len(self.mres4.getTimes()))
 
     def test_times_mechanism(self):
         # not specifying times should force interpolation onto expected times

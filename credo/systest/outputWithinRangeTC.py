@@ -1,3 +1,4 @@
+from __future__ import print_function
 from builtins import str
 ##  Copyright (C), 2010, Monash University
 ##  Copyright (C), 2010, Victorian Partnership for Advanced Computing (VPAC)
@@ -102,7 +103,7 @@ class OutputWithinRangeTC(SingleRunTestComponent):
     def _writeXMLCustomSpec(self, specNode):
         etree.SubElement(specNode, 'outputName', value=self.outputName)
         etree.SubElement(specNode, 'reductionOp',
-            funcName=str(self.reductionOp.func_name),
+            funcName=str(self.reductionOp.__name__),
             modName=str(inspect.getmodule(self.reductionOp).__name__),
             module=str(inspect.getmodule(self.reductionOp)))
         etree.SubElement(specNode, 'allowedRange-min',
@@ -148,7 +149,7 @@ class OutputWithinRangeTC(SingleRunTestComponent):
             <= self.allowedRange[1])
 
         statusMsg += "Model output '%s', at reduction op '%s'" % \
-            (self.outputName, self.reductionOp.func_name)
+            (self.outputName, self.reductionOp.__name__)
         if len(self.opDict) > 0:
             statusMsg += " (%s)" % (dictAsPrettyStr(self.opDict))
         statusMsg += ":\n"
@@ -177,7 +178,7 @@ class OutputWithinRangeTC(SingleRunTestComponent):
                         " occurred (%s) within req'd range (%g,%g)."\
                         % ((self.actualTime,) + self.tRange)
                     overallResult = True
-        print statusMsg
+        print(statusMsg)
         self._setStatus(overallResult, statusMsg)
         return overallResult
 

@@ -1,3 +1,4 @@
+from __future__ import print_function
 from builtins import zip
 from builtins import str
 from builtins import object
@@ -112,8 +113,8 @@ class JobMetaInfo(object):
     def verbPlatformString(self):
         '''Returns a useful string about the platform, for printing.'''
         return "Node '%s', of type %s, running %s (%s)" \
-            % tuple([self.platform[kw] for kw in 'node', 'machine', 'system',
-                'release'])
+            % tuple([self.platform[kw] for kw in ('node', 'machine', 'system',
+                'release')])
 
     def readFromXMLNode(self, xmlNode):
         self.simtime = float(xmlNode.find('simtime').text)
@@ -229,7 +230,7 @@ class JobRunner(object):
             #  loop through and poll/report as they complete,
             #  rather than just in sequential order ...
             result = self.blockResult(modelRun, jobMetaInfo)
-            print "ModelRun '%s' complete." % modelRun.name
+            print("ModelRun '%s' complete." % modelRun.name)
             assert isinstance(result, credo.modelresult.ModelResult)
             modelSuite.resultsList.append(result)
         return modelSuite.resultsList
@@ -255,8 +256,8 @@ class JobRunner(object):
         :returns: a reference to the :attr:`.resultsList` containing all
            the ModelResults generated."""
 
-        print "Running the %d modelRuns specified in the suite" % \
-            (len(modelSuite.runs))
+        print("Running the %d modelRuns specified in the suite" % \
+            (len(modelSuite.runs)))
 
         if runSuiteNonBlocking is None:
             runSuiteNonBlocking = self.runSuiteNonBlockingDefault
@@ -274,13 +275,13 @@ class JobRunner(object):
                 if not isinstance(modelRun, credo.modelrun.ModelRun):
                     raise TypeError("Error, stored run %d not an instance of a"\
                         " ModelRun" % runI)
-                print "Doing run %d/%d (index %d), of name '%s':"\
-                    % (runI+1, len(modelSuite.runs), runI, modelRun.name)
-                print "ModelRun description: \"%s\"" % \
-                    (modelSuite.runDescrips[runI])
+                print("Doing run %d/%d (index %d), of name '%s':"\
+                    % (runI+1, len(modelSuite.runs), runI, modelRun.name))
+                print("ModelRun description: \"%s\"" % \
+                    (modelSuite.runDescrips[runI]))
 
-                print "Running the Model (saving results in %s):"\
-                    % (modelRun.outputPath)
+                print("Running the Model (saving results in %s):"\
+                    % (modelRun.outputPath))
 
                 customOpts = modelSuite.getCustomOpts(runI, extraCmdLineOpts)
                 if writeRecords == True:

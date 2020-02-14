@@ -1,3 +1,4 @@
+from __future__ import print_function
 ##  Copyright (C), 2010, Monash University
 ##  Copyright (C), 2010, Victorian Partnership for Advanced Computing (VPAC)
 ##
@@ -38,8 +39,8 @@ class TestJobRunner(JobRunner):
     def submitRun(self, modelRun, prefixStr=None,
             extraCmdLineOpts=None, dryRun=False, maxRunTime=None):
         if dryRun is True:
-            print "Called to submit modelRun %s in dryRun mode" \
-                % (modelRun.name)
+            print("Called to submit modelRun %s in dryRun mode" \
+                % (modelRun.name))
             runOptsDict = {
                 'prefixStr':prefixStr,
                 'extraCmdLineOpts':extraCmdLineOpts,
@@ -47,13 +48,13 @@ class TestJobRunner(JobRunner):
                 'maxRunTime':maxRunTime}
             return None
         else:
-            print "Called to submit modelRun %s" % (modelRun.name)
+            print("Called to submit modelRun %s" % (modelRun.name))
             jobMetaInfo = JobMetaInfo(0)
             jobMetaInfo.modelName = modelRun.name
             return jobMetaInfo
 
     def blockResult(self, modelRun, jobMetaInfo):
-        print "Blocking in modelRun %s" % (modelRun.name)
+        print("Blocking in modelRun %s" % (modelRun.name))
         return SkeletonModelResult(modelRun.name)
 
 

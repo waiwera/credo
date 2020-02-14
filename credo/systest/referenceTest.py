@@ -28,6 +28,7 @@
    Default fields that will be tested, if not explicitly provided
    as a constructor keyword argument to :class:`~.ReferenceTest` instantiations.
 """
+from __future__ import print_function
 from builtins import str
 
 import os
@@ -108,9 +109,9 @@ class ReferenceTest(SingleModelSysTest):
         .. note:: by default, this will save checkpoint for the entire step,
            not just fields to be checkpointed against.'''
 
-        print "Running the model to create a reference solution after %d"\
+        print("Running the model to create a reference solution after %d"\
             " steps, and saving in dir '%s'" % \
-            (self.runSteps, self.expectedSolnPath)
+            (self.runSteps, self.expectedSolnPath))
         mRun = self._createDefaultModelRun(self.testName+"-createReference",
             self.expectedSolnPath)
         mRun.simParams = SimParams(nsteps=self.runSteps, cpevery=self.runSteps,
