@@ -22,6 +22,7 @@
 ##  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 ##  MA  02110-1301  USA
 
+from __future__ import print_function
 import sys, getopt
 import credo
 
@@ -55,14 +56,14 @@ def main(argv):
         try:
             param, val = arg.split('=')
         except ValueError:
-            print "CREDO ModelResults XML Writer: Error with provided argument"\
-                " '%s', should be in the form param=value\n" % arg
+            print("CREDO ModelResults XML Writer: Error with provided argument"\
+                " '%s', should be in the form param=value\n" % arg)
             sys.exit(2)
 
         if val == "":
-            print "CREDO ModelResults XML Writer: Error with provided argument"\
+            print("CREDO ModelResults XML Writer: Error with provided argument"\
                 " '%s', needs a value provided for the parameter to be"\
-                " written\n" % param
+                " written\n" % param)
             sys.exit(2)
 
         if param in assigned:
@@ -82,22 +83,22 @@ def main(argv):
                 else:
                     fResults.append(fResult)
         else:
-            print "CREDO ModelResults XML Writer: Error with provided argument"\
+            print("CREDO ModelResults XML Writer: Error with provided argument"\
                 " '%s', param '%s' is not in known list of model result "\
-                " parameters" % (arg,param)
-            print "Parameters that need to be assigned are:"
-            print assigned.keys()
-            print "Optional parameters are:"
-            print optional
+                " parameters" % (arg,param))
+            print("Parameters that need to be assigned are:")
+            print(assigned.keys())
+            print("Optional parameters are:")
+            print(optional)
             sys.exit(2)
 
     if not updateMode:
         for kw, val in assigned.iteritems():
             if val != True:
-                print "CREDO ModelResults XML Writer: Error, necessary"\
-                    " parameter '%s' not specified.\n" % kw
-                print "Parameters that need to be assigned are:"
-                print assigned.keys()
+                print("CREDO ModelResults XML Writer: Error, necessary"\
+                    " parameter '%s' not specified.\n" % kw)
+                print("Parameters that need to be assigned are:")
+                print(assigned.keys())
                 sys.exit(2)
 
         mRes = credo.ModelResult(modelName, walltime)
@@ -105,7 +106,7 @@ def main(argv):
         credo.writeModelResultsXML(mRes)
 
 def usage():
-    print "Error in command line options passed to the XML writer script\n"
+    print("Error in command line options passed to the XML writer script\n")
 
 if __name__ == "__main__":
     main(sys.argv[1:])

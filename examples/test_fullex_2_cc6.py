@@ -12,6 +12,7 @@ TODO: check ModelRun.jobParams, which allows options for jobrunner
 TODO: create new ModelResult class for loading existing results (or maybe just
 use WaiweraResult and T2ModelResult)
 """
+from __future__ import print_function
 
 import os
 
@@ -59,7 +60,7 @@ def t2_to_waiwera(geofilename, datfilename, basepath=None):
         basepath = getcwd()
     startpath = getcwd()
     if basepath != startpath:
-        print "Changing to specified base path '%s'" % (basepath)
+        print("Changing to specified base path '%s'" % (basepath))
         os.chdir(basepath)
 
     geo = mulgrid(geofilename)
@@ -71,14 +72,14 @@ def t2_to_waiwera(geofilename, datfilename, basepath=None):
     input_filename = datbase + '.json'
 
     geo.write_exodusii(mesh_filename)
-    print '  Mesh file %s created.' % mesh_filename
+    print('  Mesh file %s created.' % mesh_filename)
     jsondata = dat.json(geo, mesh_filename)
     with open(input_filename, 'w') as jf:
         json.dump(jsondata, jf, indent=2)
-        print '  Input file %s created.' % input_filename
+        print('  Input file %s created.' % input_filename)
 
     if basepath != startpath:
-        print "Restoring initial path '%s'" % (startpath)
+        print("Restoring initial path '%s'" % (startpath))
         os.chdir(startpath)
 
     return input_filename
@@ -201,4 +202,4 @@ for rGen in getGenerators(["RST"], sciBTest.outputPathBase):
         os.path.join(sciBTest.outputPathBase,
                      "%s-report.%s" % (sciBTest.testName, rGen.stdExt)))
 
-print "NOTE: use 'rst2html xxx-report.rst > xxx-report.html' to generate html"
+print("NOTE: use 'rst2html xxx-report.rst > xxx-report.html' to generate html")

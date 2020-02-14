@@ -22,6 +22,7 @@
 ##  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 ##  MA  02110-1301  USA
 
+from __future__ import print_function
 import getopt
 import sys
 import os
@@ -46,9 +47,9 @@ outputPath = 'output/'+modelName
 refTest = ReferenceTest(inputFiles, outputPath, nproc=1, basePath=os.getcwd())
 
 if setupMode == True:
-    print "Running in setup mode only:"
+    print("Running in setup mode only:")
     refTest.regenerateFixture()
-    print "Setup completed, exiting."
+    print("Setup completed, exiting.")
     sys.exit()
 
 testRunner = SysTestRunner()

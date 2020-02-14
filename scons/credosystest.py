@@ -124,7 +124,7 @@ SCons-Check Options:
         suiteModNames = map(pathToPyModuleName, suiteFiles)
         try:
     	    import credo.systest.systestrunner
-        except Exception, e:
+        except Exception as e:
             raise ImportError("Failed to import the CREDO package required to"\
             " run System tests. Check you have the appropriate Python version "\
             " installed (2.5 or greater). Error message was:\n%s" % e)

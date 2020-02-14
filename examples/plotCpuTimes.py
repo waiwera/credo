@@ -5,6 +5,7 @@ a series of ModelRuns.
 
 If run from the command line, 1st argument should be the output path of
 a ModelResult."""
+from __future__ import print_function
 
 import sys, math
 from credo.modelresult import ModelResult
@@ -35,7 +36,7 @@ if __name__ == "__main__":
     try:
         outputPath = sys.argv[1]
     except:
-        print "Bad input arguments - pass output path to model result."
+        print("Bad input arguments - pass output path to model result.")
         raise
     mRes = ModelResult("plotModel", outputPath)
     mRes.readFrequentOutput()

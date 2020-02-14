@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+from __future__ import print_function
 import os, operator, textwrap, glob
 from xml.etree import ElementTree as etree
 
@@ -26,25 +27,25 @@ def printFailedTCs(sysTestFile, printMsgs=False):
     for runI in range(len(srTCsNode)):
         failedTCs = runFailedTCs[runI]
         if len(failedTCs) == 0: continue
-        print "For run %d, %d failed components:" % (runI, len(failedTCs))
+        print("For run %d, %d failed components:" % (runI, len(failedTCs)))
         for failedTC in failedTCs:
-            print "%s" % failedTC.attrib['name']
+            print("%s" % failedTC.attrib['name'])
         if printMsgs == True:
-            print "Messages were:"
+            print("Messages were:")
             for failedTC in failedTCs:
                 msgText = failedTC.find('result').find('statusMsg').text
-                print "'%s':%s\n[[%s]]" % (failedTC.attrib['name'],
+                print("'%s':%s\n[[%s]]" % (failedTC.attrib['name'],
                     failedTC.attrib['status'],
-                    textwrap.fill(msgText))
+                    textwrap.fill(msgText)))
 
     mrTCsNode = tcsNode.find('multiRunTestComponents')
     mrFailedTCs = getFailedTCsInNode(mrTCsNode)
     if len(mrFailedTCs) > 0:
-        print "Multi-run failed components (%d):" % len(mrFailedTCs)
+        print("Multi-run failed components (%d):" % len(mrFailedTCs))
         for failedTC in mrFailedTCs:
-            print "%s" % failedTC.attrib['name']
+            print("%s" % failedTC.attrib['name'])
 
 if __name__ == "__main__":
     for sysTestFile in sorted(glob.glob("output/*/SysTest-*.xml")):
-        print "sysTestFile = %s" % sysTestFile
+        print("sysTestFile = %s" % sysTestFile)
         printFailedTCs(sysTestFile, printMsgs=False)

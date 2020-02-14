@@ -1,3 +1,4 @@
+from __future__ import print_function
 ##  Copyright (C), 2010, Monash University
 ##  Copyright (C), 2010, Victorian Partnership for Advanced Computing (VPAC)
 ##
@@ -27,6 +28,6 @@ from credo.utils import *
 copyright = """Copyright (C), 2010, Monash University
 Copyright (C), 2010, Victorian Partnership for Advanced Computing (VPAC)"""
 
-print "CREDO scientific benchmarking, profiling and analysis tool."
-print copyright
-print "Licenced under the GNU LGPL, v2.1. See the file COPYING.txt in the CREDO distribution for more."
+print("CREDO scientific benchmarking, profiling and analysis tool.")
+print(copyright)
+print("Licenced under the GNU LGPL, v2.1. See the file COPYING.txt in the CREDO distribution for more.")

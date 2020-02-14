@@ -34,6 +34,7 @@ Primary interface is via the :class:`ModelRun`, which enables you to specify,
 configure and run a Model, and save records of this as an XML. This process will
 produce a :class:`credo.modelresult.ModelResult` class.
 """
+from __future__ import print_function
 
 from credo.modelrun import ModelRun
 from credo.modelresult import ModelResult
@@ -202,7 +203,7 @@ def t2_to_waiwera(geofilename, datfilename, incfilename =  None, basepath = None
         basepath = getcwd()
     startpath = getcwd()
     if basepath != startpath:
-        print "Changing to specified base path '%s'" % (basepath)
+        print("Changing to specified base path '%s'" % (basepath))
         os.chdir(basepath)
 
     geo = mulgrid(geofilename)
@@ -222,16 +223,16 @@ def t2_to_waiwera(geofilename, datfilename, incfilename =  None, basepath = None
         initial_filename = None
 
     geo.write_exodusii(mesh_filename)
-    print '  Mesh file %s created.' % mesh_filename
+    print('  Mesh file %s created.' % mesh_filename)
     jsondata = dat.json(geo, mesh_filename,
                         incons = initial_filename,
                         bdy_incons = inc)
     with open(input_filename, 'w') as jf:
         json.dump(jsondata, jf, indent=2)
-        print '  Input file %s created.' % input_filename
+        print('  Input file %s created.' % input_filename)
 
     if basepath != startpath:
-        print "Restoring initial path '%s'" % (startpath)
+        print("Restoring initial path '%s'" % (startpath))
         os.chdir(startpath)
 
     return input_filename

@@ -1,4 +1,5 @@
 #! /usr/bin/env python
+from __future__ import print_function
 import os, copy
 import csv
 from credo.modelrun import ModelRun, SimParams
@@ -41,14 +42,14 @@ for stdRes, ppcRes in zip(stdResults, ppcResults):
     fStep = stdRes.freqOutput.finalStep()
     cpuReg = stdRes.freqOutput.getValueAtStep('CPU_Time', fStep)
     cpuPPC = ppcRes.freqOutput.getValueAtStep('CPU_Time', fStep)
-    print "CPU time regular was %g, PPC was %g" % (cpuReg, cpuPPC)
+    print("CPU time regular was %g, PPC was %g" % (cpuReg, cpuPPC))
     cpuRegs.append(cpuReg)
     cpuPPCs.append(cpuPPC)
 
 avgReg = sum(cpuRegs) / len(cpuRegs)
 avgPPC = sum(cpuPPCs) / len(cpuPPCs)
 
-print "Avg over 10 runs: regular=%f, PPC=%f" % (avgReg, avgPPC)
+print("Avg over 10 runs: regular=%f, PPC=%f" % (avgReg, avgPPC))
 sName = os.path.join(outPathBase, "comparePPC.txt")
 csvName = os.path.join(outPathBase, "comparePPC-runs.csv")
 avgInfo = open(sName, "w")
@@ -62,4 +63,4 @@ for runI, (cpuReg, cpuPPC) in enumerate(zip(cpuRegs, cpuPPCs)):
     wtr.writerow([runI, cpuReg, cpuPPC])
 csvFile.close()
 
-print "Wrote summary to %s, run results to %s" % (sName, csvName)
+print("Wrote summary to %s, run results to %s" % (sName, csvName))

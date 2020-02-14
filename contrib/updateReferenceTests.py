@@ -5,6 +5,7 @@ set of suites to check if any Reference tests have changed output results
 significantly, and report on this.
 
 Example created:- 2011/04/20, PatrickSunter"""
+from __future__ import print_function
 
 import os, sys
 import credo.jobrunner
@@ -37,17 +38,17 @@ for tSuite in tSuites:
                                     fTol, eComp))
 
 if len(problemTests) > 1:
-    print "Error, at least one test failed to be within factor %g of original"\
-        " tolerance:" % (allowedTolChange)
+    print("Error, at least one test failed to be within factor %g of original"\
+        " tolerance:" % (allowedTolChange))
     for test in problemTests:
-        print "Test '%s', field '%s': orig fTol = %g, current error = %g" % \
-            (test[0].testName, test[1], test[2], test[3])
-        print "  (Test basepath = %s)" % test[0].basePath
+        print("Test '%s', field '%s': orig fTol = %g, current error = %g" % \
+            (test[0].testName, test[1], test[2], test[3]))
+        print("  (Test basepath = %s)" % test[0].basePath)
 else:
-    print "All tests within factor %g of original tolerance." % allowedTolChange
+    print("All tests within factor %g of original tolerance." % allowedTolChange)
     for tSuite in tSuites:
-        print "Updating systest reference solutions in suite %s" % \
-            tSuite.suiteName
+        print("Updating systest reference solutions in suite %s" % \
+            tSuite.suiteName)
         for sysTest in tSuite.sysTests:
             if sysTest.testType == "Reference":
                 sysTest.regenerateFixture(jobRunner)
