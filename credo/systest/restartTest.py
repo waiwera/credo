@@ -1,3 +1,6 @@
+from __future__ import division
+from builtins import str
+from past.utils import old_div
 ##  Copyright (C), 2010, Monash University
 ##  Copyright (C), 2010, Victorian Partnership for Advanced Computing (VPAC)
 ##
@@ -115,15 +118,15 @@ class RestartTest(SingleModelSysTest):
         initRun = self._createDefaultModelRun(self.testName+"-initial",
             self.initialOutputPath)
         initRun.simParams = SimParams(nsteps=self.fullRunSteps,
-            cpevery=self.fullRunSteps/2, dumpevery=0)
+            cpevery=old_div(self.fullRunSteps,2), dumpevery=0)
         initRun.cpFields = self.fieldsToTest
         self.mSuite.addRun(initRun, "Do the initial full run and checkpoint"\
             " solutions.")
         # Restart run
         resRun = self._createDefaultModelRun(self.testName+"-restart",
             self.restartOutputPath)
-        resRun.simParams = SimParams(nsteps=self.fullRunSteps/2,
-            cpevery=0, dumpevery=0, restartstep=self.fullRunSteps/2)
+        resRun.simParams = SimParams(nsteps=old_div(self.fullRunSteps,2),
+            cpevery=0, dumpevery=0, restartstep=old_div(self.fullRunSteps,2))
         resRun.cpReadPath = self.initialOutputPath
         self.resRunI = self.mSuite.addRun(resRun,
             "Do the restart run and check results at end match initial.")

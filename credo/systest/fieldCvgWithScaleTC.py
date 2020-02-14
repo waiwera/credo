@@ -1,3 +1,5 @@
+from builtins import str
+from builtins import range
 ##  Copyright (C), 2010, Monash University
 ##  Copyright (C), 2010, Victorian Partnership for Advanced Computing (VPAC)
 ##
@@ -48,7 +50,7 @@ def testAllCvgWithScale(lenScales, fieldErrorData, fieldCvgCriterions):
     :func:`~credo.analysis.fields.getFieldScaleCvgData_SingleCvgFile`
     on a path containing a single cvg file."""
     overallResult = True
-    for fieldName, dofErrors in fieldErrorData.iteritems():
+    for fieldName, dofErrors in fieldErrorData.items():
         convResult = fields.calcFieldCvgWithScale(fieldName, lenScales,
             dofErrors)
         meetsReq = testCvgWithScale(fieldName, convResult,
@@ -227,7 +229,7 @@ class FieldCvgWithScaleTC(MultiRunTestComponent):
         self.fCvgMeetsReq = {}
         self.fCvgResults = {}
 
-        for fName, fCompOp in self.fComps.fields.iteritems():
+        for fName, fCompOp in self.fComps.fields.items():
             self.fErrorsByRun[fName] = getDofErrorsByRun(fCompOp, resultsSet)
             fieldConv = self.calcCvgFunc(fName, lenScales,
                 self.fErrorsByRun[fName])
@@ -243,7 +245,7 @@ class FieldCvgWithScaleTC(MultiRunTestComponent):
                     " not checking." % fName
                 self.fCvgMeetsReq[fName] = None
 
-        overallResult = all(self.fCvgResults.itervalues())
+        overallResult = all(self.fCvgResults.values())
         if not overallResult:
             statusMsg = "The solution compared to the %s result didn't cvg"\
                 " as expected with increasing resolution for all fields."\
@@ -262,7 +264,7 @@ class FieldCvgWithScaleTC(MultiRunTestComponent):
                 " read the model XML to find out name of fields to test.")
         etree.SubElement(specNode, 'fromXML', value=str(self.fComps.fromXML))
         fListNode = etree.SubElement(specNode, 'fields')
-        for fName in self.fComps.fields.keys():
+        for fName in list(self.fComps.fields.keys()):
             fNode = etree.SubElement(fListNode, 'field')
             fNode.attrib['name'] = fName
             try:
@@ -278,7 +280,7 @@ class FieldCvgWithScaleTC(MultiRunTestComponent):
     def _writeXMLCustomResult(self, resNode, resultsSet):
         frNode = etree.SubElement(resNode, 'fieldResultDetails')
         lenScales = self._getLenScales(resultsSet)
-        for fName, fComp in self.fComps.fields.iteritems():
+        for fName, fComp in self.fComps.fields.items():
             fieldNode = etree.SubElement(frNode, "field", name=fName)
             meetsReq = self.fCvgMeetsReq[fName]
             if meetsReq == None:
@@ -308,7 +310,7 @@ class FieldCvgWithScaleTC(MultiRunTestComponent):
             cvgIndex = stgcvg.genConvergenceFileIndex(mResult.outputPath)
             # a bit hacky, need to redesign cvg stuff, esp len scales??
             try:
-                cvgInfo = cvgIndex[self.fComps.fields.keys()[0]]
+                cvgInfo = cvgIndex[list(self.fComps.fields.keys())[0]]
             except KeyError:
                 if len(cvgIndex) == 0:
                     raise IOError("No field comparison check results"\
@@ -317,7 +319,7 @@ class FieldCvgWithScaleTC(MultiRunTestComponent):
                     raise IOError("Comparison info for field '%s' not found."\
                         " Fields that had comparison info found for them"\
                         " in results were %s."\
-                        % (self.fComps.fields.keys()[0], str(cvgIndex.keys())))
+                        % (list(self.fComps.fields.keys())[0], str(list(cvgIndex.keys()))))
 
             lenScales.append(stgcvg.getRes(cvgInfo.filename))
         return lenScales

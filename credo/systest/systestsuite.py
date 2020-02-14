@@ -23,6 +23,7 @@
 
 """Package for manipulation of a set of :class:`.SystemTest` s.
 Interacts closely with :package:`.SysTestRunner`."""
+from builtins import object
 
 import os
 import inspect
@@ -30,7 +31,7 @@ import credo.utils
 import credo.io.stgpath as stgpath
 from . import api as testapi
 
-class SysTestSuite:
+class SysTestSuite(object):
     """Class that aggregates  a set of :class:`~credo.systest.api.SysTest`.
 
     For examples of how to use, see the CREDO documentation, especially

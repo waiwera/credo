@@ -1,4 +1,7 @@
 """Utils/primitives useful in constructing an RST report doc."""
+from builtins import str
+from builtins import map
+from builtins import range
 import os
 import textwrap
 from .reportGenerator import ReportGenerator
@@ -62,7 +65,7 @@ class RstGenerator(ReportGenerator):
 
     def getDefListEls(self, listDict):
         resStr = ""
-        for key, val in listDict.iteritems():
+        for key, val in listDict.items():
             resStr += " * %s: %s\n" % (key, val)
         resStr += "\n"
         return [resStr]
@@ -81,7 +84,7 @@ class RstGenerator(ReportGenerator):
         """Note: we chose the RST list-table syntax, since this allows
         arbitrarily long/complex table entries."""
         resultStr = ".. list-table::\n\n"
-        nEntriesMax = max(map(len, tableData))
+        nEntriesMax = max(list(map(len, tableData)))
         for dataLine in tableData:
             for elI, dataEl in enumerate(dataLine):
                 if elI == 0:

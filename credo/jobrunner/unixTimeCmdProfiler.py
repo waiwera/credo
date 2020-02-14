@@ -1,3 +1,4 @@
+from builtins import object
 import os, sys
 import subprocess, shlex
 from credo.jobrunner.api import PerformanceProfiler
@@ -21,9 +22,9 @@ STD_NAMES = {
     "maxMem_KB": "M"}
 
 #This could be customised to a sub-set if desired
-DEFAULT_FMT_ELS = [(kw, val) for (kw, val) in STD_NAMES.items()]
+DEFAULT_FMT_ELS = [(kw, val) for (kw, val) in list(STD_NAMES.items())]
 
-class UnixTimeCmdHandle:
+class UnixTimeCmdHandle(object):
     def __init__(self, resFName):
         self.resFName = resFName
 

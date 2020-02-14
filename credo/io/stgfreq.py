@@ -26,6 +26,9 @@
 Primary construct is the FreqOutput class, which once constructed has numerous
 methods to access data from a FrequentOutput file.
 '''
+from __future__ import division
+from builtins import object
+from past.utils import old_div
 
 import os
 import operator
@@ -33,7 +36,7 @@ import operator
 STG_DEF_FREQ_FILENAME='FrequentOutput.dat'
 FREQ_HEADER_LINESTART='#'
 
-class FreqOutput:
+class FreqOutput(object):
     '''A simple class to store information about a frequent output file,
     and make it accessible. Once passed a filename of a FrequentOutput file
     in it's constructor, has methods to get information and values from
@@ -172,7 +175,7 @@ class FreqOutput:
         if not self.populated: self.populateFromFile()
         record = self.getRecordAtStep(tstep)
         recordDict = {}
-        for header, col in self.headerColMap.iteritems():
+        for header, col in self.headerColMap.items():
             recordDict[header] = record[col]
         return recordDict
 
@@ -212,7 +215,7 @@ class FreqOutput:
         try:
             recordNum = self.tStepMap[tstep]
         except KeyError:
-            tSteps = self.tStepMap.keys()
+            tSteps = list(self.tStepMap.keys())
             raise ValueError("Error, timestep at which to get value, %d,"
                 " doesn't exist in this Frequent output file (valid range is"
                 " (%d-%d)." % (tstep, min(tSteps), max(tSteps)))
@@ -235,7 +238,7 @@ class FreqOutput:
         except KeyError:
             raise ValueError("Error, header to get value of, '%s', doesn't"
                 " exist in this Frequent output file. Valid headers are"
-                " %s" % (headerName, self.headerColMap.keys()))
+                " %s" % (headerName, list(self.headerColMap.keys())))
         return colNum
 
     def getValuesArray(self, headerName, range="all"):
@@ -293,7 +296,7 @@ class FreqOutput:
            directly using stats functions/libraries.'''
         if not self.populated: self.populateFromFile()
         valArray = self.getValuesArray(headerName)
-        return sum(valArray, 0.0) / len(valArray)
+        return old_div(sum(valArray, 0.0), len(valArray))
 
     def getClosest(self, headerName, targVal):
         """Gets the closest value and timestep to the given value."""

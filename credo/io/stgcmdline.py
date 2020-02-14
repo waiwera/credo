@@ -24,6 +24,7 @@
 """
 This module is for properly formatting StGermain command line operations.
 """
+from builtins import str
 
 STGERMAIN_EXE_NAME = "StGermain"
 

@@ -28,6 +28,7 @@
    Default fields that will be tested, if not explicitly provided
    as a constructor keyword argument to :class:`~.ReferenceTest` instantiations.
 """
+from builtins import str
 
 import os
 from xml.etree import ElementTree as etree

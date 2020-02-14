@@ -1,5 +1,6 @@
+from builtins import object
 
-class ReportGenerator:
+class ReportGenerator(object):
     def __init__(self, rType):
         #nothing to do for base class
         self.rType = rType

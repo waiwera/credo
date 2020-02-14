@@ -51,6 +51,11 @@ For example::
   #Res TemperatureField1 TemperatureField2
   1.000000e-01 6.12235812e-03 5.3e-2
 '''
+from __future__ import division
+from builtins import map
+from builtins import range
+from past.utils import old_div
+from builtins import object
 
 import os
 import glob
@@ -65,7 +70,7 @@ class CVGReadError(IOError):
     pass
 
 
-class CvgFileInfo:
+class CvgFileInfo(object):
     '''A simple class to store info about what fields map to what
      convergence files. Currently implicit is the name of the Field,
      this is usually handled by storing CvgFileInfos in a dictionary,
@@ -143,10 +148,10 @@ def getCheckStepsRange(cvgFile, steps):
     cvgFile.seek(0)
 
     # Given every 2nd line is a header
-    stepTot = lineTot/2
+    stepTot = old_div(lineTot,2)
 
     if steps == 'all':
-        stepRange = range(0,stepTot)
+        stepRange = list(range(0,stepTot))
     elif steps == 'last':
         stepRange = [stepTot-1]
     elif type(steps) == tuple:
@@ -163,7 +168,7 @@ def getCheckStepsRange(cvgFile, steps):
                 "greater than number of steps in the given file (%d)" % \
                 (end, stepTot))
 
-        stepRange = range(start,end)
+        stepRange = list(range(start,end))
     else:
         raise TypeError("arg 'steps' must be either 'all', 'last', or a tuple"\
             " of start and ending numbers")
@@ -187,7 +192,7 @@ def _getLineValues(cvgFilename, stepNum):
             " unexpectedly indexed to a header line" %
             (stepNum, lineNum, cvgFilename))
     colValsStr = line.split()
-    colVals = map(float, colValsStr)
+    colVals = list(map(float, colValsStr))
     return colVals
 
 def getDofErrorsForStep(cvgFileInfo, stepNum):
@@ -198,7 +203,7 @@ def getDofErrorsForStep(cvgFileInfo, stepNum):
     colVals = _getLineValues(cvgFileInfo.filename, stepNum)
 
     dofErrorsForStep = []
-    for dof, colIndex in cvgFileInfo.dofColMap.iteritems():
+    for dof, colIndex in cvgFileInfo.dofColMap.items():
         try:
             dofError = colVals[colIndex]
         except IndexError:

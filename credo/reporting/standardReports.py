@@ -1,3 +1,6 @@
+from __future__ import division
+from builtins import range
+from past.utils import old_div
 import os, math
 import PIL
 import credo.modelsuite as msuite
@@ -16,7 +19,7 @@ def addTestCompElements(sciBTest, rGen, level):
     elements.append(rGen.getHeaderEl("Single Run Test Components", level))
     for runI, srTCs in enumerate(sciBTest.testComps):
         elements.append(rGen.getHeaderEl("Run %d" % runI, level+1))
-        for srName, srTC in srTCs.iteritems():
+        for srName, srTC in srTCs.items():
             elements.extend(testCompElement(srName, srTC, level+2, rGen))
     return elements
 
@@ -33,7 +36,7 @@ def modelVariantsTable(mSuite, rGen, level):
     elements = []
     elements.append(rGen.getHeaderEl("Model Variants", level))
     headers = ["Run"]
-    for mVarName in mSuite.modelVariants.iterkeys():
+    for mVarName in mSuite.modelVariants.keys():
         headers.append(mVarName)
     data = [[] for runI in range(len(mSuite.runs))]
     valIter = msuite.getParamValuesIter(mSuite.modelVariants, mSuite.iterGen)
@@ -63,7 +66,7 @@ def modelImagesDisplay(mSuite, rGen, level, imgPerRow=1):
         #    elements.append(rGen.getHeaderEl("%s" % varNameDicts[runI],
         #        style=ParaStyle))
         # Put the images in a table
-        nRows = int(math.ceil(len(imagesPerRun)/float(imgPerRow)))
+        nRows = int(math.ceil(old_div(len(imagesPerRun),float(imgPerRow))))
         data = [[] for rowI in range(nRows)]
         rowI = 0
         for ii, imgInfo in enumerate(imagesPerRun):
@@ -77,8 +80,8 @@ def modelImagesDisplay(mSuite, rGen, level, imgPerRow=1):
             # Set display size on page
             img = PIL.Image.open(imgFName)
             initWidth, initHeight = img.size
-            ratio = initHeight / float(initWidth)
-            newWidth = int(math.floor((rGen.PAGE_WIDTH*.9) / float(imgPerRow)))
+            ratio = old_div(initHeight, float(initWidth))
+            newWidth = int(math.floor(old_div((rGen.PAGE_WIDTH*.9), float(imgPerRow))))
             newHeight = int(math.floor(newWidth * ratio))
             data[rowI].append(rGen.getImageEls(imgFName, width=newWidth,
                 height=newHeight, tScale=tScale, hdrText=hdrText))

@@ -1,3 +1,4 @@
+from builtins import str
 ##  Copyright (C), 2010, Monash University
 ##  Copyright (C), 2010, Victorian Partnership for Advanced Computing (VPAC)
 ##
@@ -98,12 +99,12 @@ class ImageReferenceTest(api.SingleModelSysTest):
             self.expectedSolnPath)
         mRun.simParams = SimParams(nsteps=self.runSteps, cpevery=0,
             dumpevery=self.compareEvery)
-        for imageComp in self.imageComps.itervalues():
+        for imageComp in self.imageComps.values():
             imageComp.attachOps(mRun)
         mRun.writeInfoXML()
         result = jobRunner.runModel(mRun)
         # Now check the required images were actually created
-        for imageComp in self.imageComps.itervalues():
+        for imageComp in self.imageComps.values():
             refImageFilename = os.path.join(self.expectedSolnPath,
                 imageComp.imageFilename)
             if not os.path.exists(refImageFilename):

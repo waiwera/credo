@@ -1,10 +1,12 @@
+from builtins import zip
+from builtins import range
 import itertools
 import operator
 from credo import modelsuite as msuite
 from credo.modelrun import ModelRun
 import credo.modelsuite as msuite
 
-l1 = range(-3000, 3001, 1000)
+l1 = list(range(-3000, 3001, 1000))
 l2 = [0.4, 0.5, 0.7]
 
 print "Input lists of ranges to vary are"
@@ -34,7 +36,7 @@ def testVarGenFuncs(iterGen):
     cmdLineOvers = msuite.getVariantCmdLineOverrides(varDict, indicesIter)
     print "Cmd-line strings:\n%s" % cmdLineOvers
     print "subDirs, strs:"
-    subDirsAndCmdLines = zip(subPaths, cmdLineOvers)
+    subDirsAndCmdLines = list(zip(subPaths, cmdLineOvers))
     for subDir, cmdLineStr in subDirsAndCmdLines:
         print "  %s: '%s'" % (subDir, cmdLineStr)
     print "Indexes and results of a certain parameter"

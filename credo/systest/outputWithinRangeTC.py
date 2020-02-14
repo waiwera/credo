@@ -1,3 +1,4 @@
+from builtins import str
 ##  Copyright (C), 2010, Monash University
 ##  Copyright (C), 2010, Victorian Partnership for Advanced Computing (VPAC)
 ##
@@ -114,7 +115,7 @@ class OutputWithinRangeTC(SingleRunTestComponent):
             etree.SubElement(specNode, 'tRange-max',
                 value=str(self.tRange[1]))
         opDictNode = etree.SubElement(specNode, 'opDict')
-        for kw, val in self.opDict.iteritems():
+        for kw, val in self.opDict.items():
             opItemNode = etree.SubElement(opDictNode, 'opItem')
             opItemNode.attrib['name'] = kw
             opItemNode.text = str(val)

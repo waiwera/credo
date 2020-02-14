@@ -24,6 +24,10 @@
 """Utilities for basic image analysis and testing in relation to CREDO.
 Original image test comparison scripts contributed by Owen Kaluza.
 You will need the Python Imaging Library (PIL) installed to use."""
+from __future__ import division
+from builtins import zip
+from builtins import range
+from past.utils import old_div
 
 import sys
 from math import sqrt
@@ -36,7 +40,7 @@ except ImportError:
     from PIL import ImageChops
 
 def normalise(array, maxval):
-   norm = [float(x) / maxval for x in array]
+   norm = [old_div(float(x), maxval) for x in array]
    return norm
 
 def channelDiff(channel, hist1, hist2, pixels, bins):
@@ -45,9 +49,9 @@ def channelDiff(channel, hist1, hist2, pixels, bins):
     #Divide into bins
     chan1 = [0] * bins
     chan2 = [0] * bins
-    binrange = 256 / bins
+    binrange = old_div(256, bins)
     for x in range(256):
-        bin = x / binrange
+        bin = old_div(x, binrange)
         #Prevent out of range due to rounding
         if (bin == bins): bin = bins-1
         chan1[bin] += hist1[x+offset]
@@ -59,7 +63,7 @@ def channelDiff(channel, hist1, hist2, pixels, bins):
     dist = normalise(dist, pixels)
 
     #Sum distances and return euclidean distance between
-    return sqrt(sum([x*x for x in (dist)])) / sqrt(2)
+    return old_div(sqrt(sum([x*x for x in (dist)])), sqrt(2))
 
 def luminanceDiff(img1, img2):
     """Calculate image difference by luminance histogram.
@@ -114,7 +118,7 @@ def colourDiff(img1, img2):
         count += 3
 
     #Average and return
-    return (rsum + gsum + bsum) / count
+    return old_div((rsum + gsum + bsum), count)
 
 def pixelDiff20x20(img1, img2):
     """Compare two open images on a 20x20 basis."""
@@ -146,7 +150,7 @@ def pixelDiff(img1, img2):
     #Scale to [0,1] by dividing by maximum possible difference
     n = len(img1.getbands())
     maxdist = sqrt(pixels * n * (255*255))   #pixels * components * (255 possible values)^2
-    return dist / maxdist
+    return old_div(dist, maxdist)
 
 def compare(imgFilename1, imgFilename2, verbose=False):
     """Compare two image files.

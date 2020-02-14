@@ -23,6 +23,9 @@
 
 """Package for manipulation of a suite of system tests.
 Analogous to the role of the Pythun unittest TestRunner."""
+from builtins import str
+from builtins import zip
+from builtins import object
 
 import os
 import sys
@@ -52,7 +55,7 @@ XML_TESTCASE_ATTR_TYPE = 'type'
 XML_TESTCASE_ATTR_STATUS = 'status'
 XML_TESTCASE_ATTR_RECORDFILE = 'recordfile'
 
-class SysTestRunner:
+class SysTestRunner(object):
     """Class that runs a set of :class:`~credo.systest.api.SysTest`, usually
     collected into :class:`~credo.systest.systestsuite.SysTestSuite` collections.
 
@@ -237,7 +240,7 @@ class SysTestRunner:
         categorised by project, in the order that the projects first
         appear in the results."""
         projOrder, projIndices = self._buildResultsProjectIndex(testSuites)
-        suitesResults = zip(testSuites, resultsLists)
+        suitesResults = list(zip(testSuites, resultsLists))
         print "CREDO System Tests summary for all project suites ran:"
         print "------"
         totalSumsDict = {"Pass":0, "Fail":0, "Error":0}
@@ -250,11 +253,11 @@ class SysTestRunner:
                 suiteResults = resultsLists[suiteI]
                 sumsDict = self.getResultsTotals(suiteResults)[0]
                 self._printResultsLineShort(sumsDict)
-                for kw, sumVal in sumsDict.iteritems():
+                for kw, sumVal in sumsDict.items():
                     projSumsDict[kw] += sumVal
             self._printResultsLineShort(projSumsDict)
             print "------"
-            for kw, sumVal in projSumsDict.iteritems():
+            for kw, sumVal in projSumsDict.items():
                 totalSumsDict[kw] += sumVal
         print "ALL Projects Total: ",
         self._printResultsLineShort(totalSumsDict)
@@ -272,7 +275,7 @@ class SysTestRunner:
             sumsDict = self.getResultsTotals(suiteResults)[0]
             totalResults = sum(sumsDict.values())
             self._printResultsLineShort(sumsDict)
-            for kw, sumVal in sumsDict.iteritems():
+            for kw, sumVal in sumsDict.items():
                 totalSumsDict[kw] += sumVal
         print "------"
         print "TOTAL: ",

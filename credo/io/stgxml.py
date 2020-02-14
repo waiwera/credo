@@ -29,6 +29,8 @@ It currently does not create a new Object-oriented representation of XML docs
 themselves, but most functions operate on an ElementTree object
 representative of an element in an open Stg XML document.
 """
+from builtins import map
+from builtins import str
 
 import os
 import shlex
@@ -261,7 +263,7 @@ def getElementType(elementNode):
 
     if tag in _stgElementBaseTags:
         return tag
-    elif tag in map(addNsPrefix, _stgElementBaseTags):
+    elif tag in list(map(addNsPrefix, _stgElementBaseTags)):
         return removeNsPrefix(tag)
     elif tag == STG_ELEMENT_TAG or tag == addNsPrefix(STG_ELEMENT_TAG):
         try:
@@ -277,13 +279,13 @@ def getElementType(elementNode):
                 " not a StGermainData element of known type."\
                 % (elementNode.tag, typeAttr))
     elif tag in _stgSpecialParamTags \
-            or tag in map(addNsPrefix, _stgSpecialParamTags):
+            or tag in list(map(addNsPrefix, _stgSpecialParamTags)):
         return STG_PARAM_TAG
     elif tag in _stgSpecialListTags \
-            or tag in map(addNsPrefix, _stgSpecialListTags):
+            or tag in list(map(addNsPrefix, _stgSpecialListTags)):
         return STG_LIST_TAG
     elif tag in _stgSpecialStructTags \
-            or tag in map(addNsPrefix, _stgSpecialStructTags):
+            or tag in list(map(addNsPrefix, _stgSpecialStructTags)):
         return STG_STRUCT_TAG
     else:
         raise ValueError("Given node with tag '%s' is not a StGermainData"
@@ -339,7 +341,7 @@ def _getSpecialTagNode(elNode, eltName, eltType):
         specialTagsList = _stgSpecialLists[eltType]
     except KeyError:
         raise ValueError("The eltType argument must be one of %s" \
-            % _stgSpecialLists.keys())
+            % list(_stgSpecialLists.keys()))
 
     for specialTag in specialTagsList:
         if eltName == specialTag:
@@ -414,15 +416,15 @@ def _getNamedElementNode(ctxNode, elName, elType=None):
         # in this case, e.g. the list with asked for name 'import' will have
         # tag 'import'
         if eltNode.tag == addNsPrefix(elName):
-            if eltNode.tag in map(addNsPrefix, _stgSpecialParamTags):
+            if eltNode.tag in list(map(addNsPrefix, _stgSpecialParamTags)):
                 return eltNode
-            if eltNode.tag in map(addNsPrefix, _stgSpecialListTags):
+            if eltNode.tag in list(map(addNsPrefix, _stgSpecialListTags)):
                 return eltNode
-            elif eltNode.tag in map(addNsPrefix, _stgSpecialStructTags):
+            elif eltNode.tag in list(map(addNsPrefix, _stgSpecialStructTags)):
                 return eltNode
     # now check the old param, list, struct format
     for eltNode in ctxNode.getchildren():
-        if eltNode.tag in map(addNsPrefix, _stgElementBaseTags):
+        if eltNode.tag in list(map(addNsPrefix, _stgElementBaseTags)):
             if elName == eltNode.attrib['name']:
                 return eltNode
     return None
@@ -484,7 +486,7 @@ def writeParam(parentNode, paramName, paramVal, mt=None):
 def writeParamSet(parentNode, paramsDict, mt=None):
     """Writes a set of parameters, with name:value mappings as specified by
     paramsDict, to the open XML file at position specified by parentNode."""
-    for paramName, paramVal in paramsDict.iteritems():
+    for paramName, paramVal in paramsDict.items():
         writeParam(parentNode, paramName, paramVal, mt)
 
 def writeParamList(parentNode, listName, paramVals, mt=None):

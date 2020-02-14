@@ -24,6 +24,9 @@
 
 """Collection of utility functions for plotting interesting aspects of models
 """
+from __future__ import division
+from builtins import zip
+from past.utils import old_div
 
 #!/usr/bin/env python
 
@@ -84,7 +87,7 @@ def getSpeedups(mRuns, mResults, profilerName=None):
     lowestTime = lowestProcEntry[1]
     #NB: if lowestProc == 1 (often will be), then serialTime == lowestTime
     serialTime = lowestTime * lowestProc
-    speedups = [serialTime / res[1] for res in resList]
+    speedups = [old_div(serialTime, res[1]) for res in resList]
     return speedups
 
 def plotSpeedups(mRuns, mResults, profilerName=None, show=False,
@@ -148,7 +151,7 @@ def getTimePerEls(mRuns, mResults, profilerName=None):
         wallTimeStr = mRes.jobMetaInfo.performance[profilerName]['walltime']
         wallTime = float(wallTimeStr)
         runInfos.append((numEls, wallTime))
-    timePerEls = [r[1] / r[0] for r in runInfos]
+    timePerEls = [old_div(r[1], r[0]) for r in runInfos]
     return timePerEls
 
 def plotTimePerEls(mRuns, mResults, profilerName=None, show=False,

@@ -26,6 +26,9 @@
 The aim is for simple functions to be able to run without further dependencies
 ... with more advanced stats libraries from the likes of SciPy being able to be
 loaded at the user's discretion."""
+from __future__ import division
+from builtins import map
+from past.utils import old_div
 
 from math import sqrt
 
@@ -55,12 +58,12 @@ def linreg(X, Y):
         Syy = Syy + y*y
         Sxy = Sxy + x*y
     det = Sxx * N - Sx * Sx
-    a, b = (Sxy * N - Sy * Sx)/det, (Sxx * Sy - Sx * Sxy)/det
+    a, b = old_div((Sxy * N - Sy * Sx),det), old_div((Sxx * Sy - Sx * Sxy),det)
     meanerror = residual = 0.0
     for x, y in map(None, X, Y):
-        meanerror = meanerror + (y - Sy/N)**2
+        meanerror = meanerror + (y - old_div(Sy,N))**2
         residual = residual + (y - a * x - b)**2
-    RR = 1 - residual/meanerror
+    RR = 1 - old_div(residual,meanerror)
     #ss = residual / (N-2)
     #Var_a, Var_b = ss * N / det, ss * Sxx / det
     #print "y=ax+b"

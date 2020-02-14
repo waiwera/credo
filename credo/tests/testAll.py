@@ -1,3 +1,4 @@
+from builtins import map
 #!/usr/bin/env python
 ##  Copyright (C), 2010, Monash University
 ##  Copyright (C), 2010, Victorian Partnership for Advanced Computing (VPAC)

@@ -1,4 +1,8 @@
 """ test ModelResult for AUTOUGH2 """
+from __future__ import division
+from builtins import zip
+from builtins import range
+from past.utils import old_div
 
 import unittest
 import os, sys
@@ -13,7 +17,7 @@ class TestAUT2Model(unittest.TestCase):
     def setUp(self):
         # cc6 has eleme 1-80 as atmosphere blocks
         lstname = 'mres_aut2_cc6.listing'
-        self.idxmap = range(80,1680)
+        self.idxmap = list(range(80,1680))
         self.mres_map = T2ModelResult('test_aut2_map',
                                       lst_filename=lstname,
                                       ordering_map=self.idxmap)
@@ -95,11 +99,11 @@ class TestCustomField(unittest.TestCase):
             keys specified in field_map.  This would allow the function to be
             used in (almost) all ModelResults.
             """
-            return mResult.getFieldAtOutputIndex('pressu', index) / 1.0e5
+            return old_div(mResult.getFieldAtOutputIndex('pressu', index), 1.0e5)
 
         def calc_p_hist_in_bar(mResult, index):
             t, phist = mResult.getFieldHistoryAtCell('pressu', index)
-            return t, phist / 1.0e5
+            return t, old_div(phist, 1.0e5)
 
         # then pass the function into the ModelResult (or ModelRun) as part of
         # the field name map
@@ -116,14 +120,14 @@ class TestCustomField(unittest.TestCase):
         # test final result table
         self.lst.index = -1
         p_f = self.lst.element['Pressure']
-        b_f = p_f / 1.0e5
+        b_f = old_div(p_f, 1.0e5)
         self.assertEqual(mres.getFieldAtOutputIndex('pressu', -1)[30], p_f[30])
         self.assertEqual(mres.getFieldAtOutputIndex('p_in_bar', -1)[30], b_f[30])
 
         # test history
         ele = self.lst.element.row_name[30]
         ph_f = self.lst.history(('e', ele, 'Pressure'), short=False)[1]
-        bh_f = ph_f / 1.0e5
+        bh_f = old_div(ph_f, 1.0e5)
         t, phist = mres.getFieldHistoryAtCell('pressu', 30)
         self.assertEqual(phist[1], ph_f[1])
         t, phist = mres.getFieldHistoryAtCell('p_hist_in_bar', 30)

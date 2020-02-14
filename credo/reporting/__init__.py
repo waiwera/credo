@@ -40,7 +40,7 @@ def getGenerators(genNames, *args, **kwargs):
         except KeyError:
             raise ValueError("passed in generator name '%s', but this is"\
                 " not one of the known report generators (%s)." \
-                    % (genName, GenNameToModuleMaps.keys()))
+                    % (genName, list(GenNameToModuleMaps.keys())))
         try:
             fullName = "credo.reporting.%s" % modName
             imp = __import__(fullName)

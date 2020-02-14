@@ -1,3 +1,7 @@
+from future import standard_library
+standard_library.install_aliases()
+from builtins import map
+from builtins import range
 ##  Copyright (C), 2010, Monash University
 ##  Copyright (C), 2010, Victorian Partnership for Advanced Computing (VPAC)
 ##
@@ -22,7 +26,7 @@
 ##  MA  02110-1301  USA
 
 import os
-import cPickle as pickle
+import pickle as pickle
 import shutil
 import tempfile
 import unittest
@@ -72,7 +76,7 @@ class ModelSuiteTestCase(unittest.TestCase):
         indicesIt = msuite.getVariantIndicesIter(self.varDict, itertools.izip)
         varDicts = msuite.getVariantParamPathDicts(self.varDict, indicesIt)
         self.assertEqual(len(varDicts), min(
-            map(len, [self.yRange, self.zRange])))
+            list(map(len, [self.yRange, self.zRange]))))
         for ii, varDict in enumerate(varDicts):
             self.assertEqual(varDict['minY'], self.yRange[ii])
             self.assertEqual(varDict['maxZ'], self.zRange[ii])
@@ -103,9 +107,9 @@ class ModelSuiteTestCase(unittest.TestCase):
         # These are indices into lists above, created manually for testing
         # TODO: below is an experimentally-determined order - bad!
         expIndices = list(msuite.product(
-            range(len(self.procRange)),
-            range(len(self.yRange)),
-            range(len(self.zRange))
+            list(range(len(self.procRange))),
+            list(range(len(self.yRange))),
+            list(range(len(self.zRange)))
             ))
         for ii, expIndexTuple in enumerate(expIndices):
             pIndex, yIndex, zIndex = expIndexTuple

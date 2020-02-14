@@ -1,3 +1,6 @@
+from builtins import zip
+from builtins import str
+from builtins import object
 ##  Copyright (C), 2010, Monash University
 ##  Copyright (C), 2010, Victorian Partnership for Advanced Computing (VPAC)
 ##
@@ -30,7 +33,7 @@ import credo.modelresult
 from credo.io import stgcmdline
 from credo.io import stgpath
 
-class PerformanceProfiler:
+class PerformanceProfiler(object):
     """Class to use to attach to :class:`JobRunner` instances, which will then
     profile performance of each ModelRun ran by given JobRunner.
 
@@ -63,7 +66,7 @@ class PerformanceProfiler:
         raise NotImplementedError("Error, virtual func on base class")
 
 
-class JobMetaInfo:
+class JobMetaInfo(object):
     '''A simple class for recording meta info about a job, such as walltime,
     memory usage, etc.
 
@@ -95,14 +98,14 @@ class JobMetaInfo:
         etree.SubElement(jmNode, 'submitTime').text = str(self.submitTime)
         piNode = etree.SubElement(jmNode, 'platformInfo')
         #Just write out each entry in the platform dictionary.
-        for kw, val in self.platform.iteritems():
+        for kw, val in self.platform.items():
             etree.SubElement(piNode, kw).text = str(val)
         perfNode = etree.SubElement(jmNode, 'performanceInfo')
         #Just write out each entry in the performance dictionaries
-        for profType, subDict in self.performance.iteritems():
+        for profType, subDict in self.performance.items():
             perfProfNode = etree.SubElement(perfNode, "profilerInfo")
             perfProfNode.attrib["profType"] = profType
-            for kw, val in subDict.iteritems():
+            for kw, val in subDict.items():
                 #TODO: good to save units here as an attrib?
                 etree.SubElement(perfProfNode, kw).text = str(val)
 
@@ -129,7 +132,7 @@ class JobMetaInfo:
                 perfDict[profStatNode.tag] = float(profStatNode.text)
         return
 
-class JobRunner:
+class JobRunner(object):
     """Class used for running ModelRun instances. This is an abstract base
     class, user code will need to choose a concrete implementation.
     Is designed to allow both serial, and parallel non-blocking job

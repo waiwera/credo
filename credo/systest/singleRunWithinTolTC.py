@@ -1,3 +1,7 @@
+from __future__ import division
+from builtins import str
+from builtins import zip
+from past.utils import old_div
 from xml.etree import ElementTree as etree
 from .api import SingleRunTestComponent, CREDO_PASS, CREDO_FAIL
 
@@ -14,7 +18,7 @@ def calc_errors(data1, data2, abs_err_tol=1.0e-9):
     # ignore divide by zero error, replace values with small data1 after
     # see http://stackoverflow.com/a/35696047/2368167
     with numpy.errstate(divide='ignore', invalid='ignore'):
-        rdiff = numpy.abs(diff / data1)
+        rdiff = numpy.abs(old_div(diff, data1))
     # replace where value < abs_err_tol with absolute error
     iz = numpy.where(numpy.abs(data1) <= abs_err_tol)
     rdiff[iz] = numpy.abs(diff[iz])
@@ -43,8 +47,8 @@ def non_dimensionalise(x1, x2, abs_err_tol=1.0, logscale=False):
         x1 = [x - xmin for x in x1]
         x2 = [x - xmin for x in x2]
         xmin, xmax, xd = 0.0, 1.0, 1.0
-    xx1 = [(x - xmin)/xd for x in x1]
-    xx2 = [(x - xmin)/xd for x in x2]
+    xx1 = [old_div((x - xmin),xd) for x in x1]
+    xx2 = [old_div((x - xmin),xd) for x in x2]
     return xx1, xx2
 
 def calc_dist_errors(ptx, pty, linex, liney, abs_err_tol=1.0,
@@ -172,7 +176,7 @@ class BaseWithinTolTC(SingleRunTestComponent):
             fieldTol = self._getTolForField(field)
             if not fieldResult:
                 failed = [(i,e) for i,e in enumerate(errors) if e > fieldTol]
-                failed_indices, failed_errors = zip(*failed)
+                failed_indices, failed_errors = list(zip(*failed))
                 max_error = max(failed_errors)
                 statusMsg += "Field comp '%s' has failed error(s) of %s at"\
                     " indices %s not within tol %g of %s solution\n"\

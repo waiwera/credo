@@ -1,3 +1,5 @@
+from __future__ import division
+from past.utils import old_div
 import reportlab.platypus as platypus
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.rl_config import defaultPageSize
@@ -55,7 +57,7 @@ class ReportLabGenerator(ReportGenerator):
         # The Table in ReportLab tends to look better than a list for defining
         #  this stuff.
         data = []
-        for spec, value in listDict.iteritems():
+        for spec, value in listDict.items():
             data.append([spec, value])
         t = platypus.Table(data)
         ts = platypus.TableStyle([('FONT', (0, 0), (-1, -1), 'Helvetica', 8)])
@@ -105,7 +107,7 @@ class ReportLabGenerator(ReportGenerator):
 
         img = PIL.Image.open(imgFilename)
         initWidth, initHeight = img.size
-        ratio = initHeight / float(initWidth)
+        ratio = old_div(initHeight, float(initWidth))
         #imdraw = svg2rlg(imgFilename)
         if tScale is not None:
             tWidth = int(initWidth * tScale/100.0)

@@ -22,11 +22,12 @@
 ##  MA  02110-1301  USA
 
 """This is the core interface for analysis operations in CREDO."""
+from builtins import object
 
 # TODO: add some documentation about the archicture of AnalysisOps, and how this
 # could be related/integrated with gLucifer.
 
-class AnalysisOperation:
+class AnalysisOperation(object):
     '''Abstract base class for Analysis Operations in CREDO: i.e. that require
     some analysis to be done during a
     :class:`~credo.modelrun.ModelRun`. All instances should provide at least

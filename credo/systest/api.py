@@ -27,6 +27,10 @@ This defines the two key classes of the model, :class:`.SysTest` and
 :class:`.TestComponent`, from which actual examples of System tests
 or Test components need to inherit.
 """
+from builtins import zip
+from builtins import str
+from builtins import range
+from builtins import object
 
 import os
 import copy
@@ -44,7 +48,7 @@ import credo.jobrunner
 class SysTestSetupError(Exception):
     """An exception for when a System test fails to set up correctly."""
 
-class SysTestResult:
+class SysTestResult(object):
     """Class to represent an CREDO system test result.
 
     .. attribute:: detailMsg
@@ -128,7 +132,7 @@ def getStdTestName(testTypeStr, inputFiles, nproc, paramOverrides,
         # line dict format.
         paramOs = paramOverrides
         paramOsStr = ""
-        paramKeys = paramOverrides.keys()
+        paramKeys = list(paramOverrides.keys())
         paramKeys.sort()
         for paramName in paramKeys:
             paramVal = paramOverrides[paramName]
@@ -158,7 +162,7 @@ def getStdOutputPath(testClass, inputFiles, testOpts):
     outputPath = os.path.join('output', testName)
     return outputPath
 
-class SysTest:
+class SysTest(object):
     """A class for managing SysTests in CREDO. This is an abstract base
     class: you must sub-class it to create actual system test types.
 
@@ -361,9 +365,9 @@ class SysTest:
         assert len(self.mSuite.runs) > 0
         assert len(self.mSuite.runs) == len(self.testComps)
         for runI, testCompsForRun in enumerate(self.testComps):
-            for tcName, testComp in testCompsForRun.iteritems():
+            for tcName, testComp in testCompsForRun.items():
                 testComp.attachOps(self.mSuite.runs[runI])
-        for tcName, mrTestComp in self.multiRunTestComps.iteritems():
+        for tcName, mrTestComp in self.multiRunTestComps.items():
             mrTestComp.attachOps(self.mSuite.runs)
 
     def checkModelResultsValid(self, resultsSet):
@@ -413,10 +417,10 @@ class SysTest:
                 if self.mSuite.iterGen is not None:
                     print "(var-generated, with variants applied of:\n%s)"\
                         % varDicts[runI]
-            for tcName, tComp in self.testComps[runI].iteritems():
+            for tcName, tComp in self.testComps[runI].items():
                 tcResult = tComp.check(modelResult)
                 self.tcResults[runI][tcName] = tcResult
-            runPassed[runI] = all(self.tcResults[runI].itervalues())
+            runPassed[runI] = all(self.tcResults[runI].values())
             if len(self.testComps[runI]) > 0:
                 if runPassed[runI]:
                     print "All single run test components for"\
@@ -430,10 +434,10 @@ class SysTest:
         if len(self.multiRunTestComps) > 0:
             print "Testing multi-run test components:"
         self.mrtcResults = {}
-        for tcName, mrtComp in self.multiRunTestComps.iteritems():
+        for tcName, mrtComp in self.multiRunTestComps.items():
             tcResult = mrtComp.check(resultsSet)
             self.mrtcResults[tcName] = tcResult
-        self.allmrPassed = all(self.mrtcResults.itervalues())
+        self.allmrPassed = all(self.mrtcResults.values())
         if len(self.multiRunTestComps) > 0:
             if self.allmrPassed:
                 print "All multi-run test components passed."
@@ -652,10 +656,10 @@ class SysTest:
         for runI, tcForRun in enumerate(self.testComps):
             runNode = etree.SubElement(runsNode, 'run')
             runNode.attrib['num'] = "%d" % runI
-            for tcName, testComp in tcForRun.iteritems():
+            for tcName, testComp in tcForRun.items():
                 testComp.writePreRunXML(runNode, tcName)
         mrtcsNode = etree.SubElement(tcBaseNode, 'multiRunTestComponents')
-        for tcName, mrtComp in self.multiRunTestComps.iteritems():
+        for tcName, mrtComp in self.multiRunTestComps.items():
             mrtComp.writePreRunXML(mrtcsNode, tcName)
 
     def _updateXMLTestComponentResults(self, baseNode, resultsSet):
@@ -670,13 +674,13 @@ class SysTest:
             runNode = runsNodes[runI]
             assert int(runNode.attrib['num']) == runI
             if len(self.tcResults[runI]) > 0:
-                runResult = str(all(self.tcResults[runI].itervalues()))
+                runResult = str(all(self.tcResults[runI].values()))
             else:
                 runResult = "NA"
             runNode.attrib['runPassed'] = runResult
-            tCompsAndXMLs = zip(tcForRun.iterkeys(),
-                tcForRun.itervalues(),
-                runNode.getchildren())
+            tCompsAndXMLs = list(zip(iter(tcForRun.keys()),
+                iter(tcForRun.values()),
+                runNode.getchildren()))
             for tcName, testComp, testCompXMLNode in tCompsAndXMLs:
                 assert tcName == testCompXMLNode.attrib['name']
                 assert testComp.tcType == testCompXMLNode.attrib['type']
@@ -812,7 +816,7 @@ class SingleModelSysTest(SysTest):
                 " method for your SysTest subclass: %s" % ae )
             raise ae
 
-class TestComponent:
+class TestComponent(object):
     '''A class for TestComponents that make up an CREDO System test/benchmark.
     Generally they will form part a list contained by a
     :class:`.SysTest`.

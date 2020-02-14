@@ -37,6 +37,10 @@ across multiple runs, e.g. :func:`~calcFieldCvgWithScale`.
    In future it's planned to add functions that load a checkpointed field result
    into Python for further analysis, but this feature is not yet implemented.
 """
+from builtins import str
+from builtins import map
+from builtins import range
+from builtins import object
 
 import os
 import math
@@ -47,7 +51,7 @@ from credo.analysis import AnalysisOperation
 from credo.io import stgxml, stgcvg
 import credo.analysis.stats as stats
 
-class FieldComparisonOp:
+class FieldComparisonOp(object):
     # TODO: [Refactor] remove, not needed in new structure
     '''Class for setting up and performing a comparison between two Fields.
     Currently uses the functionality of the FieldTest component in StgFEM,
@@ -82,14 +86,14 @@ class FieldComparisonOp:
             # TODO: create a new exception type here?
             raise KeyError("Field '%s' not found in the known list of"\
                 " convergence results (%s) for model run '%s'"\
-                % (self.name, cvgIndex.keys(),modelResult.modelName))
+                % (self.name, list(cvgIndex.keys()),modelResult.modelName))
         dofErrors = stgcvg.getDofErrors_ByDof(cvgFileInfo, steps="last")
         fieldResult = FieldComparisonResult(self.name, dofErrors)
         fieldResult.cvgFileInfo = cvgFileInfo
         return fieldResult
 
 
-class FieldComparisonResult:
+class FieldComparisonResult(object):
     # TODO: [Refactor] remove, not needed in new structure
     '''Simple class for storing CREDO FieldComparisonOp Results, so they can be
     analysed and saved.
@@ -182,8 +186,8 @@ class FieldComparisonResult:
             dofRange = [0]
             dofIndices = [dofIndex]
         else:
-            dofRange = range(numDofs)
-            dofIndices = range(numDofs)
+            dofRange = list(range(numDofs))
+            dofIndices = list(range(numDofs))
 
         plt.subplots_adjust(wspace=0.4)
 
@@ -375,7 +379,7 @@ class FieldComparisonList(AnalysisOperation):
         ftNode.attrib['referencePath']=str(self.referencePath)
         ftNode.attrib['testTimestep']=str(self.testTimestep)
         fListNode = etree.SubElement(ftNode, 'fields')
-        for fTest in self.fields.values():
+        for fTest in list(self.fields.values()):
             fTest.writeInfoXML(fListNode)
 
     def writeStgDataXML(self, rootNode):
@@ -422,7 +426,7 @@ class FieldComparisonList(AnalysisOperation):
                     'useReferenceSolutionFromFile':self.useReference,
                     'useHighResReferenceSolutionFromFile':self.useHighResReference })
                 stgxml.writeParamList(fieldTestElt, self.stgXMLSpecRList,
-                    self.fields.keys())
+                    list(self.fields.keys()))
 
             # Create main struct list for the "FieldMappings
             fieldMappingElt = stgxml.writeStructList(fieldTestElt, self.stgXMLSpecFList)
@@ -493,7 +497,7 @@ class FieldComparisonList(AnalysisOperation):
         a run, from the given modelResult
         (:class:`~credo.modelresult.ModelResult`)."""
 
-        fComps = self.fields.values()
+        fComps = list(self.fields.values())
         return [fCompOp.getResult(modelResult) for fCompOp in fComps]
 
 #--------------------------------------
@@ -513,7 +517,7 @@ def getFieldScaleCvgData_SingleCvgFile(cvgFilePath):
     '''
     cvgIndex = stgcvg.genConvergenceFileIndex(cvgFilePath)
     fieldErrorData = {}
-    for fieldName, cvgFileInfo in cvgIndex.iteritems():
+    for fieldName, cvgFileInfo in cvgIndex.items():
         #NB: assumes all cvg files and all fields have same len scales.
         lenScales = stgcvg.getRes(cvgFileInfo.filename)
         dofErrors = stgcvg.getDofErrors_ByDof(cvgFileInfo)
@@ -537,10 +541,10 @@ def calcFieldCvgWithScale(fieldName, lenScales, dofErrors):
     #print "Testing convergence for field '%s'" % fieldName
     #print "Length scales are %s" % lenScales
     #print "Dof errors for %d dofs are %s" % (len(dofErrors), dofErrors)
-    scaleLogs = map(math.log10, lenScales)
+    scaleLogs = list(map(math.log10, lenScales))
     convResults = []
     for errorArray in dofErrors:
-        errLogs = map(math.log10, errorArray)
+        errLogs = list(map(math.log10, errorArray))
         cvgRate, intercept, rSq = stats.linreg(scaleLogs, errLogs)
         pearsonCorr = math.sqrt(rSq)
         convResults.append((cvgRate, pearsonCorr))
