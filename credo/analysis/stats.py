@@ -51,7 +51,7 @@ def linreg(X, Y):
     if len(X) != len(Y):  raise ValueError, 'unequal length'
     N = len(X)
     Sx = Sy = Sxx = Syy = Sxy = 0.0
-    for x, y in map(None, X, Y):
+    for x, y in zip(X, Y):
         Sx = Sx + x
         Sy = Sy + y
         Sxx = Sxx + x*x
@@ -60,7 +60,7 @@ def linreg(X, Y):
     det = Sxx * N - Sx * Sx
     a, b = old_div((Sxy * N - Sy * Sx),det), old_div((Sxx * Sy - Sx * Sxy),det)
     meanerror = residual = 0.0
-    for x, y in map(None, X, Y):
+    for x, y in zip(X, Y):
         meanerror = meanerror + (y - old_div(Sy,N))**2
         residual = residual + (y - a * x - b)**2
     RR = 1 - old_div(residual,meanerror)
