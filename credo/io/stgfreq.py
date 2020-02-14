@@ -27,6 +27,7 @@ Primary construct is the FreqOutput class, which once constructed has numerous
 methods to access data from a FrequentOutput file.
 '''
 from __future__ import division
+from __future__ import print_function
 from builtins import object
 from past.utils import old_div
 
@@ -306,13 +307,13 @@ class FreqOutput(object):
         '''Print the maximum and minimum values of all fields in the frequent
         output.'''
         if not self.populated: self.populateFromFile()
-        print "Maximum and minimum values for quantities in Frequent Output:"
+        print("Maximum and minimum values for quantities in Frequent Output:")
         for header in self.headers:
             if header == 'Timestep': continue
             min, minStep = self.getMin(header)
             max, maxStep = self.getMax(header)
-            print "\t%s: min %f (at step %d), max %f (at step %d)"\
-                % (header, min, minStep, max, maxStep)
+            print("\t%s: min %f (at step %d), max %f (at step %d)"\
+                % (header, min, minStep, max, maxStep))
 
     def getReductionOp(self, headerName, reduceFunc, **kwargs):
         '''Utility function for doing comparison operations on the records
@@ -366,8 +367,8 @@ class FreqOutput(object):
             matplotlib.use('Agg')
             import matplotlib.pyplot as plt
         except ImportError:
-            print "Error, to use CREDO built-in plot functions, please "\
-                " install the matplotlib python library."
+            print("Error, to use CREDO built-in plot functions, please "\
+                " install the matplotlib python library.")
             return
 
         if not self.populated: self.populateFromFile()
