@@ -27,6 +27,7 @@ a StGermain-based application.
 The primary interface is via the :class:`~credo.modelrun.ModelRun` class.
 
 .. seealso:: :mod:`credo.modelrun`."""
+from builtins import object
 
 import os
 import glob

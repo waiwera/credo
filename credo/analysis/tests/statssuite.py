@@ -1,4 +1,5 @@
 from __future__ import print_function
+from builtins import map
 ##  Copyright (C), 2010, Monash University
 ##  Copyright (C), 2010, Victorian Partnership for Advanced Computing (VPAC)
 ##
@@ -56,8 +57,8 @@ print("\n** Results from real StgFEM data**")
 scales = [1.000000e-01, 5.000000e-02, 3.333333e-02, 2.500000e-02]
 velField1Err = [9.48975248e-06, 5.98833029e-07, 1.18487871e-07, 3.74909918e-08]
 
-scaleLogs = map(math.log10, scales)
-velErrLogs = map(math.log10, velField1Err)
+scaleLogs = list(map(math.log10, scales))
+velErrLogs = list(map(math.log10, velField1Err))
 print("Len scales(log10): %s" % scaleLogs)
 print("errors vs analytic(log10): %s" % velErrLogs)
 

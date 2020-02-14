@@ -20,7 +20,7 @@ def addTestCompElements(sciBTest, rGen, level):
     elements.append(rGen.getHeaderEl("Single Run Test Components", level))
     for runI, srTCs in enumerate(sciBTest.testComps):
         elements.append(rGen.getHeaderEl("Run %d" % runI, level+1))
-        for srName, srTC in srTCs.items():
+        for srName, srTC in list(srTCs.items()):
             elements.extend(testCompElement(srName, srTC, level+2, rGen))
     return elements
 
@@ -37,7 +37,7 @@ def modelVariantsTable(mSuite, rGen, level):
     elements = []
     elements.append(rGen.getHeaderEl("Model Variants", level))
     headers = ["Run"]
-    for mVarName in mSuite.modelVariants.keys():
+    for mVarName in list(mSuite.modelVariants.keys()):
         headers.append(mVarName)
     data = [[] for runI in range(len(mSuite.runs))]
     valIter = msuite.getParamValuesIter(mSuite.modelVariants, mSuite.iterGen)

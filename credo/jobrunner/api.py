@@ -99,14 +99,14 @@ class JobMetaInfo(object):
         etree.SubElement(jmNode, 'submitTime').text = str(self.submitTime)
         piNode = etree.SubElement(jmNode, 'platformInfo')
         #Just write out each entry in the platform dictionary.
-        for kw, val in self.platform.items():
+        for kw, val in list(self.platform.items()):
             etree.SubElement(piNode, kw).text = str(val)
         perfNode = etree.SubElement(jmNode, 'performanceInfo')
         #Just write out each entry in the performance dictionaries
-        for profType, subDict in self.performance.items():
+        for profType, subDict in list(self.performance.items()):
             perfProfNode = etree.SubElement(perfNode, "profilerInfo")
             perfProfNode.attrib["profType"] = profType
-            for kw, val in subDict.items():
+            for kw, val in list(subDict.items()):
                 #TODO: good to save units here as an attrib?
                 etree.SubElement(perfProfNode, kw).text = str(val)
 

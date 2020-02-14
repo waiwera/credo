@@ -100,12 +100,12 @@ class ImageReferenceTest(api.SingleModelSysTest):
             self.expectedSolnPath)
         mRun.simParams = SimParams(nsteps=self.runSteps, cpevery=0,
             dumpevery=self.compareEvery)
-        for imageComp in self.imageComps.values():
+        for imageComp in list(self.imageComps.values()):
             imageComp.attachOps(mRun)
         mRun.writeInfoXML()
         result = jobRunner.runModel(mRun)
         # Now check the required images were actually created
-        for imageComp in self.imageComps.values():
+        for imageComp in list(self.imageComps.values()):
             refImageFilename = os.path.join(self.expectedSolnPath,
                 imageComp.imageFilename)
             if not os.path.exists(refImageFilename):

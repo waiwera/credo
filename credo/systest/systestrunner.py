@@ -254,11 +254,11 @@ class SysTestRunner(object):
                 suiteResults = resultsLists[suiteI]
                 sumsDict = self.getResultsTotals(suiteResults)[0]
                 self._printResultsLineShort(sumsDict)
-                for kw, sumVal in sumsDict.items():
+                for kw, sumVal in list(sumsDict.items()):
                     projSumsDict[kw] += sumVal
             self._printResultsLineShort(projSumsDict)
             print("------")
-            for kw, sumVal in projSumsDict.items():
+            for kw, sumVal in list(projSumsDict.items()):
                 totalSumsDict[kw] += sumVal
         print("ALL Projects Total: ", end=' ')
         self._printResultsLineShort(totalSumsDict)
@@ -276,7 +276,7 @@ class SysTestRunner(object):
             sumsDict = self.getResultsTotals(suiteResults)[0]
             totalResults = sum(sumsDict.values())
             self._printResultsLineShort(sumsDict)
-            for kw, sumVal in sumsDict.items():
+            for kw, sumVal in list(sumsDict.items()):
                 totalSumsDict[kw] += sumVal
         print("------")
         print("TOTAL: ", end=' ')

@@ -57,7 +57,7 @@ class ReportLabGenerator(ReportGenerator):
         # The Table in ReportLab tends to look better than a list for defining
         #  this stuff.
         data = []
-        for spec, value in listDict.items():
+        for spec, value in list(listDict.items()):
             data.append([spec, value])
         t = platypus.Table(data)
         ts = platypus.TableStyle([('FONT', (0, 0), (-1, -1), 'Helvetica', 8)])

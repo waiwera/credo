@@ -28,6 +28,12 @@ Primary interface is via the :class:`ModelRun`, which enables you to specify,
 configure and run a Model, and save records of this as an XML. This process will
 produce a :class:`credo.modelresult.ModelResult` class.
 """
+from __future__ import division
+from builtins import map
+from builtins import str
+from builtins import range
+from past.utils import old_div
+from builtins import object
 
 import os, sys
 from datetime import timedelta
@@ -44,7 +50,7 @@ import credo.utils
 
 # Global list of allowed Python types that can be saved as StGermain SimParams
 #  I.E. that StGermain's Dictionary knows how to handle.
-_allowedModelParamTypes = [int, float, long, bool, str]
+_allowedModelParamTypes = [int, float, int, bool, str]
 
 CREDO_ANALYSIS_RECORD_FILENAME = "credo-analysis.xml"
 SOLVER_OPTS_RECORD_FILENAME = "solverOptsUsed.opt"
@@ -393,7 +399,7 @@ class UnderworldModelRun(ModelRun):
             self.paramOverrides = {}
         checkParamOverridesTypes(self.paramOverrides)
         if self.simParams:
-            self.simParams.checkNoDuplicates(self.paramOverrides.keys())
+            self.simParams.checkNoDuplicates(list(self.paramOverrides.keys()))
         self.solverOpts = solverOpts
         self.checkSolverOptsFile()
         self.inputFilePath = inputFilePath
@@ -409,7 +415,7 @@ class UnderworldModelRun(ModelRun):
         # nproc is sensible value
         if self.simParams:
             self.simParams.checkValidParams()
-            self.simParams.checkNoDuplicates(self.paramOverrides.keys())
+            self.simParams.checkNoDuplicates(list(self.paramOverrides.keys()))
         if self.solverOpts:
             self.checkSolverOptsFile()
         # TODO: should there be a convention to return anything here, or more
@@ -454,7 +460,7 @@ class UnderworldModelRun(ModelRun):
         else:
             inputFiles = [os.path.join(self.basePath, iFile) for iFile in \
                 self.modelInputFiles]
-            inputFiles = map(os.path.abspath, inputFiles)
+            inputFiles = list(map(os.path.abspath, inputFiles))
         stgRunStr = " ".join([runExe] + inputFiles)
         if self.analysisXML:
             if absXMLPaths == False:
@@ -489,7 +495,7 @@ class UnderworldModelRun(ModelRun):
             shutil.copy(self.solverOpts, soCopyPath)
 
         # Allow all analysis operators to do any post-run cleanup
-        for opName, analysisOp in self.analysisOps.iteritems():
+        for opName, analysisOp in self.analysisOps.items():
             analysisOp.postRun(self, self.basePath)
 
         try:
@@ -588,7 +594,7 @@ class UnderworldModelRun(ModelRun):
         writeSolverOptsInfoXML(self.solverOpts, root)
 
         analysisNode = etree.SubElement(root, 'analysisOps')
-        for opName, analysisOp in self.analysisOps.iteritems():
+        for opName, analysisOp in self.analysisOps.items():
             analysisOp.writeInfoXML(analysisNode)
         # TODO : write info on cpFields?
         # Write the file
@@ -626,7 +632,7 @@ class UnderworldModelRun(ModelRun):
                 mt='replace')
         if self.simParams:
             self.simParams.writeStgDataXML(root)
-        for analysisName, analysisOp in self.analysisOps.iteritems():
+        for analysisName, analysisOp in self.analysisOps.items():
             analysisOp.writeStgDataXML(root)
 
         # This is so we can checkpoint fields list: defined in FieldVariable.c
@@ -672,11 +678,11 @@ class JobParams(dict):
             # Convert to a flat seconds number
             kwargs['maxRunTime'] = mrTime.days * 24 * 3600 + mrTime.seconds
         dict.__init__(self, kwargs)
-        if 'nproc' not in self.keys():
+        if 'nproc' not in list(self.keys()):
             self['nproc'] = DEF_NPROC
-        if 'maxRunTime' not in self.keys():
+        if 'maxRunTime' not in list(self.keys()):
             self['maxRunTime'] = DEF_MAX_RUN_TIME
-        if 'pollInterval' not in self.keys():
+        if 'pollInterval' not in list(self.keys()):
             self['pollInterval'] = DEF_POLL_INTERVAL
 
     def writeInfoXML(self, parentNode):
@@ -688,7 +694,7 @@ class JobParams(dict):
         self._writeInfoXML_Recurse(jpNode, self)
 
     def _writeInfoXML_Recurse(self, baseNode, paramDict):
-        for kw, value in paramDict.iteritems():
+        for kw, value in paramDict.items():
             if isinstance(value, dict):
                 subDict = value
                 #Write a hierarchical sub-dict
@@ -698,7 +704,7 @@ class JobParams(dict):
                 etree.SubElement(baseNode, kw).text = str(value)
 
 
-class StgParamInfo:
+class StgParamInfo(object):
     '''A simple Class that keeps track of the type of a StgParam, and it's full
     name.
 
@@ -734,7 +740,7 @@ class StgParamInfo:
                 (self.stgName, str(value), str(type(value)), str(self.pType)))
 
 
-class SimParams:
+class SimParams(object):
     """A class to keep records about the simulation parameters used for a
      StgDomain/Underworld Model Run, such as number of timesteps to run for.
      Has functionality to save this list to an XML record, and also read
@@ -757,18 +763,18 @@ class SimParams:
         'restartstep':StgParamInfo("restartTimestep",int, None) }
 
     def __init__(self, **kwargs):
-        for paramName, stgParamInfo in self.stgParamInfos.iteritems():
+        for paramName, stgParamInfo in self.stgParamInfos.items():
             self.setParam(paramName, stgParamInfo.defVal)
 
         # Set all parameters provided to init function
-        for param, val in kwargs.iteritems():
+        for param, val in kwargs.items():
             paramFound = False
             # Allow the user to set by param name on this class, or actual name
-            if param in self.stgParamInfos.keys():
+            if param in list(self.stgParamInfos.keys()):
                 paramFound = True
                 self.setParam(param, val)
             else:
-                for paramName, stgParamInfo in self.stgParamInfos.iteritems():
+                for paramName, stgParamInfo in self.stgParamInfos.items():
                     if param == stgParamInfo.stgName:
                         paramFound = True
                         self.setParam(paramName, val)
@@ -777,11 +783,11 @@ class SimParams:
             if paramFound == False:
                 valueErrorStr = "provided Sim Parameter '%s' not in allowed"\
                     " list of parameters to set, which is %s" %\
-                    (param, self.stgParamInfos.keys())
+                    (param, list(self.stgParamInfos.keys()))
                 raise ValueError(valueErrorStr)
 
     def setParam(self, paramName, val):
-        assert paramName in self.stgParamInfos.keys()
+        assert paramName in list(self.stgParamInfos.keys())
         self.__dict__[paramName] = val
         self.stgParamInfos[paramName].checkType(val)
 
@@ -800,7 +806,7 @@ class SimParams:
         overrides set, and cmd-line parameter overrides."""
 
         stgParamNamesSet = [simPInfo.stgName for simPInfo in \
-            self.stgParamInfos.itervalues()]
+            self.stgParamInfos.values()]
 
         for modelPath in paramOverridesList:
             if modelPath in stgParamNamesSet:
@@ -814,7 +820,7 @@ class SimParams:
         was created."""
         dEvery = self.dumpevery
         lastImgStep = finalStep / dEvery * dEvery
-        nearestDumpStep = int(round(inputStep / float(dEvery))) * dEvery
+        nearestDumpStep = int(round(old_div(inputStep, float(dEvery)))) * dEvery
         nearestDumpStep = min([nearestDumpStep, lastImgStep])
         return nearestDumpStep
 
@@ -829,7 +835,7 @@ class SimParams:
     def writeStgDataXML(self, xmlNode):
         '''Writes the parameters of this class as parameters in a StGermain
          XML file'''
-        for paramName, stgParam in self.stgParamInfos.iteritems():
+        for paramName, stgParam in self.stgParamInfos.items():
             val = self.getParam(paramName)
             if val is not None:
                 stgxml.writeParam(xmlNode, stgParam.stgName, val,\
@@ -843,7 +849,7 @@ class SimParams:
         ffile=stgxml.createFlattenedXML(absInputFiles, cmdLineOverrides)
         xmlDoc = etree.parse(ffile)
         stgRoot = xmlDoc.getroot()
-        for param, stgParam in self.stgParamInfos.iteritems():
+        for param, stgParam in self.stgParamInfos.items():
             # some of these may be none, but is ok since will check below
             val = stgxml.getParamValue(stgRoot, stgParam.stgName,\
                 stgParam.pType)
@@ -858,7 +864,7 @@ class SimParams:
 def checkParamOverridesTypes(paramOverrides):
     """Checks that, for a given list of paramOverrides, each is of a valid
     type that can actually be successfully used in a StGermain dictionary."""
-    for modelPath, paramVal in paramOverrides.iteritems():
+    for modelPath, paramVal in paramOverrides.items():
         if type(paramVal) not in _allowedModelParamTypes:
             raise ValueError("One of the parameters in paramOverrides"\
                 " list, '%s', has value '%s', of type '%s', which"\
@@ -874,7 +880,7 @@ def getParamOverridesAsStr(paramOverrides):
     checkParamOverridesTypes(paramOverrides)
     paramOverridesStr = ""
     #create the string in sorted order, for tidiness and user-friendliness
-    modelPaths = paramOverrides.keys()
+    modelPaths = list(paramOverrides.keys())
     modelPaths.sort()
     overrideStrs = []
     for modelPath in modelPaths:
@@ -888,7 +894,7 @@ def writeParamOverridesInfoXML(paramOverrides, parentNode):
     """Writes a record, under the given parentNode, of all the
     parameter overrides specified in the list paramOverrides."""
     paramOversNode = etree.SubElement(parentNode, 'paramOverrides')
-    for modelPath, paramVal in paramOverrides.iteritems():
+    for modelPath, paramVal in paramOverrides.items():
         paramNode = etree.SubElement(paramOversNode, 'param')
         paramNode.attrib['modelPath'] = modelPath
         paramNode.attrib['paramVal'] = str(paramVal)

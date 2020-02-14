@@ -1,4 +1,7 @@
 from __future__ import print_function
+from builtins import zip
+from builtins import str
+from builtins import range
 import unittest
 
 import unittest
@@ -33,7 +36,7 @@ class TestHistoryWithinTolTC(unittest.TestCase):
                                       fieldname_map=WAIWERA_FIELDMAP)
         self.mres2 = T2ModelResult('aut2',
                                    lst_filename='deliv.listing',
-                                   ordering_map=range(1,11),
+                                   ordering_map=list(range(1,11)),
                                    fieldname_map=AUT2_FIELDMAP)
 
         # these two have different length of output results
@@ -43,7 +46,7 @@ class TestHistoryWithinTolTC(unittest.TestCase):
                                       fieldname_map=WAIWERA_FIELDMAP)
         self.mres4 = T2ModelResult('aut2',
                                    lst_filename='deliv_39.listing',
-                                   ordering_map=range(1,11),
+                                   ordering_map=list(range(1,11)),
                                    fieldname_map=AUT2_FIELDMAP)
 
         print('waiwera n = ', len(self.mres3.getTimes()))

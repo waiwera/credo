@@ -65,7 +65,7 @@ class RstGenerator(ReportGenerator):
 
     def getDefListEls(self, listDict):
         resStr = ""
-        for key, val in listDict.items():
+        for key, val in list(listDict.items()):
             resStr += " * %s: %s\n" % (key, val)
         resStr += "\n"
         return [resStr]

@@ -518,7 +518,7 @@ def getFieldScaleCvgData_SingleCvgFile(cvgFilePath):
     '''
     cvgIndex = stgcvg.genConvergenceFileIndex(cvgFilePath)
     fieldErrorData = {}
-    for fieldName, cvgFileInfo in cvgIndex.items():
+    for fieldName, cvgFileInfo in list(cvgIndex.items()):
         #NB: assumes all cvg files and all fields have same len scales.
         lenScales = stgcvg.getRes(cvgFileInfo.filename)
         dofErrors = stgcvg.getDofErrors_ByDof(cvgFileInfo)

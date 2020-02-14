@@ -116,7 +116,7 @@ class OutputWithinRangeTC(SingleRunTestComponent):
             etree.SubElement(specNode, 'tRange-max',
                 value=str(self.tRange[1]))
         opDictNode = etree.SubElement(specNode, 'opDict')
-        for kw, val in self.opDict.items():
+        for kw, val in list(self.opDict.items()):
             opItemNode = etree.SubElement(opDictNode, 'opItem')
             opItemNode.attrib['name'] = kw
             opItemNode.text = str(val)

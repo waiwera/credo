@@ -23,6 +23,8 @@
 
 """A module for general utility functions in CREDO, that don't clearly fit
 into other modules."""
+from builtins import map
+from builtins import str
 
 import os
 import inspect
@@ -44,7 +46,7 @@ def productCalc(*args, **kwds):
     productCalc('ABCD', 'xy') --> Ax Ay Bx By Cx Cy Dx Dy
     productCalc(range(2), repeat=3) --> 000 001 010 011 100 101 110 111
     """
-    pools = map(tuple, args) * kwds.get('repeat', 1)
+    pools = list(map(tuple, args)) * kwds.get('repeat', 1)
     result = [[]]
     for pool in pools:
         result = [x+[y] for x in result for y in pool]
@@ -60,6 +62,6 @@ def dictAsPrettyStr(inDict):
     .. note:: No effort has been made to ensure this is super-efficient for
        large dictionaries, it's suited to small lists of parameters"""
     strings = []
-    for kw, val in inDict.iteritems():
+    for kw, val in inDict.items():
         strings.append("'%s': %s" % (str(kw), str(val)))
     return "{%s}" % (", ".join(strings))

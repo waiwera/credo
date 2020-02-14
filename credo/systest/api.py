@@ -366,9 +366,9 @@ class SysTest(object):
         assert len(self.mSuite.runs) > 0
         assert len(self.mSuite.runs) == len(self.testComps)
         for runI, testCompsForRun in enumerate(self.testComps):
-            for tcName, testComp in testCompsForRun.items():
+            for tcName, testComp in list(testCompsForRun.items()):
                 testComp.attachOps(self.mSuite.runs[runI])
-        for tcName, mrTestComp in self.multiRunTestComps.items():
+        for tcName, mrTestComp in list(self.multiRunTestComps.items()):
             mrTestComp.attachOps(self.mSuite.runs)
 
     def checkModelResultsValid(self, resultsSet):
@@ -418,7 +418,7 @@ class SysTest(object):
                 if self.mSuite.iterGen is not None:
                     print("(var-generated, with variants applied of:\n%s)"\
                         % varDicts[runI])
-            for tcName, tComp in self.testComps[runI].items():
+            for tcName, tComp in list(self.testComps[runI].items()):
                 tcResult = tComp.check(modelResult)
                 self.tcResults[runI][tcName] = tcResult
             runPassed[runI] = all(self.tcResults[runI].values())
@@ -435,7 +435,7 @@ class SysTest(object):
         if len(self.multiRunTestComps) > 0:
             print("Testing multi-run test components:")
         self.mrtcResults = {}
-        for tcName, mrtComp in self.multiRunTestComps.items():
+        for tcName, mrtComp in list(self.multiRunTestComps.items()):
             tcResult = mrtComp.check(resultsSet)
             self.mrtcResults[tcName] = tcResult
         self.allmrPassed = all(self.mrtcResults.values())
@@ -657,10 +657,10 @@ class SysTest(object):
         for runI, tcForRun in enumerate(self.testComps):
             runNode = etree.SubElement(runsNode, 'run')
             runNode.attrib['num'] = "%d" % runI
-            for tcName, testComp in tcForRun.items():
+            for tcName, testComp in list(tcForRun.items()):
                 testComp.writePreRunXML(runNode, tcName)
         mrtcsNode = etree.SubElement(tcBaseNode, 'multiRunTestComponents')
-        for tcName, mrtComp in self.multiRunTestComps.items():
+        for tcName, mrtComp in list(self.multiRunTestComps.items()):
             mrtComp.writePreRunXML(mrtcsNode, tcName)
 
     def _updateXMLTestComponentResults(self, baseNode, resultsSet):
@@ -679,8 +679,8 @@ class SysTest(object):
             else:
                 runResult = "NA"
             runNode.attrib['runPassed'] = runResult
-            tCompsAndXMLs = list(zip(iter(tcForRun.keys()),
-                iter(tcForRun.values()),
+            tCompsAndXMLs = list(zip(iter(list(tcForRun.keys())),
+                iter(list(tcForRun.values())),
                 runNode.getchildren()))
             for tcName, testComp, testCompXMLNode in tCompsAndXMLs:
                 assert tcName == testCompXMLNode.attrib['name']

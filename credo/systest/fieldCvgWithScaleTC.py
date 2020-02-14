@@ -51,7 +51,7 @@ def testAllCvgWithScale(lenScales, fieldErrorData, fieldCvgCriterions):
     :func:`~credo.analysis.fields.getFieldScaleCvgData_SingleCvgFile`
     on a path containing a single cvg file."""
     overallResult = True
-    for fieldName, dofErrors in fieldErrorData.items():
+    for fieldName, dofErrors in list(fieldErrorData.items()):
         convResult = fields.calcFieldCvgWithScale(fieldName, lenScales,
             dofErrors)
         meetsReq = testCvgWithScale(fieldName, convResult,
@@ -230,7 +230,7 @@ class FieldCvgWithScaleTC(MultiRunTestComponent):
         self.fCvgMeetsReq = {}
         self.fCvgResults = {}
 
-        for fName, fCompOp in self.fComps.fields.items():
+        for fName, fCompOp in list(self.fComps.fields.items()):
             self.fErrorsByRun[fName] = getDofErrorsByRun(fCompOp, resultsSet)
             fieldConv = self.calcCvgFunc(fName, lenScales,
                 self.fErrorsByRun[fName])
@@ -281,7 +281,7 @@ class FieldCvgWithScaleTC(MultiRunTestComponent):
     def _writeXMLCustomResult(self, resNode, resultsSet):
         frNode = etree.SubElement(resNode, 'fieldResultDetails')
         lenScales = self._getLenScales(resultsSet)
-        for fName, fComp in self.fComps.fields.items():
+        for fName, fComp in list(self.fComps.fields.items()):
             fieldNode = etree.SubElement(frNode, "field", name=fName)
             meetsReq = self.fCvgMeetsReq[fName]
             if meetsReq == None:

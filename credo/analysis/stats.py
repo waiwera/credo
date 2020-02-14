@@ -27,6 +27,7 @@ The aim is for simple functions to be able to run without further dependencies
 ... with more advanced stats libraries from the likes of SciPy being able to be
 loaded at the user's discretion."""
 from __future__ import division
+from builtins import zip
 from builtins import map
 from past.utils import old_div
 

@@ -1,3 +1,5 @@
+from future import standard_library
+standard_library.install_aliases()
 ##  Copyright (C), 2010, Monash University
 ##  Copyright (C), 2010, Victorian Partnership for Advanced Computing (VPAC)
 ##
@@ -22,7 +24,7 @@
 ##  MA  02110-1301  USA
 
 import os
-import cPickle as pickle
+import pickle as pickle
 import shutil
 import tempfile
 import unittest
