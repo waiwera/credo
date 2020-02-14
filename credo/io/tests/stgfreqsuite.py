@@ -1,3 +1,6 @@
+from __future__ import division
+from builtins import range
+from past.utils import old_div
 ##  Copyright (C), 2010, Monash University
 ##  Copyright (C), 2010, Victorian Partnership for Advanced Computing (VPAC)
 ##
@@ -105,7 +108,7 @@ class StgFreqTestCase(unittest.TestCase):
 
     def test_getMean(self):
         meanVal = self.stgFreq.getMean('VRMS')
-        calcMean = sum(self.VRMSVals, 0.0) / len(self.VRMSVals)
+        calcMean = old_div(sum(self.VRMSVals, 0.0), len(self.VRMSVals))
         self.assertAlmostEqual(meanVal, calcMean)
 
     def test_getReductionOps(self):

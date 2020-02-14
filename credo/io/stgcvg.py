@@ -203,7 +203,7 @@ def getDofErrorsForStep(cvgFileInfo, stepNum):
     colVals = _getLineValues(cvgFileInfo.filename, stepNum)
 
     dofErrorsForStep = []
-    for dof, colIndex in cvgFileInfo.dofColMap.items():
+    for dof, colIndex in list(cvgFileInfo.dofColMap.items()):
         try:
             dofError = colVals[colIndex]
         except IndexError:

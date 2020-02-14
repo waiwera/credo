@@ -486,7 +486,7 @@ def writeParam(parentNode, paramName, paramVal, mt=None):
 def writeParamSet(parentNode, paramsDict, mt=None):
     """Writes a set of parameters, with name:value mappings as specified by
     paramsDict, to the open XML file at position specified by parentNode."""
-    for paramName, paramVal in paramsDict.items():
+    for paramName, paramVal in list(paramsDict.items()):
         writeParam(parentNode, paramName, paramVal, mt)
 
 def writeParamList(parentNode, listName, paramVals, mt=None):

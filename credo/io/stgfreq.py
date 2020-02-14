@@ -176,7 +176,7 @@ class FreqOutput(object):
         if not self.populated: self.populateFromFile()
         record = self.getRecordAtStep(tstep)
         recordDict = {}
-        for header, col in self.headerColMap.items():
+        for header, col in list(self.headerColMap.items()):
             recordDict[header] = record[col]
         return recordDict
 
