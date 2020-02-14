@@ -19,5 +19,6 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     python_requires='>=2.7',
-    install_requires=['matplotlib', 'scipy', 'Pillow', 'h5py', 'Shapely', 'docutils', 'reportlab']
+    install_requires=['future', 'matplotlib', 'scipy', 'Pillow',
+                      'h5py', 'Shapely', 'docutils', 'reportlab']
 )
