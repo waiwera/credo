@@ -1,6 +1,5 @@
 from __future__ import print_function
 from builtins import zip
-from builtins import str
 from builtins import object
 ##  Copyright (C), 2010, Monash University
 ##  Copyright (C), 2010, Victorian Partnership for Advanced Computing (VPAC)

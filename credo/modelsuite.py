@@ -33,7 +33,6 @@ For example usage, see the CREDO documentation Examples section,
 This class also performs a key role in the System tests provided in the
 :mod:`credo.systest` module.
 """
-from builtins import str
 from builtins import zip
 from builtins import map
 from builtins import object

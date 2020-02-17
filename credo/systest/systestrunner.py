@@ -24,7 +24,6 @@
 """Package for manipulation of a suite of system tests.
 Analogous to the role of the Pythun unittest TestRunner."""
 from __future__ import print_function
-from builtins import str
 from builtins import zip
 from builtins import object
 

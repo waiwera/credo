@@ -29,7 +29,6 @@
    as a constructor keyword argument to :class:`~.ReferenceTest` instantiations.
 """
 from __future__ import print_function
-from builtins import str
 
 import os
 from xml.etree import ElementTree as etree

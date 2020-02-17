@@ -1,5 +1,4 @@
 from __future__ import division
-from builtins import str
 from past.utils import old_div
 ##  Copyright (C), 2010, Monash University
 ##  Copyright (C), 2010, Victorian Partnership for Advanced Computing (VPAC)

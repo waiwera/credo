@@ -38,7 +38,6 @@ across multiple runs, e.g. :func:`~calcFieldCvgWithScale`.
    into Python for further analysis, but this feature is not yet implemented.
 """
 from __future__ import print_function
-from builtins import str
 from builtins import map
 from builtins import range
 from builtins import object

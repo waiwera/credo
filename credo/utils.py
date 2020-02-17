@@ -24,7 +24,6 @@
 """A module for general utility functions in CREDO, that don't clearly fit
 into other modules."""
 from builtins import map
-from builtins import str
 
 import os
 import inspect

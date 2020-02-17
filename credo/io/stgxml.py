@@ -30,7 +30,6 @@ themselves, but most functions operate on an ElementTree object
 representative of an element in an open Stg XML document.
 """
 from builtins import map
-from builtins import str
 
 import os
 import shlex

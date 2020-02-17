@@ -1,4 +1,3 @@
-from builtins import str
 ##  Copyright (C), 2010, Monash University
 ##  Copyright (C), 2010, Victorian Partnership for Advanced Computing (VPAC)
 ##

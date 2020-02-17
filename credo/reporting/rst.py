@@ -1,5 +1,4 @@
 """Utils/primitives useful in constructing an RST report doc."""
-from builtins import str
 from builtins import map
 from builtins import range
 import os

@@ -1,6 +1,5 @@
 from __future__ import division
 from __future__ import print_function
-from builtins import str
 from builtins import zip
 from past.utils import old_div
 from xml.etree import ElementTree as etree
