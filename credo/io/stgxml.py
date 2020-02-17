@@ -574,7 +574,7 @@ def writeXMLDoc(xmlDoc, outFile, prettyPrint=True):
 
 def writeStgDataDocToFile(xmlDoc, filename):
     """Write a given StGermain xmlDoc to the file given by filename"""
-    outFile = open(filename, 'w')
+    outFile = open(filename, 'wb')
     writeXMLDoc(xmlDoc, outFile)
     outFile.close()
 

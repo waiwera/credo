@@ -235,7 +235,7 @@ class ModelResult(object):
         # Write the files
         if not os.path.exists(outputDir): os.makedirs(outputDir)
         fullPath = os.path.join(outputDir, filename)
-        outFile = open(fullPath, 'w')
+        outFile = open(fullPath, 'wb')
         writeXMLDoc(xmlDoc, outFile, prettyPrint)
         outFile.close()
         return fullPath
@@ -382,7 +382,7 @@ class UnderworldModelResult(ModelResult):
         # Write the files
         if not os.path.exists(outputDir): os.makedirs(outputDir)
         fullPath = os.path.join(outputDir, filename)
-        outFile = open(fullPath, 'w')
+        outFile = open(fullPath, 'wb')
         writeXMLDoc(xmlDoc, outFile, prettyPrint)
         outFile.close()
         return fullPath
@@ -459,6 +459,6 @@ def updateModelResultsXMLFieldInfo(filename, newFieldResult, prettyPrint=True):
     newFieldResult.writeInfoXML(fieldResultsNode)
 
     # Write the file, default name if filename provided is empty
-    outFile = open(filename, 'w')
+    outFile = open(filename, 'wb')
     writeXMLDoc(xmlDoc, outFile, prettyPrint)
     outFile.close()

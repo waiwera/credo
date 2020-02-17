@@ -583,7 +583,7 @@ class SysTest(object):
         if not os.path.exists(outputPath):
             os.makedirs(outputPath)
         outFilePath = os.path.join(outputPath, filename)
-        outFile = open(outFilePath, 'w')
+        outFile = open(outFilePath, 'wb')
         credo.io.stgxml.writeXMLDoc(xmlDoc, outFile, prettyPrint)
         outFile.close()
         return outFilePath

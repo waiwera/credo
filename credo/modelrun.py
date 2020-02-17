@@ -227,7 +227,7 @@ class ModelRun(object):
         # Write the file
         if not os.path.exists(writePath):
             os.makedirs(writePath)
-        outFile = open(writePath+filename, 'w')
+        outFile = open(writePath+filename, 'wb')
         writeXMLDoc(xmlDoc, outFile, prettyPrint)
         outFile.close()
         return writePath+filename
@@ -599,7 +599,7 @@ class UnderworldModelRun(ModelRun):
         # Write the file
         if not os.path.exists(writePath):
             os.makedirs(writePath)
-        outFile = open(writePath+filename, 'w')
+        outFile = open(writePath+filename, 'wb')
         writeXMLDoc(xmlDoc, outFile, prettyPrint)
         outFile.close()
         return writePath+filename
