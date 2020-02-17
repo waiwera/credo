@@ -87,21 +87,21 @@ class CREDO_PASS(SysTestResult):
     '''Simple class to represent an CREDO pass'''
     statusStr = 'Pass'
     def __init__(self, passMsg):
-        assert type(passMsg) == str
+        assert isinstance(passMsg, str)
         self.detailMsg = passMsg
 
 class CREDO_FAIL(SysTestResult):
     '''Simple class to represent an CREDO failure'''
     statusStr = 'Fail'
     def __init__(self, failMsg):
-        assert type(failMsg) == str
+        assert isinstance(failMsg, str)
         self.detailMsg = failMsg
 
 class CREDO_ERROR(SysTestResult):
     '''Simple class to represent an CREDO error'''
     statusStr = 'Error'
     def __init__(self, errorMsg):
-        assert type(errorMsg) == str
+        assert isinstance(errorMsg, str)
         self.detailMsg = errorMsg
 
 def getStdTestNameBasic(testTypeStr, inputFiles):
