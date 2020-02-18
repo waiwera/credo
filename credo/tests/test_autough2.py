@@ -141,5 +141,7 @@ class TestCustomField(unittest.TestCase):
         t, phist = mres.getFieldHistoryAtCell('p_hist_in_bar', 30)
         self.assertEqual(phist[1], bh_f[1])
 
+        mres.destroy()
+
 if __name__ == '__main__':
     unittest.main()
