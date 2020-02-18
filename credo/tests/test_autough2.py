@@ -10,6 +10,8 @@ import os, sys
 import numpy as np
 
 from credo.t2model import T2ModelResult
+from t2data import t2data
+from t2listing import t2listing
 
 THIS_DIR = os.path.dirname(os.path.realpath(__file__))
 
@@ -24,7 +26,6 @@ class TestAUT2Model(unittest.TestCase):
         self.mres = T2ModelResult('test_aut2_map',
                                   lst_filename=lstname,
                                   ordering_map=None)
-        from t2listing import t2listing
         self.lst = t2listing(lstname)
 
         ### mResult with data file
@@ -33,7 +34,6 @@ class TestAUT2Model(unittest.TestCase):
                                         lst_filename=lstname,
                                         dat_filename=datname,
                                         ordering_map=None)
-        from t2data import t2data
         self.dat = t2data(datname)
 
     def test_getfield(self):
@@ -81,7 +81,6 @@ class TestAUT2Model(unittest.TestCase):
 class TestCustomField(unittest.TestCase):
     def setUp(self):
         self.lstname = 'mres_aut2_fivespot.listing'
-        from t2listing import t2listing
         self.lst = t2listing(self.lstname)
 
     def test_simple(self):
