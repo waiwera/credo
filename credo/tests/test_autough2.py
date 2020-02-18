@@ -38,6 +38,9 @@ class TestAUT2Model(unittest.TestCase):
 
     def tearDown(self):
         self.lst.close()
+        self.mres_map.destroy()
+        self.mres.destroy()
+        self.mres_w_dat.destroy()
 
     def test_getfield(self):
         plst = self.lst.element['Pressure']

@@ -178,6 +178,9 @@ class T2ModelResult(ModelResult):
         if dat_filename:
             self._dat = t2data(dat_filename)
 
+    def destroy(self):
+        self._lst.close()
+
     def _getOtherValues(self, field):
         if field is 'rock_porosity':
             return [b.rocktype.porosity for b in self._dat.grid.blocklist]
