@@ -36,6 +36,9 @@ class TestAUT2Model(unittest.TestCase):
                                         ordering_map=None)
         self.dat = t2data(datname)
 
+    def tearDown(self):
+        self.lst.close()
+
     def test_getfield(self):
         plst = self.lst.element['Pressure']
         pmap = self.mres_map.getFieldAtOutputIndex('Pressure', -1)
@@ -82,6 +85,9 @@ class TestCustomField(unittest.TestCase):
     def setUp(self):
         self.lstname = 'mres_aut2_fivespot.listing'
         self.lst = t2listing(self.lstname)
+
+    def tearDown(self):
+        self.lst.close()
 
     def test_simple(self):
         """ Tests basic custom variable usage.  Incls values at all cells and
