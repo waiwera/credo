@@ -47,8 +47,12 @@ class JobParamsTestCase(unittest.TestCase):
         jp = credo.modelrun.JobParams(nproc=1)
         jp['PBS'] = {"queue":"run_1_week", "nameLine":"#PBS -n myJob"}
         jp.writeInfoXML(el)
-        self.assertEqual(etree.tostring(el),
-            """<myElement><jobParams><maxRunTime>None</maxRunTime><pollInterval>1</pollInterval><PBS><queue>run_1_week</queue><nameLine>#PBS -n myJob</nameLine></PBS><nproc>1</nproc></jobParams></myElement>""")
+        self.assertEqual(el[0].find('maxRunTime').text, 'None')
+        self.assertEqual(el[0].find('pollInterval').text, '1')
+        self.assertEqual(el[0].find('nproc').text, '1')
+        pb = el[0].find('PBS')
+        self.assertEqual(pb.find('queue').text, 'run_1_week')
+        self.assertEqual(pb.find('nameLine').text, '#PBS -n myJob')
 
 def suite():
     suite = unittest.TestSuite()
