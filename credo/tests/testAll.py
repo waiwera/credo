@@ -33,7 +33,8 @@ def suite():
     testMods = [
         'jobparamssuite',
         'test_autough2',
-        'test_waiwera']
+        'test_waiwera',
+        'test_runtest']
     alltests = unittest.TestSuite()
     for module in map(__import__, testMods):
         alltests.addTest(unittest.findTestCases(module))
