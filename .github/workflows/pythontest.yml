@@ -19,7 +19,7 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
       run: |
-        sudo apt-get install libgeos-c1v5
+        sudo apt-get install mpich libgeos-c1v5
         python -m pip install --upgrade pip
         mkdir pytough
         cd pytough
