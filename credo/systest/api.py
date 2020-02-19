@@ -669,7 +669,7 @@ class SysTest(object):
         #First MultiRunTestComponents
         runsNode = tcListNode.find('singleRunTestComponents')
         runsNode.attrib['allPassed'] = str(self.allsrPassed)
-        runsNodes = runsNode.getchildren()
+        runsNodes = list(runsNode)
         for runI, tcForRun in enumerate(self.testComps):
             runNode = runsNodes[runI]
             assert int(runNode.attrib['num']) == runI
@@ -680,7 +680,7 @@ class SysTest(object):
             runNode.attrib['runPassed'] = runResult
             tCompsAndXMLs = list(zip(iter(list(tcForRun.keys())),
                 iter(list(tcForRun.values())),
-                runNode.getchildren()))
+                list(runNode)))
             for tcName, testComp, testCompXMLNode in tCompsAndXMLs:
                 assert tcName == testCompXMLNode.attrib['name']
                 assert testComp.tcType == testCompXMLNode.attrib['type']
