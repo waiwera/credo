@@ -104,7 +104,7 @@ class TestFooModelResult(unittest.TestCase):
         test_fields = ['foo']
         tol = 0.01
 
-        for np in [1, 2, 4]:
+        for np in [1, 2]:
 
             run_name = "foo_run"
             mpi = np > 1
