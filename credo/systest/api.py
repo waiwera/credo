@@ -594,13 +594,13 @@ class SysTest(object):
         from this file (in xml.etree format)."""
         outputPath, filename = self._resolveXMLOutputPathFilename(
             outputPath, filename)
-        outFile = open(os.path.join(outputPath, filename), 'r+')
         parser = etree.XMLParser()
-        # Note: we haven't removed blank spaces from the output
-        # (xml.etree doesn't have an automatic option for this),
-        # but that shouldn't pose a problem as no whitespace should
-        # interfere with meaningful element text.
-        xmlDoc = etree.parse(outFile, parser)
+        with open(os.path.join(outputPath, filename), 'r+') as outFile:
+            # Note: we haven't removed blank spaces from the output
+            # (xml.etree doesn't have an automatic option for this),
+            # but that shouldn't pose a problem as no whitespace should
+            # interfere with meaningful element text.
+            xmlDoc = etree.parse(outFile, parser)
         baseNode = xmlDoc.getroot()
         return baseNode, xmlDoc
 
