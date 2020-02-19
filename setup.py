@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="waiwera-credo",
-    version="2.0.3",
+    version="2.0.4",
     author="Waiwera Project",
     author_email="waiwera.project@gmail.com",
     description="Fork of CREDO computational model benchmarking toolkit, for use with the Waiwera geothermal flow simulator",
