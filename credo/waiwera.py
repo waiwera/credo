@@ -92,7 +92,8 @@ class WaiweraModelRun(ModelRun):
                 jdata = json.load(jf)
             h5_fn = jdata['output']['filename']
         except KeyError:
-            h5_fn = os.path.splitext(input_fn) + '.h5'
+            base, ext = os.path.splitext(input_fn)
+            h5_fn =  base + '.h5'
         return h5_fn
 
 class WaiweraModelResult(ModelResult):
